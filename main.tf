@@ -1,16 +1,13 @@
 # Define composite variables for resources
-resource "null_resource" "default" {
-  triggers = {
-    id = "${lower(format("%v-%v-%v", var.namespace, var.stage, var.name))}"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
+module "label" {
+  source    = "git::https://github.com/cloudposse/tf_label.git?ref=init"
+  namespace = "${var.namespace}"
+  name      = "${var.name}"
+  stage     = "${var.stage}"
 }
 
 resource "aws_security_group" "default" {
-  name        = "${null_resource.default.triggers.id}"
+  name        = "${module.label.value}"
   description = "Allow all inbound traffic"
 
   vpc_id = "${var.vpc_id}"
@@ -30,21 +27,21 @@ resource "aws_security_group" "default" {
   }
 
   tags {
-    Name      = "${null_resource.default.triggers.id}"
+    Name      = "${module.label.value}"
     Namespace = "${var.namespace}"
     Stage     = "${var.stage}"
   }
 }
 
 resource "aws_rds_cluster" "default" {
-  cluster_identifier        = "${null_resource.default.triggers.id}"
+  cluster_identifier        = "${module.label.value}"
   availability_zones        = ["${var.availability_zones}"]
   database_name             = "${var.db_name}"
   master_username           = "${var.admin_user}"
   master_password           = "${var.admin_password}"
   backup_retention_period   = "${var.retention_period}"
   preferred_backup_window   = "${var.backup_window}"
-  final_snapshot_identifier = "${lower(null_resource.default.triggers.id)}"
+  final_snapshot_identifier = "${lower(module.label.value)}"
   skip_final_snapshot       = true
   apply_immediately         = true
   snapshot_identifier       = "${var.snapshot_identifier}"
@@ -62,7 +59,7 @@ resource "aws_rds_cluster" "default" {
   ]
 
   tags = {
-    Name      = "${null_resource.default.triggers.id}"
+    Name      = "${module.label.value}"
     Namespace = "${var.namespace}"
     Stage     = "${var.stage}"
   }
@@ -71,7 +68,7 @@ resource "aws_rds_cluster" "default" {
 resource "aws_rds_cluster_instance" "default" {
   count = "${var.cluster_size}"
 
-  identifier           = "${null_resource.default.triggers.id}-${count.index+1}"
+  identifier           = "${module.label.value}-${count.index+1}"
   cluster_identifier   = "${aws_rds_cluster.default.id}"
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
@@ -79,7 +76,7 @@ resource "aws_rds_cluster_instance" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  name        = "${null_resource.default.triggers.id}"
+  name        = "${module.label.value}"
   description = "Allowed subnets for Aurora DB cluster instances"
   subnet_ids  = ["${var.subnets}"]
 }
