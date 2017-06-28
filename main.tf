@@ -7,7 +7,7 @@ module "label" {
 }
 
 resource "aws_security_group" "default" {
-  name        = "${module.label.value}"
+  name        = "${module.label.id}"
   description = "Allow all inbound traffic"
 
   vpc_id = "${var.vpc_id}"
@@ -27,21 +27,21 @@ resource "aws_security_group" "default" {
   }
 
   tags {
-    Name      = "${module.label.value}"
+    Name      = "${module.label.id}"
     Namespace = "${var.namespace}"
     Stage     = "${var.stage}"
   }
 }
 
 resource "aws_rds_cluster" "default" {
-  cluster_identifier        = "${module.label.value}"
+  cluster_identifier        = "${module.label.id}"
   availability_zones        = ["${var.availability_zones}"]
   database_name             = "${var.db_name}"
   master_username           = "${var.admin_user}"
   master_password           = "${var.admin_password}"
   backup_retention_period   = "${var.retention_period}"
   preferred_backup_window   = "${var.backup_window}"
-  final_snapshot_identifier = "${lower(module.label.value)}"
+  final_snapshot_identifier = "${lower(module.label.id)}"
   skip_final_snapshot       = true
   apply_immediately         = true
   snapshot_identifier       = "${var.snapshot_identifier}"
@@ -59,7 +59,7 @@ resource "aws_rds_cluster" "default" {
   ]
 
   tags = {
-    Name      = "${module.label.value}"
+    Name      = "${module.label.id}"
     Namespace = "${var.namespace}"
     Stage     = "${var.stage}"
   }
@@ -68,7 +68,7 @@ resource "aws_rds_cluster" "default" {
 resource "aws_rds_cluster_instance" "default" {
   count = "${var.cluster_size}"
 
-  identifier           = "${module.label.value}-${count.index+1}"
+  identifier           = "${module.label.id}-${count.index+1}"
   cluster_identifier   = "${aws_rds_cluster.default.id}"
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
@@ -76,7 +76,7 @@ resource "aws_rds_cluster_instance" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  name        = "${module.label.value}"
+  name        = "${module.label.id}"
   description = "Allowed subnets for Aurora DB cluster instances"
   subnet_ids  = ["${var.subnets}"]
 }
