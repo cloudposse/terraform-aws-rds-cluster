@@ -1,6 +1,6 @@
 # Define composite variables for resources
 module "label" {
-  source    = "git::https://github.com/cloudposse/tf_label.git?ref=init"
+  source    = "git::https://github.com/cloudposse/tf_label.git"
   namespace = "${var.namespace}"
   name      = "${var.name}"
   stage     = "${var.stage}"
@@ -82,7 +82,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 module "dns_master" {
-  source    = "../hostname"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=init"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
@@ -91,7 +91,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source    = "../hostname"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=init"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
