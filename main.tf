@@ -82,7 +82,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=init"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
@@ -91,7 +91,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=init"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
