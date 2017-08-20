@@ -1,6 +1,6 @@
 # Define composite variables for resources
 module "label" {
-  source    = "git::https://github.com/cloudposse/tf_label.git"
+  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.1.0"
   namespace = "${var.namespace}"
   name      = "${var.name}"
   stage     = "${var.stage}"
@@ -10,7 +10,7 @@ resource "aws_security_group" "default" {
   name        = "${module.label.id}"
   description = "Allow all inbound traffic"
 
-  vpc_id = "${var.vpc_id}"
+  vpc_id      = "${var.vpc_id}"
 
   ingress {
     from_port       = "3306"                     # MySQL
@@ -34,31 +34,31 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_rds_cluster" "default" {
-  cluster_identifier        = "${module.label.id}"
-  availability_zones        = ["${var.availability_zones}"]
-  database_name             = "${var.db_name}"
-  master_username           = "${var.admin_user}"
-  master_password           = "${var.admin_password}"
-  backup_retention_period   = "${var.retention_period}"
-  preferred_backup_window   = "${var.backup_window}"
-  final_snapshot_identifier = "${lower(module.label.id)}"
-  skip_final_snapshot       = true
-  apply_immediately         = true
-  snapshot_identifier       = "${var.snapshot_identifier}"
+  cluster_identifier           = "${module.label.id}"
+  availability_zones           = ["${var.availability_zones}"]
+  database_name                = "${var.db_name}"
+  master_username              = "${var.admin_user}"
+  master_password              = "${var.admin_password}"
+  backup_retention_period      = "${var.retention_period}"
+  preferred_backup_window      = "${var.backup_window}"
+  final_snapshot_identifier    = "${lower(module.label.id)}"
+  skip_final_snapshot          = true
+  apply_immediately            = true
+  snapshot_identifier          = "${var.snapshot_identifier}"
 
-  vpc_security_group_ids = [
+  vpc_security_group_ids       = [
     "${aws_security_group.default.id}",
   ]
 
   preferred_maintenance_window = "${var.maintenance_window}"
 
-  db_subnet_group_name = "${aws_db_subnet_group.default.name}"
+  db_subnet_group_name         = "${aws_db_subnet_group.default.name}"
 
-  vpc_security_group_ids = [
+  vpc_security_group_ids       = [
     "${aws_security_group.default.id}",
   ]
 
-  tags = {
+  tags                         = {
     Name      = "${module.label.id}"
     Namespace = "${var.namespace}"
     Stage     = "${var.stage}"
@@ -66,7 +66,7 @@ resource "aws_rds_cluster" "default" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count = "${var.cluster_size}"
+  count                = "${var.cluster_size}"
 
   identifier           = "${module.label.id}-${count.index+1}"
   cluster_identifier   = "${aws_rds_cluster.default.id}"
@@ -82,7 +82,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=tags/0.1.0"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
@@ -91,7 +91,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git"
+  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=tags/0.1.0"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
