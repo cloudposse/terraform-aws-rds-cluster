@@ -73,7 +73,7 @@ resource "aws_rds_cluster_instance" "default" {
 
 resource "aws_db_subnet_group" "default" {
   name        = "${module.label.id}"
-  description = "Allowed subnets for Aurora DB cluster instances"
+  description = "Allowed subnets for DB cluster instances"
   subnet_ids  = ["${var.subnets}"]
 }
 
