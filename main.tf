@@ -1,6 +1,6 @@
 # Define composite variables for resources
 module "label" {
-  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.1.0"
+  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
   namespace = "${var.namespace}"
   name      = "${var.name}"
   stage     = "${var.stage}"
@@ -8,13 +8,13 @@ module "label" {
 
 resource "aws_security_group" "default" {
   name        = "${module.label.id}"
-  description = "Allow all inbound traffic"
+  description = "Allow all inbound traffic from the security groups"
 
   vpc_id      = "${var.vpc_id}"
 
   ingress {
-    from_port       = "3306"                     # MySQL
-    to_port         = "3306"
+    from_port       = "${var.db_port}"
+    to_port         = "${var.db_port}"
     protocol        = "tcp"
     security_groups = ["${var.security_groups}"]
   }
@@ -26,11 +26,7 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
-    Name      = "${module.label.id}"
-    Namespace = "${var.namespace}"
-    Stage     = "${var.stage}"
-  }
+  tags        = "${module.label.tags}"
 }
 
 resource "aws_rds_cluster" "default" {
@@ -46,19 +42,11 @@ resource "aws_rds_cluster" "default" {
   apply_immediately            = true
   snapshot_identifier          = "${var.snapshot_identifier}"
 
-  vpc_security_group_ids       = [
-    "${aws_security_group.default.id}",
-  ]
-
+  vpc_security_group_ids       = ["${aws_security_group.default.id}"]
   preferred_maintenance_window = "${var.maintenance_window}"
-
   db_subnet_group_name         = "${aws_db_subnet_group.default.name}"
 
-  tags                         = {
-    Name      = "${module.label.id}"
-    Namespace = "${var.namespace}"
-    Stage     = "${var.stage}"
-  }
+  tags                         = "${module.label.tags}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
@@ -69,12 +57,14 @@ resource "aws_rds_cluster_instance" "default" {
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
   publicly_accessible  = false
+  tags                 = "${module.label.tags}"
 }
 
 resource "aws_db_subnet_group" "default" {
   name        = "${module.label.id}"
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = ["${var.subnets}"]
+  tags        = "${module.label.tags}"
 }
 
 module "dns_master" {
