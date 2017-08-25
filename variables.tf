@@ -48,6 +48,10 @@ variable "db_name" {
   default = "app"
 }
 
+variable "db_port" {
+  default = "3306"
+}
+
 variable "admin_user" {
   default = "admin"
 }
