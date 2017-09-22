@@ -1,6 +1,6 @@
 # Define composite variables for resources
 module "label" {
-  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.2.1"
   namespace = "${var.namespace}"
   name      = "${var.name}"
   stage     = "${var.stage}"
@@ -9,7 +9,6 @@ module "label" {
 resource "aws_security_group" "default" {
   name        = "${module.label.id}"
   description = "Allow all inbound traffic from the security groups"
-
   vpc_id      = "${var.vpc_id}"
 
   ingress {
@@ -26,7 +25,7 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags        = "${module.label.tags}"
+  tags = "${module.label.tags}"
 }
 
 resource "aws_rds_cluster" "default" {
@@ -41,17 +40,14 @@ resource "aws_rds_cluster" "default" {
   skip_final_snapshot          = true
   apply_immediately            = true
   snapshot_identifier          = "${var.snapshot_identifier}"
-
   vpc_security_group_ids       = ["${aws_security_group.default.id}"]
   preferred_maintenance_window = "${var.maintenance_window}"
   db_subnet_group_name         = "${aws_db_subnet_group.default.name}"
-
   tags                         = "${module.label.tags}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
   count                = "${var.cluster_size}"
-
   identifier           = "${module.label.id}-${count.index+1}"
   cluster_identifier   = "${aws_rds_cluster.default.id}"
   instance_class       = "${var.instance_type}"
@@ -68,7 +64,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=tags/0.1.0"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.1.1"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
@@ -77,7 +73,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/tf_hostname.git?ref=tags/0.1.0"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.1.1"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
