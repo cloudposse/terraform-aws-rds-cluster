@@ -71,3 +71,8 @@ variable "backup_window" {
 variable "maintenance_window" {
   default = "wed:03:00-wed:04:00"
 }
+
+variable "parameters" {
+  type = "list"
+  default = []
+}

@@ -63,6 +63,13 @@ resource "aws_db_subnet_group" "default" {
   tags        = "${module.label.tags}"
 }
 
+resource "aws_rds_cluster_parameter_group" "default" {
+  name = "${module.label.id}"
+  family = "aurora5.6"
+
+  parameter = ["${var.parameters}"]
+}
+
 module "dns_master" {
   source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.1.1"
   namespace = "${var.namespace}"
