@@ -64,6 +64,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
+  name = "${module.label.id}"
   family = "aurora5.6"
 
   parameter = ["${var.parameters}"]
