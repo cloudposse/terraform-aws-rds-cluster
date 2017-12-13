@@ -3,16 +3,11 @@
 Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/aurora) Cluster
 
 
-## License
-
-Apache 2 License. See [`LICENSE`](LICENSE) for full details.
-
-
 ## Usage
 
 Include this repository as a module in your existing terraform code:
 
-```terraform
+```hcl
 module "rds_cluster_aurora_acig" {
   source              = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.2.1"
   cluster_size        = "2"
@@ -28,3 +23,8 @@ module "rds_cluster_aurora_acig" {
   subnets             = ["subnet-8b03333", "subnet-8b0772a3"]
 }
 ```
+
+
+## License
+
+Apache 2 License. See [`LICENSE`](LICENSE) for full details.
