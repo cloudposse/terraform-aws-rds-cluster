@@ -64,7 +64,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.1.1"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
@@ -73,7 +73,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.1.1"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
