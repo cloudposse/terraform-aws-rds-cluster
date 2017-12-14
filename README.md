@@ -63,12 +63,12 @@ module "rds_cluster_aurora" {
 <!--------------------------------REQUIRE POSTPROCESSING-------------------------------->
 |  Name | Description  |
 |:------|:------------:|
-| cluster_name |   |
-| master_host |   |
-| name |   |
-| password |   |
-| replicas_host |   |
-| user |   |
+| cluster_name | Cluster Identifier  |
+| master_host | DB Master hostname  |
+| name | Database name  |
+| password | Password for the master DB user  |
+| replicas_host | Replicas hostname  |
+| user | Username for the master DB user  |
 
 ## Help
 
