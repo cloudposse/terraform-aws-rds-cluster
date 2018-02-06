@@ -125,3 +125,15 @@ variable "cluster_family" {
   default     = "aurora5.6"
   description = "The family of the DB cluster parameter group"
 }
+
+variable "engine" {
+  type        = "string"
+  default     = "aurora"
+  description = "The name of the database engine to be used for this DB cluster. Valid Values: aurora, aurora-postgresql"
+}
+
+variable "engine_version" {
+  type        = "string"
+  default     = ""
+  description = "The version number of the database engine to use."
+}

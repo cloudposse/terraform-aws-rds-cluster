@@ -47,6 +47,8 @@ resource "aws_rds_cluster" "default" {
   db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
   db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.default.name}"
   tags                            = "${module.label.tags}"
+  engine                          = "${var.engine}"
+  engine_version                  = "${var.engine_version}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
@@ -57,6 +59,8 @@ resource "aws_rds_cluster_instance" "default" {
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
   publicly_accessible  = false
   tags                 = "${module.label.tags}"
+  engine               = "${var.engine}"
+  engine_version       = "${var.engine_version}"
 }
 
 resource "aws_db_subnet_group" "default" {
