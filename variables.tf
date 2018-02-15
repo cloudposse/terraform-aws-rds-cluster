@@ -137,3 +137,9 @@ variable "engine_version" {
   default     = ""
   description = "The version number of the database engine to use."
 }
+
+variable "allowed_cidr_blocks" {
+  type        = "list"
+  default     = []
+  description = "List of CIDR blocks allowed to access"
+}
