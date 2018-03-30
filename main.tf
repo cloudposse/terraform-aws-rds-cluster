@@ -1,5 +1,5 @@
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.1"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
   namespace  = "${var.namespace}"
   name       = "${var.name}"
   stage      = "${var.stage}"
@@ -10,7 +10,7 @@ module "label" {
 
 resource "aws_security_group" "default" {
   name        = "${module.label.id}"
-  description = "Allow all inbound traffic from the security groups"
+  description = "Allow inbound traffic from Sgs and CIDRs"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
