@@ -13,9 +13,9 @@ Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/auror
 Basic [example](examples/basic)
 
 ```hcl
-module "rds_cluster_aurora" {
+module "rds_cluster_aurora_postgres" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
-  engine             = "aurora"
+  engine             = "aurora-postgresql"
   cluster_size       = "2"
   namespace          = "cp"
   stage              = "dev"
@@ -36,8 +36,8 @@ With [cluster parameters](examples/with_cluster_parameters)
 
 ```hcl
 module "rds_cluster_aurora" {
-  source             = "../../"
-  engine             = "aurora-postgresql"
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  engine             = "aurora"
   cluster_size       = "2"
   namespace          = "cp"
   stage              = "dev"
