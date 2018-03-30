@@ -99,7 +99,7 @@ variable "maintenance_window" {
 variable "delimiter" {
   type        = "string"
   default     = "-"
-  description = "Delimiter to be used between `name`, `namespace`, `stage`, etc."
+  description = "Delimiter to be used between `name`, `namespace`, `stage` and `attributes`"
 }
 
 variable "attributes" {
@@ -111,7 +111,7 @@ variable "attributes" {
 variable "tags" {
   type        = "map"
   default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
+  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
 }
 
 variable "cluster_parameters" {
@@ -129,13 +129,13 @@ variable "cluster_family" {
 variable "engine" {
   type        = "string"
   default     = "aurora"
-  description = "The name of the database engine to be used for this DB cluster. Valid Values: aurora, aurora-postgresql"
+  description = "The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-postgresql`"
 }
 
 variable "engine_version" {
   type        = "string"
   default     = ""
-  description = "The version number of the database engine to use."
+  description = "The version number of the database engine to use"
 }
 
 variable "allowed_cidr_blocks" {
