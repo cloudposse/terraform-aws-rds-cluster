@@ -15,7 +15,7 @@ Basic [example](examples/basic)
 ```hcl
 module "rds_cluster_aurora" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
-  engine             = "aurora"
+  engine             = "aurora-postgresql"
   cluster_size       = "2"
   namespace          = "cp"
   stage              = "dev"
@@ -36,8 +36,8 @@ With [cluster parameters](examples/with_cluster_parameters)
 
 ```hcl
 module "rds_cluster_aurora" {
-  source             = "../../"
-  engine             = "aurora-postgresql"
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  engine             = "aurora"
   cluster_size       = "2"
   namespace          = "cp"
   stage              = "dev"

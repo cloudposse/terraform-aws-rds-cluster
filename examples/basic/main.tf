@@ -1,6 +1,6 @@
 module "rds_cluster_aurora" {
   source             = "../../"
-  engine             = "aurora"
+  engine             = "aurora-postgresql"
   cluster_size       = "2"
   namespace          = "cp"
   stage              = "dev"
