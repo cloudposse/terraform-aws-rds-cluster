@@ -1,4 +1,4 @@
-module "rds_cluster_aurora" {
+module "rds_cluster_aurora_postgres" {
   source             = "../../"
   engine             = "aurora-postgresql"
   cluster_size       = "2"
