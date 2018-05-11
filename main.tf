@@ -6,11 +6,13 @@ module "label" {
   delimiter  = "${var.delimiter}"
   attributes = "${var.attributes}"
   tags       = "${var.tags}"
+  enabled    = "${var.enabled}"
 }
 
 resource "aws_security_group" "default" {
+  count       = "${var.enabled == "true" ? 1 : 0}"
   name        = "${module.label.id}"
-  description = "Allow inbound traffic from Sgs and CIDRs"
+  description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
@@ -38,6 +40,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_rds_cluster" "default" {
+  count                           = "${var.enabled == "true" ? 1 : 0}"
   cluster_identifier              = "${module.label.id}"
   availability_zones              = ["${var.availability_zones}"]
   database_name                   = "${var.db_name}"
@@ -59,7 +62,7 @@ resource "aws_rds_cluster" "default" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                = "${var.cluster_size}"
+  count                = "${var.enabled == "true" ? var.cluster_size : 0}"
   identifier           = "${module.label.id}-${count.index+1}"
   cluster_identifier   = "${aws_rds_cluster.default.id}"
   instance_class       = "${var.instance_type}"
@@ -71,6 +74,7 @@ resource "aws_rds_cluster_instance" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
+  count       = "${var.enabled == "true" ? 1 : 0}"
   name        = "${module.label.id}"
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = ["${var.subnets}"]
@@ -78,6 +82,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
+  count       = "${var.enabled == "true" ? 1 : 0}"
   name        = "${module.label.id}"
   description = "DB cluster parameter group"
   family      = "${var.cluster_family}"
@@ -86,19 +91,21 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.2"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
-  records   = ["${aws_rds_cluster.default.endpoint}"]
+  records   = ["${coalescelist(aws_rds_cluster.default.*.endpoint, list(""))}"]
+  enabled   = "${var.enabled}"
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.2"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
-  records   = ["${aws_rds_cluster.default.reader_endpoint}"]
+  records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
+  enabled   = "${var.enabled}"
 }
