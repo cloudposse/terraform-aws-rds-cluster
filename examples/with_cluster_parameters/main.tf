@@ -1,4 +1,4 @@
-module "rds_cluster_aurora" {
+module "rds_cluster_aurora_mysql" {
   source             = "../../"
   engine             = "aurora"
   cluster_size       = "2"

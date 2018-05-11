@@ -143,3 +143,8 @@ variable "allowed_cidr_blocks" {
   default     = []
   description = "List of CIDR blocks allowed to access"
 }
+
+variable "enabled" {
+  description = "Set to false to prevent the module from creating any resources"
+  default     = "true"
+}
