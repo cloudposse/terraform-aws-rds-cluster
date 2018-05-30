@@ -51,6 +51,7 @@ resource "aws_rds_cluster" "default" {
   final_snapshot_identifier       = "${lower(module.label.id)}"
   skip_final_snapshot             = true
   apply_immediately               = true
+  storage_encrypted               = "${var.storage_encrypted}"
   snapshot_identifier             = "${var.snapshot_identifier}"
   vpc_security_group_ids          = ["${aws_security_group.default.id}"]
   preferred_maintenance_window    = "${var.maintenance_window}"
@@ -67,7 +68,7 @@ resource "aws_rds_cluster_instance" "default" {
   cluster_identifier   = "${aws_rds_cluster.default.id}"
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
-  publicly_accessible  = false
+  publicly_accessible  = "${var.publicly_accessible}"
   tags                 = "${module.label.tags}"
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"
