@@ -51,6 +51,7 @@ resource "aws_rds_cluster" "default" {
   final_snapshot_identifier       = "${lower(module.label.id)}"
   skip_final_snapshot             = true
   apply_immediately               = true
+  storage_encrypted               = "${var.storage_encrypted}"
   snapshot_identifier             = "${var.snapshot_identifier}"
   vpc_security_group_ids          = ["${aws_security_group.default.id}"]
   preferred_maintenance_window    = "${var.maintenance_window}"
