@@ -148,3 +148,8 @@ variable "enabled" {
   description = "Set to false to prevent the module from creating any resources"
   default     = "true"
 }
+
+variable "publicly_accessible" {
+  description = "Set to true if you want your cluster to be publicly accessible (such as via Quicksight)"
+  default     = "false"
+}
