@@ -1,5 +1,5 @@
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.5"
   namespace  = "${var.namespace}"
   name       = "${var.name}"
   stage      = "${var.stage}"
@@ -49,8 +49,8 @@ resource "aws_rds_cluster" "default" {
   backup_retention_period         = "${var.retention_period}"
   preferred_backup_window         = "${var.backup_window}"
   final_snapshot_identifier       = "${lower(module.label.id)}"
-  skip_final_snapshot             = true
-  apply_immediately               = true
+  skip_final_snapshot             = "${var.skip_final_snapshot}"
+  apply_immediately               = "${var.apply_immediately}"
   storage_encrypted               = "${var.storage_encrypted}"
   snapshot_identifier             = "${var.snapshot_identifier}"
   vpc_security_group_ids          = ["${aws_security_group.default.id}"]
