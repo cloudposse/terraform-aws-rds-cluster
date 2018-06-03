@@ -207,9 +207,9 @@ We love [Open Source Software](https://github.com/cloudposse/)!
 See [our other projects][community]
 or [hire us][hire] to help build your next cloud-platform.
 
-  [website]: http://cloudposse.com/
+  [website]: https://cloudposse.com/
   [community]: https://github.com/cloudposse/
-  [hire]: http://cloudposse.com/contact/
+  [hire]: https://cloudposse.com/contact/
 
 ### Contributors
 
