@@ -103,7 +103,8 @@ module "rds_cluster_aurora_mysql" {
 | admin_password |__REQUIRED__ |(Required unless a snapshot_identifier is provided) Password for the master DB user|
 | admin_user |"admin" |(Required unless a snapshot_identifier is provided) Username for the master DB user|
 | allowed_cidr_blocks |[] |List of CIDR blocks allowed to access|
-| attributes |[] |Additional attributes (e.g. `policy` or `role`)|
+| apply_immediately |"true" |Specifies whether any cluster modifications are applied immediately, or during the next maintenance window|
+| attributes |[] |Additional attributes (e.g. `1`)|
 | availability_zones |__REQUIRED__ |List of Availability Zones that instances in the DB cluster can be created in|
 | backup_window |"07:00-09:00" |Daily time range during which the backups happen|
 | cluster_family |"aurora5.6" |The family of the DB cluster parameter group|
@@ -119,10 +120,13 @@ module "rds_cluster_aurora_mysql" {
 | maintenance_window |"wed:03:00-wed:04:00" |Weekly time range during which system maintenance can occur, in UTC|
 | name |__REQUIRED__ |Name of the application|
 | namespace |__REQUIRED__ |Namespace (e.g. `cp` or `cloudposse`)|
+| publicly_accessible |"false" |Set to true if you want your cluster to be publicly accessible (such as via QuickSight)|
 | retention_period |"5" |Number of days to retain backups for|
 | security_groups |__REQUIRED__ |List of security groups to be allowed to connect to the DB instance|
+| skip_final_snapshot |"true" |Determines whether a final DB snapshot is created before the DB cluster is deleted|
 | snapshot_identifier |"" |Specifies whether or not to create this cluster from a snapshot|
 | stage |__REQUIRED__ |Stage (e.g. `prod`, `dev`, `staging`)|
+| storage_encrypted |"false" |Set to true if you want your cluster to be encrypted at rest|
 | subnets |__REQUIRED__ |List of VPC subnet IDs|
 | tags |{} |Additional tags (e.g. map(`BusinessUnit`,`XYZ`)|
 | vpc_id |__REQUIRED__ |VPC ID to create the cluster in (e.g. `vpc-a22222ee`)|
@@ -146,7 +150,6 @@ module "rds_cluster_aurora_mysql" {
 
 File a GitHub [issue](https://github.com/cloudposse/terraform-aws-rds-cluster/issues), send us an [email](mailto:hello@cloudposse.com) or reach out to us on [Gitter](https://gitter.im/cloudposse/).
 
-
 ## Contributing
 
 ### Bug Reports & Feature Requests
@@ -167,10 +170,9 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 **NOTE:** Be sure to merge the latest from "upstream" before making a pull request!
 
-
 ## License
 
-[APACHE 2.0](LICENSE) © 2017-2018 [Cloud Posse, LLC](https://cloudposse.com)
+[APACHE 2.0](LICENSE) © 2017 [Cloud Posse, LLC](https://cloudposse.com)
 
 See [LICENSE](LICENSE) for full details.
 
@@ -191,34 +193,41 @@ See [LICENSE](LICENSE) for full details.
     specific language governing permissions and limitations
     under the License.
 
-
 ## About
 
-`terraform-aws-rds-cluster` is maintained and funded by [Cloud Posse, LLC][website].
-
-![Cloud Posse](https://cloudposse.com/logo-300x69.png)
-
-
-Like it? Please let us know at <hello@cloudposse.com>
+This project is maintained and funded by [Cloud Posse, LLC][website]. Like it? Please let us know at <hello@cloudposse.com>
 
 We love [Open Source Software](https://github.com/cloudposse/)!
 
 See [our other projects][community]
-or [hire us][hire] to help build your next cloud platform.
+or [hire us][hire] to help build your next cloud-platform.
 
-  [website]: https://cloudposse.com/
+  [website]: http://cloudposse.com/
   [community]: https://github.com/cloudposse/
-  [hire]: https://cloudposse.com/contact/
+  [hire]: http://cloudposse.com/contact/
 
+### Contributors
 
-## Contributors
+|[![Erik Osterman][erik_img]][erik_web]<br/>[Erik Osterman][erik_web] |[![Igor Rodionov][igor_img]][igor_web]<br/>[Igor Rodionov][igor_img] |[![Andriy Knysh][andriy_img]][andriy_web]<br/>[Andriy Knysh][andriy_web] |[![Sergey Vasilyev][sergey_img]][sergey_web]<br/>[Sergey Vasilyev][sergey_web] |
+|---|---|---|---|
 
-| [![Erik Osterman][erik_img]][erik_web]<br/>[Erik Osterman][erik_web] | [![Andriy Knysh][andriy_img]][andriy_web]<br/>[Andriy Knysh][andriy_web] |[![Igor Rodionov][igor_img]][igor_web]<br/>[Igor Rodionov][igor_img]
-|-------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------|
+[andriy_img]: https://avatars0.githubusercontent.com/u/7356997?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
+[andriy_web]: https://github.com/aknysh/
 
 [erik_img]: http://s.gravatar.com/avatar/88c480d4f73b813904e00a5695a454cb?s=144
 [erik_web]: https://github.com/osterman/
-[andriy_img]: https://avatars0.githubusercontent.com/u/7356997?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
-[andriy_web]: https://github.com/aknysh/
+
 [igor_img]: http://s.gravatar.com/avatar/bc70834d32ed4517568a1feb0b9be7e2?s=144
 [igor_web]: https://github.com/goruha/
+
+[konstantin_img]: https://avatars1.githubusercontent.com/u/11299538?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
+[konstantin_web]: https://github.com/comeanother/
+
+[sergey_img]: https://avatars1.githubusercontent.com/u/1134449?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
+[sergey_web]: https://github.com/s2504s/
+
+[valeriy_img]: https://avatars1.githubusercontent.com/u/10601658?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
+[valeriy_web]: https://github.com/drama17/
+
+[vladimir_img]: https://avatars1.githubusercontent.com/u/26582191?v=4&u=ed9ce1c9151d552d985bdf5546772e14ef7ab617&s=144
+[vladimir_web]: https://github.com/SweetOps/

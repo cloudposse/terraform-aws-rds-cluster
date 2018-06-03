@@ -105,7 +105,7 @@ variable "delimiter" {
 variable "attributes" {
   type        = "list"
   default     = []
-  description = "Additional attributes (e.g. `policy` or `role`)"
+  description = "Additional attributes (e.g. `1`)"
 }
 
 variable "tags" {
@@ -150,11 +150,21 @@ variable "enabled" {
 }
 
 variable "publicly_accessible" {
-  description = "Set to true if you want your cluster to be publicly accessible (such as via Quicksight)"
+  description = "Set to true if you want your cluster to be publicly accessible (such as via QuickSight)"
   default     = "false"
 }
 
 variable "storage_encrypted" {
   description = "Set to true if you want your cluster to be encrypted at rest"
   default     = "false"
+}
+
+variable "skip_final_snapshot" {
+  description = "Determines whether a final DB snapshot is created before the DB cluster is deleted"
+  default     = "true"
+}
+
+variable "apply_immediately" {
+  description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window"
+  default     = "true"
 }
