@@ -40,26 +40,27 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_rds_cluster" "default" {
-  count                           = "${var.enabled == "true" ? 1 : 0}"
-  cluster_identifier              = "${module.label.id}"
-  availability_zones              = ["${var.availability_zones}"]
-  database_name                   = "${var.db_name}"
-  master_username                 = "${var.admin_user}"
-  master_password                 = "${var.admin_password}"
-  backup_retention_period         = "${var.retention_period}"
-  preferred_backup_window         = "${var.backup_window}"
-  final_snapshot_identifier       = "${lower(module.label.id)}"
-  skip_final_snapshot             = "${var.skip_final_snapshot}"
-  apply_immediately               = "${var.apply_immediately}"
-  storage_encrypted               = "${var.storage_encrypted}"
-  snapshot_identifier             = "${var.snapshot_identifier}"
-  vpc_security_group_ids          = ["${aws_security_group.default.id}"]
-  preferred_maintenance_window    = "${var.maintenance_window}"
-  db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
-  db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.default.name}"
-  tags                            = "${module.label.tags}"
-  engine                          = "${var.engine}"
-  engine_version                  = "${var.engine_version}"
+  count                               = "${var.enabled == "true" ? 1 : 0}"
+  cluster_identifier                  = "${module.label.id}"
+  availability_zones                  = ["${var.availability_zones}"]
+  database_name                       = "${var.db_name}"
+  master_username                     = "${var.admin_user}"
+  master_password                     = "${var.admin_password}"
+  backup_retention_period             = "${var.retention_period}"
+  preferred_backup_window             = "${var.backup_window}"
+  final_snapshot_identifier           = "${lower(module.label.id)}"
+  skip_final_snapshot                 = "${var.skip_final_snapshot}"
+  apply_immediately                   = "${var.apply_immediately}"
+  storage_encrypted                   = "${var.storage_encrypted}"
+  snapshot_identifier                 = "${var.snapshot_identifier}"
+  vpc_security_group_ids              = ["${aws_security_group.default.id}"]
+  preferred_maintenance_window        = "${var.maintenance_window}"
+  db_subnet_group_name                = "${aws_db_subnet_group.default.name}"
+  db_cluster_parameter_group_name     = "${aws_rds_cluster_parameter_group.default.name}"
+  iam_database_authentication_enabled = "${var.iam_database_authentication_enabled}"
+  tags                                = "${module.label.tags}"
+  engine                              = "${var.engine}"
+  engine_version                      = "${var.engine_version}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
