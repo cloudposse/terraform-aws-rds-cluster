@@ -93,7 +93,7 @@ module "rds_cluster_aurora_mysql" {
     },
   ]
 }
-``` 
+```
 
 ## Input
 
@@ -116,6 +116,7 @@ module "rds_cluster_aurora_mysql" {
 | enabled |"true" |Set to false to prevent the module from creating any resources|
 | engine |"aurora" |The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-postgresql`|
 | engine_version |"" |The version number of the database engine to use|
+| iam_database_authentication_enabled | "false" | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled |
 | instance_type |"db.t2.small" |Instance type to use|
 | maintenance_window |"wed:03:00-wed:04:00" |Weekly time range during which system maintenance can occur, in UTC|
 | name |__REQUIRED__ |Name of the application|
@@ -195,7 +196,7 @@ See [LICENSE](LICENSE) for full details.
 
 ## About
 
-This project is maintained and funded by [Cloud Posse, LLC][website]. 
+This project is maintained and funded by [Cloud Posse, LLC][website].
 
 ![Cloud Posse](https://cloudposse.com/logo-300x69.png)
 

@@ -168,3 +168,8 @@ variable "apply_immediately" {
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window"
   default     = "true"
 }
+
+variable "iam_database_authentication_enabled" {
+  description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled."
+  default     = "false"
+}
