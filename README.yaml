@@ -39,6 +39,7 @@ related:
 # Short description of this project
 description: |-
   Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/aurora) cluster for MySQL or Postgres.
+
 # How to use this project
 usage: |-
   Basic [example](examples/basic)
