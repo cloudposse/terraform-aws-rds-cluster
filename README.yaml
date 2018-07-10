@@ -1,0 +1,157 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-rds-cluster
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-rds-cluster
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-rds-cluster.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-rds-cluster"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg"
+    url: "https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "terraform-aws-rds"
+    description: "Terraform module to provision AWS RDS instances"
+    url: "https://github.com/cloudposse/terraform-aws-rds"
+  - name: "terraform-aws-rds-cloudwatch-sns-alarms"
+    description: "Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic"
+    url: "https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms"
+
+# Short description of this project
+description: |-
+  Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/aurora) cluster for MySQL or Postgres.
+
+# How to use this project
+usage: |-
+  Basic [example](examples/basic)
+  ```hcl
+  module "rds_cluster_aurora_postgres" {
+    source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+    engine             = "aurora-postgresql"
+    cluster_size       = "2"
+    namespace          = "cp"
+    stage              = "dev"
+    name               = "db"
+    admin_user         = "admin"
+    admin_password     = "Test123"
+    db_name            = "dbname"
+    instance_type      = "db.r4.large"
+    vpc_id             = "vpc-xxxxxxx"
+    availability_zones = ["us-east-1a", "us-east-1b"]
+    security_groups    = ["sg-0a6d5a3a"]
+    subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
+    zone_id            = "xxxxxxxx"
+  }
+  ```
+
+  With [cluster parameters](examples/with_cluster_parameters)
+
+  ```
+  hcl
+  module "rds_cluster_aurora_mysql" {
+    source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+    engine             = "aurora"
+    cluster_size       = "2"
+    namespace          = "cp"
+    stage              = "dev"
+    name               = "db"
+    admin_user         = "admin"
+    admin_password     = "Test123"
+    db_name            = "dbname"
+    instance_type      = "db.t2.small"
+    vpc_id             = "vpc-xxxxxxx"
+    availability_zones = ["us-east-1a", "us-east-1b"]
+    security_groups    = ["sg-0a6d5a3a"]
+    subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
+    zone_id            = "xxxxxxxx"
+
+    cluster_parameters = [
+      {
+        name  = "character_set_client"
+        value = "utf8"
+      },
+      {
+        name  = "character_set_connection"
+        value = "utf8"
+      },
+      {
+        name  = "character_set_database"
+        value = "utf8"
+      },
+      {
+        name  = "character_set_results"
+        value = "utf8"
+      },
+      {
+        name  = "character_set_server"
+        value = "utf8"
+      },
+      {
+        name  = "collation_connection"
+        value = "uft8_bin"
+      },
+      {
+        name  = "collation_server"
+        value = "uft8_bin"
+      },
+      {
+        name         = "lower_case_table_names"
+        value        = "1"
+        apply_method = "pending-reboot"
+      },
+      {
+        name         = "skip-character-set-client-handshake"
+        value        = "1"
+        apply_method = "pending-reboot"
+      },
+    ]
+  }
+  ```
+# Example usage
+#examples: |-
+#  Example goes here...
+
+# How to get started quickly
+#quickstart: |-
+#  Here's how to get started...
+
+# Other files to include in this README from the project folder
+include:
+  - "docs/targets.md"
+  - "docs/terraform.md"
+
+# Contributors to this project
+contributors:
+  - name: "Igor Rodionov"
+    github: "goruha"
+  - name: "Andriy Knysh"
+    github: "aknysh"
+  - name: "Sarkis Varozian"
+    github: "sarkis"
+  - name: "Mike Crowe"
+    github: "mike-zipit"
+  - name: "Sergey Vasilyev"
+    github: "s2504s"
+  - name: "Todor Todorov"
+    github: "tptodorov"
+  - name: "Lee Huffman"
+    github: "leehuffman"
