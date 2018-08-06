@@ -26,8 +26,11 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 ## Usage
 
+
 Basic [example](examples/basic)
-```hcl
+
+```
+hcl
 module "rds_cluster_aurora_postgres" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora-postgresql"
@@ -111,6 +114,60 @@ module "rds_cluster_aurora_mysql" {
 }
 ```
 
+With [enhanced monitoring](examples/enhanced_monitoring)
+
+```hcl
+# create IAM role for monitoring
+resource "aws_iam_role" "iam_role" {
+  name               = "rds-${var.cluster-name}"
+  assume_role_policy = "${data.aws_iam_policy_document.policy_document.json}"
+}
+
+# attach amazon's managed policy for RDS to write logs
+resource "aws_iam_role_policy_attachment" "policy_attachment" {
+  role       = "${aws_iam_role.iam_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
+# allow rds to assume this role
+data "aws_iam_policy_document" "policy_document" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
+
+module "rds_cluster_aurora_postgres" {
+  source             = "../../"
+  engine             = "aurora-postgresql"
+  cluster_size       = "2"
+  namespace          = "cp"
+  stage              = "dev"
+  name               = "db"
+  admin_user         = "admin"
+  admin_password     = "Test123"
+  db_name            = "dbname"
+  instance_type      = "db.r4.large"
+  vpc_id             = "vpc-xxxxxxx"
+  availability_zones = ["us-east-1a", "us-east-1b"]
+  security_groups    = ["sg-0a6d5a3a"]
+  subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
+  zone_id            = "xxxxxxxx"
+  # enable monitoring every 30 seconds
+  rds_monitoring_interval = "30"
+  # reference iam role created above
+  rds_monitoring_role_arn = "${aws_iam_role.iam_role.arn}"
+}
+```
+
 
 
 
@@ -152,6 +209,8 @@ Available targets:
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `cp` or `cloudposse`) | string | - | yes |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
+| rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
+| rds_monitoring_role_arn | the ARN for the IAM role that can send monitoring metrics to cloudwatch logs | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list | - | yes |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | string | `true` | no |
