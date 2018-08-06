@@ -42,8 +42,10 @@ module "rds_cluster_aurora_postgres" {
   security_groups    = ["sg-0a6d5a3a"]
   subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
   zone_id            = "xxxxxxxx"
+
   # enable monitoring every 30 seconds
   rds_monitoring_interval = "30"
+
   # reference iam role created above
   rds_monitoring_role_arn = "${aws_iam_role.iam_role.arn}"
 }
