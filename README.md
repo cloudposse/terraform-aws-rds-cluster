@@ -29,8 +29,7 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 Basic [example](examples/basic)
 
-```
-hcl
+```hcl
 module "rds_cluster_aurora_postgres" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora-postgresql"
@@ -52,8 +51,7 @@ module "rds_cluster_aurora_postgres" {
 
 With [cluster parameters](examples/with_cluster_parameters)
 
-```
-hcl
+```hcl
 module "rds_cluster_aurora_mysql" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora"
