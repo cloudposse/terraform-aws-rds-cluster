@@ -1,17 +1,17 @@
 # create IAM role for monitoring
-resource "aws_iam_role" "iam_role" {
-  name               = "rds-${var.cluster-name}"
-  assume_role_policy = "${data.aws_iam_policy_document.policy_document.json}"
+resource "aws_iam_role" "enhanced_monitoring" {
+  name               = "rds-cluster-example-1"
+  assume_role_policy = "${data.aws_iam_policy_document.enhanced_monitoring.json}"
 }
 
-# attach amazon's managed policy for RDS to write logs
-resource "aws_iam_role_policy_attachment" "policy_attachment" {
-  role       = "${aws_iam_role.iam_role.name}"
+# Attach Amazon's managed policy for RDS enhanced monitoring
+resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
+  role       = "${aws_iam_role.enhanced_monitoring.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
 # allow rds to assume this role
-data "aws_iam_policy_document" "policy_document" {
+data "aws_iam_policy_document" "enhanced_monitoring" {
   statement {
     actions = [
       "sts:AssumeRole",
