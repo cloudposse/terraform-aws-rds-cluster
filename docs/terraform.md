@@ -26,7 +26,7 @@
 | namespace | Namespace (e.g. `cp` or `cloudposse`) | string | - | yes |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
-| rds_monitoring_role_arn | the ARN for the IAM role that can send monitoring metrics to cloudwatch logs | string | `` | no |
+| rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list | - | yes |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | string | `true` | no |

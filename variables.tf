@@ -182,5 +182,5 @@ variable "rds_monitoring_interval" {
 variable "rds_monitoring_role_arn" {
   type        = "string"
   default     = ""
-  description = "the ARN for the IAM role that can send monitoring metrics to cloudwatch logs"
+  description = "The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs"
 }
