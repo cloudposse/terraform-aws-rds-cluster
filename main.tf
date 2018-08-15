@@ -73,6 +73,8 @@ resource "aws_rds_cluster_instance" "default" {
   tags                 = "${module.label.tags}"
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"
+  monitoring_interval  = "${var.rds_monitoring_interval}"
+  monitoring_role_arn  = "${var.rds_monitoring_role_arn}"
 }
 
 resource "aws_db_subnet_group" "default" {
