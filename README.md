@@ -32,20 +32,22 @@ Basic [example](examples/basic)
 ```hcl
 module "rds_cluster_aurora_postgres" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  name               = "postgres"
   engine             = "aurora-postgresql"
+  cluster_family     = "aurora-postgresql9.6"
   cluster_size       = "2"
-  namespace          = "cp"
+  namespace          = "eg"
   stage              = "dev"
-  name               = "db"
-  admin_user         = "admin"
-  admin_password     = "Test123"
+  admin_user         = "admin1"
+  admin_password     = "Test123456789"
   db_name            = "dbname"
+  db_port            = "5432"
   instance_type      = "db.r4.large"
-  vpc_id             = "vpc-xxxxxxx"
+  vpc_id             = "vpc-36f54c51"
   availability_zones = ["us-east-1a", "us-east-1b"]
   security_groups    = ["sg-0a6d5a3a"]
-  subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
-  zone_id            = "xxxxxxxx"
+  subnets            = ["subnet-705e3115", "subnet-dab9e2f0"]
+  zone_id            = "Z19EN1IQ979KPE"
 }
 ```
 
@@ -55,12 +57,13 @@ With [cluster parameters](examples/with_cluster_parameters)
 module "rds_cluster_aurora_mysql" {
   source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora"
+  cluster_family     = "aurora-mysql5.7"
   cluster_size       = "2"
-  namespace          = "cp"
+  namespace          = "eg"
   stage              = "dev"
   name               = "db"
-  admin_user         = "admin"
-  admin_password     = "Test123"
+  admin_user         = "admin1"
+  admin_password     = "Test123456789"
   db_name            = "dbname"
   instance_type      = "db.t2.small"
   vpc_id             = "vpc-xxxxxxx"
@@ -115,57 +118,59 @@ module "rds_cluster_aurora_mysql" {
 With [enhanced monitoring](examples/enhanced_monitoring)
 
 ```hcl
-   # create IAM role for monitoring
-   resource "aws_iam_role" "enhanced_monitoring" {
-     name               = "rds-cluster-example-1"
-     assume_role_policy = "${data.aws_iam_policy_document.enhanced_monitoring.json}"
-   }
+# create IAM role for monitoring
+resource "aws_iam_role" "enhanced_monitoring" {
+  name               = "rds-cluster-example-1"
+  assume_role_policy = "${data.aws_iam_policy_document.enhanced_monitoring.json}"
+}
 
-   # Attach Amazon's managed policy for RDS enhanced monitoring
-   resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
-     role       = "${aws_iam_role.enhanced_monitoring.name}"
-     policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
-   }
+# Attach Amazon's managed policy for RDS enhanced monitoring
+resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
+  role       = "${aws_iam_role.enhanced_monitoring.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
 
-   # allow rds to assume this role
-   data "aws_iam_policy_document" "enhanced_monitoring" {
-     statement {
-       actions = [
-         "sts:AssumeRole",
-       ]
+# allow rds to assume this role
+data "aws_iam_policy_document" "enhanced_monitoring" {
+  statement {
+      actions = [
+      "sts:AssumeRole",
+    ]
 
-       effect = "Allow"
+    effect = "Allow"
 
-       principals {
-         type        = "Service"
-         identifiers = ["monitoring.rds.amazonaws.com"]
-       }
-     }
-   }
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
 
-   module "rds_cluster_aurora_postgres" {
-     source             = "../../"
-     engine             = "aurora-postgresql"
-     cluster_size       = "2"
-     namespace          = "cp"
-     stage              = "dev"
-     name               = "db"
-     admin_user         = "admin"
-     admin_password     = "Test123"
-     db_name            = "dbname"
-     instance_type      = "db.r4.large"
-     vpc_id             = "vpc-xxxxxxx"
-     availability_zones = ["us-east-1a", "us-east-1b"]
-     security_groups    = ["sg-0a6d5a3a"]
-     subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
-     zone_id            = "xxxxxxxx"
+module "rds_cluster_aurora_postgres" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  engine             = "aurora-postgresql"
+  cluster_family     = "aurora-postgresql9.6"
+  cluster_size       = "2"
+  namespace          = "eg"
+  stage              = "dev"
+  name               = "db"
+  admin_user         = "admin1"
+  admin_password     = "Test123456789"
+  db_name            = "dbname"
+  db_port            = "5432"
+  instance_type      = "db.r4.large"
+  vpc_id             = "vpc-xxxxxxx"
+  availability_zones = ["us-east-1a", "us-east-1b"]
+  security_groups    = ["sg-0a6d5a3a"]
+  subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
+  zone_id            = "xxxxxxxx"
 
-     # enable monitoring every 30 seconds
-     rds_monitoring_interval = "30"
-   
-     # reference iam role created above
-     rds_monitoring_role_arn = "${aws_iam_role.iam_role.arn}"
-   }
+  # enable monitoring every 30 seconds
+  rds_monitoring_interval = "30"
+
+  # reference iam role created above
+  rds_monitoring_role_arn = "${aws_iam_role.enhanced_monitoring.arn}"
+}
 ```
 
 
@@ -177,8 +182,9 @@ With [enhanced monitoring](examples/enhanced_monitoring)
 ```
 Available targets:
 
-  help                                This help screen
+  help                                Help screen
   help/all                            Display help for all targets
+  help/short                          This help short screen
   lint                                Lint terraform code
 
 ```
@@ -207,7 +213,7 @@ Available targets:
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
 | name | Name of the application | string | - | yes |
-| namespace | Namespace (e.g. `cp` or `cloudposse`) | string | - | yes |
+| namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
@@ -226,10 +232,13 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
+| arn | Amazon Resource Name (ARN) of cluster |
 | cluster_name | Cluster Identifier |
+| endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |
 | password | Password for the master DB user |
+| reader_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas_host | Replicas hostname |
 | user | Username for the master DB user |
 
@@ -360,9 +369,11 @@ Check out [our other projects][github], [apply for a job][jobs], or [hire us][hi
 
 ### Contributors
 
-|  [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Sarkis Varozian][sarkis_avatar]][sarkis_homepage]<br/>[Sarkis Varozian][sarkis_homepage] | [![Mike Crowe][mike-zipit_avatar]][mike-zipit_homepage]<br/>[Mike Crowe][mike-zipit_homepage] | [![Sergey Vasilyev][s2504s_avatar]][s2504s_homepage]<br/>[Sergey Vasilyev][s2504s_homepage] | [![Todor Todorov][tptodorov_avatar]][tptodorov_homepage]<br/>[Todor Todorov][tptodorov_homepage] | [![Lee Huffman][leehuffman_avatar]][leehuffman_homepage]<br/>[Lee Huffman][leehuffman_homepage] |
-|---|---|---|---|---|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Sarkis Varozian][sarkis_avatar]][sarkis_homepage]<br/>[Sarkis Varozian][sarkis_homepage] | [![Mike Crowe][mike-zipit_avatar]][mike-zipit_homepage]<br/>[Mike Crowe][mike-zipit_homepage] | [![Sergey Vasilyev][s2504s_avatar]][s2504s_homepage]<br/>[Sergey Vasilyev][s2504s_homepage] | [![Todor Todorov][tptodorov_avatar]][tptodorov_homepage]<br/>[Todor Todorov][tptodorov_homepage] | [![Lee Huffman][leehuffman_avatar]][leehuffman_homepage]<br/>[Lee Huffman][leehuffman_homepage] |
+|---|---|---|---|---|---|---|---|
 
+  [osterman_homepage]: https://github.com/osterman
+  [osterman_avatar]: https://github.com/osterman.png?size=150
   [goruha_homepage]: https://github.com/goruha
   [goruha_avatar]: https://github.com/goruha.png?size=150
   [aknysh_homepage]: https://github.com/aknysh

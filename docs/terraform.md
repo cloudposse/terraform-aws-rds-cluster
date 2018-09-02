@@ -23,7 +23,7 @@
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
 | name | Name of the application | string | - | yes |
-| namespace | Namespace (e.g. `cp` or `cloudposse`) | string | - | yes |
+| namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
@@ -42,10 +42,13 @@
 
 | Name | Description |
 |------|-------------|
+| arn | Amazon Resource Name (ARN) of cluster |
 | cluster_name | Cluster Identifier |
+| endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |
 | password | Password for the master DB user |
+| reader_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas_host | Replicas hostname |
 | user | Username for the master DB user |
 
