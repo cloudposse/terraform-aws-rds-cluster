@@ -1,3 +1,5 @@
+# https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
+
 # create IAM role for monitoring
 resource "aws_iam_role" "enhanced_monitoring" {
   name               = "rds-cluster-example-1"
@@ -27,15 +29,17 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 module "rds_cluster_aurora_postgres" {
-  source             = "../../"
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora-postgresql"
+  cluster_family     = "aurora-postgresql9.6"
   cluster_size       = "2"
-  namespace          = "cp"
+  namespace          = "eg"
   stage              = "dev"
   name               = "db"
-  admin_user         = "admin"
-  admin_password     = "Test123"
+  admin_user         = "admin1"
+  admin_password     = "Test123456789"
   db_name            = "dbname"
+  db_port            = "5432"
   instance_type      = "db.r4.large"
   vpc_id             = "vpc-xxxxxxx"
   availability_zones = ["us-east-1a", "us-east-1b"]
@@ -47,5 +51,5 @@ module "rds_cluster_aurora_postgres" {
   rds_monitoring_interval = "30"
 
   # reference iam role created above
-  rds_monitoring_role_arn = "${aws_iam_role.iam_role.arn}"
+  rds_monitoring_role_arn = "${aws_iam_role.enhanced_monitoring.arn}"
 }

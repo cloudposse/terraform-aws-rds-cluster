@@ -1,12 +1,15 @@
+# https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
+
 module "rds_cluster_aurora_mysql" {
-  source             = "../../"
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine             = "aurora"
+  cluster_family     = "aurora-mysql5.7"
   cluster_size       = "2"
-  namespace          = "cp"
+  namespace          = "eg"
   stage              = "dev"
   name               = "db"
-  admin_user         = "admin"
-  admin_password     = "Test123"
+  admin_user         = "admin1"
+  admin_password     = "Test123456789"
   db_name            = "dbname"
   instance_type      = "db.t2.small"
   vpc_id             = "vpc-xxxxxxx"
