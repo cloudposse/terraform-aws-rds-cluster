@@ -15,7 +15,8 @@ variable "name" {
 
 variable "zone_id" {
   type        = "string"
-  description = "Route53 parent zone ID. The module will create sub-domain DNS records in the parent zone for the DB master and replicas"
+  default     = ""
+  description = "Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the DB master and replicas"
 }
 
 variable "security_groups" {

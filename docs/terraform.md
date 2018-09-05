@@ -36,7 +36,7 @@
 | subnets | List of VPC subnet IDs | list | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 | vpc_id | VPC ID to create the cluster in (e.g. `vpc-a22222ee`) | string | - | yes |
-| zone_id | Route53 parent zone ID. The module will create sub-domain DNS records in the parent zone for the DB master and replicas | string | - | yes |
+| zone_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the DB master and replicas | string | `` | no |
 
 ## Outputs
 
