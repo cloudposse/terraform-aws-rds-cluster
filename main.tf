@@ -95,21 +95,21 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.2"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
   namespace = "${var.namespace}"
   name      = "master.${var.name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.endpoint, list(""))}"]
-  enabled   = "${var.enabled}"
+  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.2"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
   namespace = "${var.namespace}"
   name      = "replicas.${var.name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
-  enabled   = "${var.enabled}"
+  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
 }
