@@ -21,6 +21,7 @@ variable "zone_id" {
 
 variable "security_groups" {
   type        = "list"
+  default     = []
   description = "List of security groups to be allowed to connect to the DB instance"
 }
 
@@ -76,6 +77,7 @@ variable "admin_user" {
 
 variable "admin_password" {
   type        = "string"
+  default     = ""
   description = "(Required unless a snapshot_identifier is provided) Password for the master DB user"
 }
 
