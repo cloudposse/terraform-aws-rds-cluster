@@ -193,7 +193,7 @@ Available targets:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| admin_password | (Required unless a snapshot_identifier is provided) Password for the master DB user | string | - | yes |
+| admin_password | (Required unless a snapshot_identifier is provided) Password for the master DB user | string | `` | no |
 | admin_user | (Required unless a snapshot_identifier is provided) Username for the master DB user | string | `admin` | no |
 | allowed_cidr_blocks | List of CIDR blocks allowed to access | list | `<list>` | no |
 | apply_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | string | `true` | no |
@@ -218,7 +218,7 @@ Available targets:
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
-| security_groups | List of security groups to be allowed to connect to the DB instance | list | - | yes |
+| security_groups | List of security groups to be allowed to connect to the DB instance | list | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | string | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | - | yes |
