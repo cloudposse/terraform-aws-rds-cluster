@@ -123,6 +123,12 @@ variable "cluster_parameters" {
   description = "List of DB parameters to apply"
 }
 
+variable "instance_parameters" {
+  type        = "list"
+  default     = []
+  description = "List of DB instance parameters to apply"
+}
+
 variable "cluster_family" {
   type        = "string"
   default     = "aurora5.6"
