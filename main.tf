@@ -61,7 +61,6 @@ resource "aws_rds_cluster" "default" {
   tags                                = "${module.label.tags}"
   engine                              = "${var.engine}"
   engine_version                      = "${var.engine_version}"
-  performance_insights_enabled        = "${var.performance_insights_enabled}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
@@ -77,6 +76,7 @@ resource "aws_rds_cluster_instance" "default" {
   engine_version          = "${var.engine_version}"
   monitoring_interval     = "${var.rds_monitoring_interval}"
   monitoring_role_arn     = "${var.rds_monitoring_role_arn}"
+  performance_insights_enabled        = "${var.performance_insights_enabled}"
 }
   
 resource "aws_appautoscaling_target" "replicas" {
