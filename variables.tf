@@ -196,6 +196,6 @@ variable "rds_monitoring_role_arn" {
 
 variable "performance_insights_enabled" {
   default     = "false"
-  description = "Option whether to enable performance insight
+  description = "Option whether to enable performance insight"
 }
 
