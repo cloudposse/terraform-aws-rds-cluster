@@ -193,3 +193,10 @@ variable "rds_monitoring_role_arn" {
   default     = ""
   description = "The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs"
 }
+
+variable "performance_insights_enabled" {
+  type        = "string"
+  default     = "false"
+  description = "Option whether to enable performance insight
+}
+
