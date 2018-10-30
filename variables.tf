@@ -35,7 +35,12 @@ variable "subnets" {
   description = "List of VPC subnet IDs"
 }
 
-variable "availability_zones" {
+variable "cluster_availability_zones" {
+  type        = "list"
+  description = "List of Availability Zones that instances in the DB cluster can be created in"
+}
+
+variable "instance_availability_zones" {
   type        = "list"
   description = "List of Availability Zones that instances in the DB cluster can be created in"
 }
