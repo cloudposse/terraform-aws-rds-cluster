@@ -41,7 +41,7 @@ variable "cluster_availability_zones" {
 }
 
 variable "instance_availability_zones" {
-  type        = "list"
+  type        = "string"
   description = "List of Availability Zones that instances in the DB cluster can be created in"
 }
 
