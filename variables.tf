@@ -198,4 +198,3 @@ variable "performance_insights_enabled" {
   default     = "false"
   description = "Option whether to enable performance insight"
 }
-
