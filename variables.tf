@@ -35,11 +35,6 @@ variable "subnets" {
   description = "List of VPC subnet IDs"
 }
 
-variable "availability_zones" {
-  type        = "list"
-  description = "List of Availability Zones that instances in the DB cluster can be created in"
-}
-
 variable "instance_type" {
   type        = "string"
   default     = "db.t2.small"

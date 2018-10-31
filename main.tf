@@ -42,7 +42,6 @@ resource "aws_security_group" "default" {
 resource "aws_rds_cluster" "default" {
   count                               = "${var.enabled == "true" ? 1 : 0}"
   cluster_identifier                  = "${module.label.id}"
-  availability_zones                  = ["${var.availability_zones}"]
   database_name                       = "${var.db_name}"
   master_username                     = "${var.admin_user}"
   master_password                     = "${var.admin_password}"

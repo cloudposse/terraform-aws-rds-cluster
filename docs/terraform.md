@@ -8,7 +8,6 @@
 | allowed_cidr_blocks | List of CIDR blocks allowed to access | list | `<list>` | no |
 | apply_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | string | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
-| availability_zones | List of Availability Zones that instances in the DB cluster can be created in | list | - | yes |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
