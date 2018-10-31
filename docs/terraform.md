@@ -8,8 +8,8 @@
 | allowed_cidr_blocks | List of CIDR blocks allowed to access | list | `<list>` | no |
 | apply_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | string | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
-| availability_zones | List of Availability Zones that instances in the DB cluster can be created in | list | - | yes |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
+| cluster_availability_zones | List of Availability Zones that instances in the DB cluster can be created in | list | - | yes |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
 | cluster_size | Number of DB instances to create in the cluster | string | `2` | no |
@@ -20,11 +20,13 @@
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-postgresql` | string | `aurora` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled. | string | `false` | no |
+| instance_availability_zones | List of Availability Zones that instances in the DB cluster can be created in | string | - | yes |
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
+| performance_insights_enabled | Option whether to enable performance insight | string | `false` | no |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
