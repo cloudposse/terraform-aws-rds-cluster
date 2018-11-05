@@ -8,6 +8,8 @@
 
 Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/aurora) cluster for MySQL or Postgres.
 
+Supports [Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/).
+
 
 ---
 
