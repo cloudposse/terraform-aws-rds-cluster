@@ -1,7 +1,18 @@
 # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
 
+provider "aws" {
+  region = "us-west-2"
+
+  # Make it faster by skipping some checks
+  skip_get_ec2_platforms      = true
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+}
+
 module "rds_cluster_aurora_postgres" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source          = "../../"
   name            = "postgres"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
@@ -13,8 +24,8 @@ module "rds_cluster_aurora_postgres" {
   db_name         = "dbname"
   db_port         = "5432"
   instance_type   = "db.r4.large"
-  vpc_id          = "vpc-36f54c51"
-  security_groups = ["sg-0a6d5a3a"]
-  subnets         = ["subnet-705e3115", "subnet-dab9e2f0"]
-  zone_id         = "Z19EN1IQ979KPE"
+  vpc_id          = "vpc-xxxxxxxx"
+  security_groups = ["sg-xxxxxxxx"]
+  subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+  zone_id         = "Zxxxxxxxx"
 }

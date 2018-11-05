@@ -16,7 +16,8 @@
 | db_port | Database port | string | `3306` | no |
 | delimiter | Delimiter to be used between `name`, `namespace`, `stage` and `attributes` | string | `-` | no |
 | enabled | Set to false to prevent the module from creating any resources | string | `true` | no |
-| engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-postgresql` | string | `aurora` | no |
+| engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
+| engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled. | string | `false` | no |
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
@@ -28,11 +29,12 @@
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
+| scaling_configuration | List of nested attributes with scaling properties. Only valid when engine_mode is set to `serverless` | list | `<list>` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | string | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | - | yes |
-| storage_encrypted | Set to true if you want your cluster to be encrypted at rest | string | `false` | no |
+| storage_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | string | `false` | no |
 | subnets | List of VPC subnet IDs | list | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 | vpc_id | VPC ID to create the cluster in (e.g. `vpc-a22222ee`) | string | - | yes |
