@@ -133,13 +133,25 @@ variable "cluster_family" {
 variable "engine" {
   type        = "string"
   default     = "aurora"
-  description = "The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-postgresql`"
+  description = "The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql`"
+}
+
+variable "engine_mode" {
+  type        = "string"
+  default     = "provisioned"
+  description = "The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless`"
 }
 
 variable "engine_version" {
   type        = "string"
   default     = ""
   description = "The version number of the database engine to use"
+}
+
+variable "scaling_configuration" {
+  type        = "list"
+  default     = []
+  description = "List of nested attributes with scaling properties. Only valid when engine_mode is set to `serverless`"
 }
 
 variable "allowed_cidr_blocks" {
@@ -159,7 +171,7 @@ variable "publicly_accessible" {
 }
 
 variable "storage_encrypted" {
-  description = "Set to true if you want your cluster to be encrypted at rest"
+  description = "Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode`"
   default     = "false"
 }
 

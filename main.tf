@@ -60,6 +60,8 @@ resource "aws_rds_cluster" "default" {
   tags                                = "${module.label.tags}"
   engine                              = "${var.engine}"
   engine_version                      = "${var.engine_version}"
+  engine_mode                         = "${var.engine_mode}"
+  scaling_configuration               = "${var.scaling_configuration}"
 }
 
 resource "aws_rds_cluster_instance" "default" {

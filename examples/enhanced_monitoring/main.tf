@@ -1,5 +1,16 @@
 # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
 
+provider "aws" {
+  region = "us-west-2"
+
+  # Make it faster by skipping some checks
+  skip_get_ec2_platforms      = true
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+}
+
 # create IAM role for monitoring
 resource "aws_iam_role" "enhanced_monitoring" {
   name               = "rds-cluster-example-1"
@@ -29,7 +40,7 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 module "rds_cluster_aurora_postgres" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source          = "../../"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
   cluster_size    = "2"
@@ -42,9 +53,9 @@ module "rds_cluster_aurora_postgres" {
   db_port         = "5432"
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxx"
-  security_groups = ["sg-0a6d5a3a"]
-  subnets         = ["subnet-8b03333", "subnet-8b0772a3"]
-  zone_id         = "xxxxxxxx"
+  security_groups = ["sg-xxxxxxxx"]
+  subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+  zone_id         = "Zxxxxxxxx"
 
   # enable monitoring every 30 seconds
   rds_monitoring_interval = "30"
