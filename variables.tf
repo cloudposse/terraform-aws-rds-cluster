@@ -212,33 +212,35 @@ variable "replicas_autoscaling_enabled" {
 }
 
 variable "autoscaling_policy_name" {
-  default = "cpu-auto-scaling"
+  default     = "cpu-auto-scaling"
   description = "Autoscaling policy name"
 }
 
 variable "autoscaling_target_metrics" {
-  default = "RDSReaderAverageCPUUtilization"
+  default     = "RDSReaderAverageCPUUtilization"
   description = "(Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization"
 }
 
 variable "target_value" {
-  default = "75"
+  default     = "75"
   description = "(Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization"
 }
+
 variable "scale_in_cooldown" {
-  default = "300"
+  default     = "300"
   description = "(Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s"
 }
+
 variable "scale_out_cooldown" {
   default = "(Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s"
 }
 
 variable "min_node_capacity" {
-  default = "0"
+  default     = "0"
   description = "Minimum number of additional nodes to be maintained by autoscaler"
 }
+
 variable "max_node_capacity" {
-  default = "15"
+  default     = "15"
   description = "Maximum number of additional nodes to be maintained by autoscaler"
 }
-

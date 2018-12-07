@@ -88,7 +88,6 @@ resource "aws_appautoscaling_target" "replicas" {
   max_capacity       = "${var.max_node_capacity}"
 }
 
-
 resource "aws_appautoscaling_policy" "replicas" {
   count              = "${var.replicas_autoscaling_enabled == "true" ? 1 : 0}"
   name               = "${var.autoscaling_policy_name}"
