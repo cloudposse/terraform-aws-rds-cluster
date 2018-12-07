@@ -8,6 +8,8 @@
 | allowed_cidr_blocks | List of CIDR blocks allowed to access | list | `<list>` | no |
 | apply_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | string | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
+| autoscaling_policy_name | Autoscaling policy name | string | `cpu-auto-scaling` | no |
+| autoscaling_target_metrics | (Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization | string | `RDSReaderAverageCPUUtilization` | no |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
@@ -23,14 +25,18 @@
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
+| max_node_capacity | Maximum number of additional nodes to be maintained by autoscaler | string | `15` | no |
+| min_node_capacity | Minimum number of additional nodes to be maintained by autoscaler | string | `0` | no |
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
 | performance_insights_enabled | Option whether to enable performance insight | string | `false` | no |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
-| replicas_autoscaling_enabled | Option whether to enable cluster autoscaling | string | `false` | no |
+| replicas_autoscaling_enabled | (Optional) whether to enable cluster autoscaling. If this value isn't provided default not setup autoscaling | string | `false` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
+| scale_in_cooldown | (Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s | string | `300` | no |
+| scale_out_cooldown |  | string | `(Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s` | no |
 | scaling_configuration | List of nested attributes with scaling properties. Only valid when engine_mode is set to `serverless` | list | `<list>` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | string | `true` | no |
@@ -39,6 +45,7 @@
 | storage_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | string | `false` | no |
 | subnets | List of VPC subnet IDs | list | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
+| target_value | (Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization | string | `75` | no |
 | vpc_id | VPC ID to create the cluster in (e.g. `vpc-a22222ee`) | string | - | yes |
 | zone_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the DB master and replicas | string | `` | no |
 
