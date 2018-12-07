@@ -84,13 +84,14 @@ resource "aws_appautoscaling_target" "replicas" {
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${aws_rds_cluster.default.id}"
-  min_capacity       = 0
-  max_capacity       = 15
+  min_capacity       = "${var.min_node_capacity}"
+  max_capacity       = "${var.max_node_capacity}"
 }
+
 
 resource "aws_appautoscaling_policy" "replicas" {
   count              = "${var.replicas_autoscaling_enabled == "true" ? 1 : 0}"
-  name               = "cpu-auto-scaling"
+  name               = "${var.autoscaling_policy_name}"
   service_namespace  = "${aws_appautoscaling_target.replicas.service_namespace}"
   scalable_dimension = "${aws_appautoscaling_target.replicas.scalable_dimension}"
   resource_id        = "${aws_appautoscaling_target.replicas.resource_id}"
@@ -98,12 +99,12 @@ resource "aws_appautoscaling_policy" "replicas" {
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
-      predefined_metric_type = "RDSReaderAverageCPUUtilization"
+      predefined_metric_type = "${var.autoscaling_target_metrics}"
     }
 
-    target_value       = 75
-    scale_in_cooldown  = 300
-    scale_out_cooldown = 300
+    target_value       = "${var.target_value}"
+    scale_in_cooldown  = "${var.scale_in_cooldown}"
+    scale_out_cooldown = "${var.scale_out_cooldown}"
   }
 }
 
