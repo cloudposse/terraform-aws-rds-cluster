@@ -1,22 +1,32 @@
 # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
 
+provider "aws" {
+  region = "us-west-2"
+
+  # Make it faster by skipping some checks
+  skip_get_ec2_platforms      = true
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+}
+
 module "rds_cluster_aurora_mysql" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
-  engine             = "aurora"
-  cluster_family     = "aurora-mysql5.7"
-  cluster_size       = "2"
-  namespace          = "eg"
-  stage              = "dev"
-  name               = "db"
-  admin_user         = "admin1"
-  admin_password     = "Test123456789"
-  db_name            = "dbname"
-  instance_type      = "db.t2.small"
-  vpc_id             = "vpc-xxxxxxx"
-  availability_zones = ["us-east-1a", "us-east-1b"]
-  security_groups    = ["sg-0a6d5a3a"]
-  subnets            = ["subnet-8b03333", "subnet-8b0772a3"]
-  zone_id            = "xxxxxxxx"
+  source          = "../../"
+  engine          = "aurora"
+  cluster_family  = "aurora-mysql5.7"
+  cluster_size    = "2"
+  namespace       = "eg"
+  stage           = "dev"
+  name            = "db"
+  admin_user      = "admin1"
+  admin_password  = "Test123456789"
+  db_name         = "dbname"
+  instance_type   = "db.t2.small"
+  vpc_id          = "vpc-xxxxxxx"
+  security_groups = ["sg-xxxxxxxx"]
+  subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+  zone_id         = "Zxxxxxxxx"
 
   cluster_parameters = [
     {

@@ -42,7 +42,6 @@ resource "aws_security_group" "default" {
 resource "aws_rds_cluster" "default" {
   count                               = "${var.enabled == "true" ? 1 : 0}"
   cluster_identifier                  = "${module.label.id}"
-  availability_zones                  = ["${var.cluster_availability_zones}"]
   database_name                       = "${var.db_name}"
   master_username                     = "${var.admin_user}"
   master_password                     = "${var.admin_password}"
@@ -61,10 +60,11 @@ resource "aws_rds_cluster" "default" {
   tags                                = "${module.label.tags}"
   engine                              = "${var.engine}"
   engine_version                      = "${var.engine_version}"
+  engine_mode                         = "${var.engine_mode}"
+  scaling_configuration               = "${var.scaling_configuration}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                        = "${var.enabled == "true" ? var.cluster_size : 0}"
   identifier                   = "${module.label.id}-${count.index+1}"
   cluster_identifier           = "${aws_rds_cluster.default.id}"
   instance_class               = "${var.instance_type}"
@@ -77,10 +77,10 @@ resource "aws_rds_cluster_instance" "default" {
   monitoring_interval          = "${var.rds_monitoring_interval}"
   monitoring_role_arn          = "${var.rds_monitoring_role_arn}"
   performance_insights_enabled = "${var.performance_insights_enabled}"
-  availability_zone            = "${var.instance_availability_zones}"
 }
 
 resource "aws_appautoscaling_target" "replicas" {
+  count              = "${var.replicas_autoscaling_enabled == "true" ? 1 : 0}"
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${aws_rds_cluster.default.id}"
@@ -89,6 +89,7 @@ resource "aws_appautoscaling_target" "replicas" {
 }
 
 resource "aws_appautoscaling_policy" "replicas" {
+  count              = "${var.replicas_autoscaling_enabled == "true" ? 1 : 0}"
   name               = "cpu-auto-scaling"
   service_namespace  = "${aws_appautoscaling_target.replicas.service_namespace}"
   scalable_dimension = "${aws_appautoscaling_target.replicas.scalable_dimension}"
