@@ -236,7 +236,6 @@ Available targets:
   lint                                Lint terraform code
 
 ```
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -287,7 +286,6 @@ Available targets:
 | endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |
-| password | Password for the master DB user |
 | reader_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas_host | Replicas hostname |
 | user | Username for the master DB user |
@@ -373,7 +371,7 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 ## Copyright
 
-Copyright © 2017-2018 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2019 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 
 
