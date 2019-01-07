@@ -62,6 +62,7 @@ resource "aws_rds_cluster" "default" {
   engine_version                      = "${var.engine_version}"
   engine_mode                         = "${var.engine_mode}"
   scaling_configuration               = "${var.scaling_configuration}"
+  replication_source_identifier       = "${var.replication_source_identifier}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
