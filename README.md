@@ -45,6 +45,8 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 ## Usage
 
 
+**IMPORTANT:** Do not pin to `master` because there may be breaking changes between releases. Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-rds-cluster/releases).
+
 [Basic example](examples/basic)
 
 ```hcl
@@ -67,6 +69,7 @@ module "rds_cluster_aurora_postgres" {
   zone_id         = "Zxxxxxxxx"
 }
 ```
+
 
 [Serverless MySQL](examples/serverless_mysql)
 
@@ -236,7 +239,6 @@ Available targets:
   lint                                Lint terraform code
 
 ```
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -266,6 +268,7 @@ Available targets:
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
+| replication_source_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
 | scaling_configuration | List of nested attributes with scaling properties. Only valid when engine_mode is set to `serverless` | list | `<list>` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list | `<list>` | no |
@@ -373,7 +376,7 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 ## Copyright
 
-Copyright © 2017-2018 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2019 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 
 

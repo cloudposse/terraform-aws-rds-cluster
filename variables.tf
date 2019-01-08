@@ -200,3 +200,9 @@ variable "rds_monitoring_role_arn" {
   default     = ""
   description = "The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs"
 }
+
+variable "replication_source_identifier" {
+  type        = "string"
+  description = "ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica"
+  default     = ""
+}
