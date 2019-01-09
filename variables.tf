@@ -218,7 +218,7 @@ variable "autoscaling_policy_name" {
 
 variable "autoscaling_target_metrics" {
   default     = "RDSReaderAverageCPUUtilization"
-  description = "(Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization"
+  description = "The metrics type to use with `TargetTrackingScaling`. If this value isn't provided the default is cpu utilization"
 }
 
 variable "target_value" {
