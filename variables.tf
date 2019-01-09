@@ -234,24 +234,21 @@ variable "autoscaling_policy_type" {
 variable "autoscaling_target_metrics" {
   type        = "string"
   default     = "RDSReaderAverageCPUUtilization"
-  description = "The metrics type to use with `autoscaling_policy_type`. If this value isn't provided the default is CPU utilization"
+  description = "The metrics type to use. If this value isn't provided the default is CPU utilization"
 }
 
 variable "autoscaling_target_value" {
-  type        = "string"
-  default     = "75"
-  description = "The target value to scale up with resepect to target metrics"
+  default     = 75
+  description = "The target value to scale with respect to target metrics"
 }
 
 variable "autoscaling_scale_in_cooldown" {
-  type        = "string"
-  default     = "300"
+  default     = 300
   description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s"
 }
 
 variable "autoscaling_scale_out_cooldown" {
-  type        = "string"
-  default     = "300"
+  default     = 300
   description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s"
 }
 

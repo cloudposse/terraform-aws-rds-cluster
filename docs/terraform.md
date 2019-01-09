@@ -13,8 +13,8 @@
 | autoscaling_policy_type | Autoscaling policy type. `TargetTrackingScaling` and `StepScaling` are supported | string | `TargetTrackingScaling` | no |
 | autoscaling_scale_in_cooldown | The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s | string | `300` | no |
 | autoscaling_scale_out_cooldown | The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s | string | `300` | no |
-| autoscaling_target_metrics | The metrics type to use with `autoscaling_policy_type`. If this value isn't provided the default is CPU utilization | string | `RDSReaderAverageCPUUtilization` | no |
-| autoscaling_target_value | The target value to scale up with resepect to target metrics | string | `75` | no |
+| autoscaling_target_metrics | The metrics type to use. If this value isn't provided the default is CPU utilization | string | `RDSReaderAverageCPUUtilization` | no |
+| autoscaling_target_value | The target value to scale with respect to target metrics | string | `75` | no |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
