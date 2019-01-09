@@ -228,7 +228,7 @@ variable "target_value" {
 
 variable "scale_in_cooldown" {
   default     = "300"
-  description = "(Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s"
+  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s"
 }
 
 variable "scale_out_cooldown" {
