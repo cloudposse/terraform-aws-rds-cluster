@@ -223,7 +223,7 @@ variable "autoscaling_target_metrics" {
 
 variable "target_value" {
   default     = "75"
-  description = "(Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization"
+  description = "The target value to scale up with resepect to target metrics"
 }
 
 variable "scale_in_cooldown" {
