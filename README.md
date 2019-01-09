@@ -283,7 +283,7 @@ Available targets:
 | storage_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | string | `false` | no |
 | subnets | List of VPC subnet IDs | list | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
-| target_value | (Optional) The metrics type to used with TargetTrackingScaling. If this value isn't provided default is cpu utilization | string | `75` | no |
+| target_value | (Optional) The target value to scale up with resepect to target metrics | string | `75` | no |
 | vpc_id | VPC ID to create the cluster in (e.g. `vpc-a22222ee`) | string | - | yes |
 | zone_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the DB master and replicas | string | `` | no |
 
