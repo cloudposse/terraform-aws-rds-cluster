@@ -232,7 +232,8 @@ variable "scale_in_cooldown" {
 }
 
 variable "scale_out_cooldown" {
-  default = "(Optional) The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s"
+  default     = "300"
+  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s"
 }
 
 variable "min_node_capacity" {
