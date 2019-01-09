@@ -208,7 +208,7 @@ variable "performance_insights_enabled" {
 
 variable "replicas_autoscaling_enabled" {
   default     = "false"
-  description = "(Optional) whether to enable cluster autoscaling. If this value isn't provided default not setup autoscaling"
+  description = "Whether to enable cluster autoscaling. If this value isn't provided the default is to not setup autoscaling"
 }
 
 variable "autoscaling_policy_name" {
