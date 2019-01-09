@@ -134,7 +134,7 @@ module "dns_replicas" {
 }
 
 resource "aws_appautoscaling_target" "replicas" {
-  count              = "${var.autoscaling_enabled == "true" ? 1 : 0}"
+  count              = "${var.enabled == "true" && var.autoscaling_enabled == "true" ? 1 : 0}"
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${aws_rds_cluster.default.id}"
@@ -143,7 +143,7 @@ resource "aws_appautoscaling_target" "replicas" {
 }
 
 resource "aws_appautoscaling_policy" "replicas" {
-  count              = "${var.autoscaling_enabled == "true" ? 1 : 0}"
+  count              = "${var.enabled == "true" && var.autoscaling_enabled == "true" ? 1 : 0}"
   name               = "${module.label.id}"
   service_namespace  = "${join("", aws_appautoscaling_target.replicas.*.service_namespace)}"
   scalable_dimension = "${join("", aws_appautoscaling_target.replicas.*.scalable_dimension)}"
