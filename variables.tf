@@ -206,3 +206,15 @@ variable "replication_source_identifier" {
   description = "ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica"
   default     = ""
 }
+
+variable "performance_insights_enabled" {
+  type        = "string"
+  default     = "false"
+  description = "Whether to enable Performance Insights"
+}
+
+variable "performance_insights_kms_key_id" {
+  type        = "string"
+  default     = ""
+  description = "The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
+}

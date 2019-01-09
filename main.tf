@@ -66,18 +66,20 @@ resource "aws_rds_cluster" "default" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                   = "${var.enabled == "true" ? var.cluster_size : 0}"
-  identifier              = "${module.label.id}-${count.index+1}"
-  cluster_identifier      = "${aws_rds_cluster.default.id}"
-  instance_class          = "${var.instance_type}"
-  db_subnet_group_name    = "${aws_db_subnet_group.default.name}"
-  db_parameter_group_name = "${aws_db_parameter_group.default.name}"
-  publicly_accessible     = "${var.publicly_accessible}"
-  tags                    = "${module.label.tags}"
-  engine                  = "${var.engine}"
-  engine_version          = "${var.engine_version}"
-  monitoring_interval     = "${var.rds_monitoring_interval}"
-  monitoring_role_arn     = "${var.rds_monitoring_role_arn}"
+  count                           = "${var.enabled == "true" ? var.cluster_size : 0}"
+  identifier                      = "${module.label.id}-${count.index+1}"
+  cluster_identifier              = "${aws_rds_cluster.default.id}"
+  instance_class                  = "${var.instance_type}"
+  db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
+  db_parameter_group_name         = "${aws_db_parameter_group.default.name}"
+  publicly_accessible             = "${var.publicly_accessible}"
+  tags                            = "${module.label.tags}"
+  engine                          = "${var.engine}"
+  engine_version                  = "${var.engine_version}"
+  monitoring_interval             = "${var.rds_monitoring_interval}"
+  monitoring_role_arn             = "${var.rds_monitoring_role_arn}"
+  performance_insights_enabled    = "${var.performance_insights_enabled}"
+  performance_insights_kms_key_id = "${var.performance_insights_kms_key_id}"
 }
 
 resource "aws_db_subnet_group" "default" {
