@@ -218,3 +218,49 @@ variable "performance_insights_kms_key_id" {
   default     = ""
   description = "The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
 }
+
+variable "autoscaling_enabled" {
+  type        = "string"
+  default     = "false"
+  description = "Whether to enable cluster autoscaling"
+}
+
+variable "autoscaling_policy_type" {
+  type        = "string"
+  default     = "TargetTrackingScaling"
+  description = "Autoscaling policy type. `TargetTrackingScaling` and `StepScaling` are supported"
+}
+
+variable "autoscaling_target_metrics" {
+  type        = "string"
+  default     = "RDSReaderAverageCPUUtilization"
+  description = "The metrics type to use with `autoscaling_policy_type`. If this value isn't provided the default is CPU utilization"
+}
+
+variable "autoscaling_target_value" {
+  type        = "string"
+  default     = "75"
+  description = "The target value to scale up with resepect to target metrics"
+}
+
+variable "autoscaling_scale_in_cooldown" {
+  type        = "string"
+  default     = "300"
+  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s"
+}
+
+variable "autoscaling_scale_out_cooldown" {
+  type        = "string"
+  default     = "300"
+  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s"
+}
+
+variable "autoscaling_min_capacity" {
+  default     = 1
+  description = "Minimum number of instances to be maintained by the autoscaler"
+}
+
+variable "autoscaling_max_capacity" {
+  default     = 5
+  description = "Maximum number of instances to be maintained by the autoscaler"
+}
