@@ -67,8 +67,8 @@ resource "aws_rds_cluster" "default" {
 
 locals {
   # If cluster is disabled, set the count to zero
-  # Otherwise, if autoscaling is enabled, set the instance count to `1`. If auto-scaling is disabled, use `var.cluster_size`
-  cluster_instance_count = "${var.enabled == "true" ? (var.autoscaling_enabled == "true" ? 1 : var.cluster_size) : 0}"
+  # Otherwise, if autoscaling is enabled, set the instance count to `var.autoscaling_min_capacity`. If autoscaling is disabled, use `var.cluster_size`
+  cluster_instance_count = "${var.enabled == "true" ? (var.autoscaling_enabled == "true" ? var.autoscaling_min_capacity : var.cluster_size) : 0}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
