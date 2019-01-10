@@ -65,10 +65,15 @@ resource "aws_rds_cluster" "default" {
   replication_source_identifier       = "${var.replication_source_identifier}"
 }
 
+locals {
+  min_instance_count     = "${var.autoscaling_enabled == "true" ? var.autoscaling_min_capacity : var.cluster_size}"
+  cluster_instance_count = "${var.enabled == "true" ? local.min_instance_count : 0}"
+}
+
 resource "aws_rds_cluster_instance" "default" {
-  count                           = "${var.enabled == "true" ? var.cluster_size : 0}"
+  count                           = "${local.cluster_instance_count}"
   identifier                      = "${module.label.id}-${count.index+1}"
-  cluster_identifier              = "${aws_rds_cluster.default.id}"
+  cluster_identifier              = "${join("", aws_rds_cluster.default.*.id)}"
   instance_class                  = "${var.instance_type}"
   db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
   db_parameter_group_name         = "${aws_db_parameter_group.default.name}"
@@ -126,4 +131,33 @@ module "dns_replicas" {
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
   enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
+}
+
+resource "aws_appautoscaling_target" "replicas" {
+  count              = "${var.enabled == "true" && var.autoscaling_enabled == "true" ? 1 : 0}"
+  service_namespace  = "rds"
+  scalable_dimension = "rds:cluster:ReadReplicaCount"
+  resource_id        = "cluster:${aws_rds_cluster.default.id}"
+  min_capacity       = "${var.autoscaling_min_capacity}"
+  max_capacity       = "${var.autoscaling_max_capacity}"
+}
+
+resource "aws_appautoscaling_policy" "replicas" {
+  count              = "${var.enabled == "true" && var.autoscaling_enabled == "true" ? 1 : 0}"
+  name               = "${module.label.id}"
+  service_namespace  = "${join("", aws_appautoscaling_target.replicas.*.service_namespace)}"
+  scalable_dimension = "${join("", aws_appautoscaling_target.replicas.*.scalable_dimension)}"
+  resource_id        = "${join("", aws_appautoscaling_target.replicas.*.resource_id)}"
+  policy_type        = "${var.autoscaling_policy_type}"
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "${var.autoscaling_target_metrics}"
+    }
+
+    disable_scale_in   = false
+    target_value       = "${var.autoscaling_target_value}"
+    scale_in_cooldown  = "${var.autoscaling_scale_in_cooldown}"
+    scale_out_cooldown = "${var.autoscaling_scale_out_cooldown}"
+  }
 }

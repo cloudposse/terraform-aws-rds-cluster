@@ -248,6 +248,14 @@ Available targets:
 | allowed_cidr_blocks | List of CIDR blocks allowed to access | list | `<list>` | no |
 | apply_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | string | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
+| autoscaling_enabled | Whether to enable cluster autoscaling | string | `false` | no |
+| autoscaling_max_capacity | Maximum number of instances to be maintained by the autoscaler | string | `5` | no |
+| autoscaling_min_capacity | Minimum number of instances to be maintained by the autoscaler | string | `1` | no |
+| autoscaling_policy_type | Autoscaling policy type. `TargetTrackingScaling` and `StepScaling` are supported | string | `TargetTrackingScaling` | no |
+| autoscaling_scale_in_cooldown | The amount of time, in seconds, after a scaling activity completes and before the next scaling down activity can start. Default is 300s | string | `300` | no |
+| autoscaling_scale_out_cooldown | The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s | string | `300` | no |
+| autoscaling_target_metrics | The metrics type to use. If this value isn't provided the default is CPU utilization | string | `RDSReaderAverageCPUUtilization` | no |
+| autoscaling_target_value | The target value to scale with respect to target metrics | string | `75` | no |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
