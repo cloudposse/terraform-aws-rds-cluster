@@ -8,11 +8,6 @@ output "user" {
   description = "Username for the master DB user"
 }
 
-output "password" {
-  value       = "${module.rds_cluster_aurora_mysql_serverless.password}"
-  description = "Password for the master DB user"
-}
-
 output "cluster_name" {
   value       = "${module.rds_cluster_aurora_mysql_serverless.cluster_name}"
   description = "Cluster Identifier"

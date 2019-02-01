@@ -300,7 +300,6 @@ Available targets:
 | endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |
-| password | Password for the master DB user |
 | reader_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas_host | Replicas hostname |
 | user | Username for the master DB user |
