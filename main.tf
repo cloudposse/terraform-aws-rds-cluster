@@ -70,10 +70,6 @@ locals {
   cluster_instance_count = "${var.enabled == "true" ? local.min_instance_count : 0}"
 }
 
-data "aws_subnet" "preferred_subnet" {
-  id = "${var.subnets[0]}"
-}
-
 resource "aws_rds_cluster_instance" "default" {
   count                           = "${local.cluster_instance_count}"
   identifier                      = "${module.label.id}-${count.index+1}"
@@ -89,7 +85,7 @@ resource "aws_rds_cluster_instance" "default" {
   monitoring_role_arn             = "${var.rds_monitoring_role_arn}"
   performance_insights_enabled    = "${var.performance_insights_enabled}"
   performance_insights_kms_key_id = "${var.performance_insights_kms_key_id}"
-  availability_zone               = "${data.aws_subnet.preferred_subnet.availability_zone}"
+  availability_zone               = "${var.availability_zone}"
 }
 
 resource "aws_db_subnet_group" "default" {

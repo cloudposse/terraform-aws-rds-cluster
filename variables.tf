@@ -261,3 +261,7 @@ variable "autoscaling_max_capacity" {
   default     = 5
   description = "Maximum number of instances to be maintained by the autoscaler"
 }
+
+variable "availability_zone" {
+  default = ""
+}
