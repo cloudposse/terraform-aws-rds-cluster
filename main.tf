@@ -87,7 +87,7 @@ resource "aws_rds_cluster_instance" "default" {
   monitoring_role_arn             = "${var.rds_monitoring_role_arn}"
   performance_insights_enabled    = "${var.performance_insights_enabled}"
   performance_insights_kms_key_id = "${var.performance_insights_kms_key_id}"
-  availability_zone               = "${var.availability_zone}"
+  availability_zone               = "${var.instance_availability_zone}"
 }
 
 resource "aws_db_subnet_group" "default" {
