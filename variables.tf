@@ -175,6 +175,11 @@ variable "storage_encrypted" {
   default     = "false"
 }
 
+variable "kms_key_id" {
+  description = "The ARN for the KMS encryption key. When specifying kms_key_id, storage_encrypted needs to be set to true."
+  default     = ""
+}
+
 variable "skip_final_snapshot" {
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted"
   default     = "true"
@@ -205,6 +210,12 @@ variable "replication_source_identifier" {
   type        = "string"
   description = "ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica"
   default     = ""
+}
+
+variable "enabled_cloudwatch_logs_exports" {
+  type        = "list"
+  description = "List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery."
+  default     = []
 }
 
 variable "performance_insights_enabled" {

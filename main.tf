@@ -51,6 +51,7 @@ resource "aws_rds_cluster" "default" {
   skip_final_snapshot                 = "${var.skip_final_snapshot}"
   apply_immediately                   = "${var.apply_immediately}"
   storage_encrypted                   = "${var.storage_encrypted}"
+  kms_key_id                          = "${var.kms_key_id}"
   snapshot_identifier                 = "${var.snapshot_identifier}"
   vpc_security_group_ids              = ["${aws_security_group.default.id}"]
   preferred_maintenance_window        = "${var.maintenance_window}"
@@ -63,6 +64,7 @@ resource "aws_rds_cluster" "default" {
   engine_mode                         = "${var.engine_mode}"
   scaling_configuration               = "${var.scaling_configuration}"
   replication_source_identifier       = "${var.replication_source_identifier}"
+  enabled_cloudwatch_logs_exports     = "${var.enabled_cloudwatch_logs_exports}"
 }
 
 locals {
