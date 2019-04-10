@@ -65,6 +65,7 @@ resource "aws_rds_cluster" "default" {
   scaling_configuration               = "${var.scaling_configuration}"
   replication_source_identifier       = "${var.replication_source_identifier}"
   enabled_cloudwatch_logs_exports     = "${var.enabled_cloudwatch_logs_exports}"
+  deletion_protection                 = "${var.deletion_protection}"
 }
 
 locals {

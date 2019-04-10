@@ -21,16 +21,17 @@
 | cluster_size | Number of DB instances to create in the cluster | string | `2` | no |
 | db_name | Database name | string | - | yes |
 | db_port | Database port | string | `3306` | no |
+| deletion_protection | If the DB instance should have deletion protection enabled. | string | `false` | no |
 | delimiter | Delimiter to be used between `name`, `namespace`, `stage` and `attributes` | string | `-` | no |
 | enabled | Set to false to prevent the module from creating any resources | string | `true` | no |
-| enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. Valid values: `audit`, `error`, `general`, `slowquery` | list | `<list>` | no |
+| enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | list | `<list>` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
 | engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled. | string | `false` | no |
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
-| kms_key_id | The ARN for the KMS encryption key. | string | `` | no |
+| kms_key_id | The ARN for the KMS encryption key. When specifying kms_key_id, storage_encrypted needs to be set to true. | string | `` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
