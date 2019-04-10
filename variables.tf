@@ -191,7 +191,6 @@ variable "deletion_protection" {
   default     = "false"
 }
 
-
 variable "apply_immediately" {
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window"
   default     = "true"
