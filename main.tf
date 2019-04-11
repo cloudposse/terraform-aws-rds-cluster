@@ -73,22 +73,22 @@ locals {
   cluster_instance_count = "${var.enabled == "true" ? local.min_instance_count : 0}"
 }
 
-resource "aws_rds_cluster_instance" "default" {
-  count                           = "${local.cluster_instance_count}"
-  identifier                      = "${module.label.id}-${count.index+1}"
-  cluster_identifier              = "${join("", aws_rds_cluster.default.*.id)}"
-  instance_class                  = "${var.instance_type}"
-  db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
-  db_parameter_group_name         = "${aws_db_parameter_group.default.name}"
-  publicly_accessible             = "${var.publicly_accessible}"
-  tags                            = "${module.label.tags}"
-  engine                          = "${var.engine}"
-  engine_version                  = "${var.engine_version}"
-  monitoring_interval             = "${var.rds_monitoring_interval}"
-  monitoring_role_arn             = "${var.rds_monitoring_role_arn}"
-  performance_insights_enabled    = "${var.performance_insights_enabled}"
-  performance_insights_kms_key_id = "${var.performance_insights_kms_key_id}"
-}
+//resource "aws_rds_cluster_instance" "default" {
+//  count                           = "${local.cluster_instance_count}"
+//  identifier                      = "${module.label.id}-${count.index+1}"
+//  cluster_identifier              = "${join("", aws_rds_cluster.default.*.id)}"
+//  instance_class                  = "${var.instance_type}"
+//  db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
+//  db_parameter_group_name         = "${aws_db_parameter_group.default.name}"
+//  publicly_accessible             = "${var.publicly_accessible}"
+//  tags                            = "${module.label.tags}"
+//  engine                          = "${var.engine}"
+//  engine_version                  = "${var.engine_version}"
+//  monitoring_interval             = "${var.rds_monitoring_interval}"
+//  monitoring_role_arn             = "${var.rds_monitoring_role_arn}"
+//  performance_insights_enabled    = "${var.performance_insights_enabled}"
+//  performance_insights_kms_key_id = "${var.performance_insights_kms_key_id}"
+//}
 
 resource "aws_db_subnet_group" "default" {
   count       = "${var.enabled == "true" ? 1 : 0}"
@@ -116,25 +116,25 @@ resource "aws_db_parameter_group" "default" {
   tags        = "${module.label.tags}"
 }
 
-module "dns_master" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
-  namespace = "${var.namespace}"
-  name      = "master.${var.name}"
-  stage     = "${var.stage}"
-  zone_id   = "${var.zone_id}"
-  records   = ["${coalescelist(aws_rds_cluster.default.*.endpoint, list(""))}"]
-  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
-}
-
-module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
-  namespace = "${var.namespace}"
-  name      = "replicas.${var.name}"
-  stage     = "${var.stage}"
-  zone_id   = "${var.zone_id}"
-  records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
-  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
-}
+//module "dns_master" {
+//  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
+//  namespace = "${var.namespace}"
+//  name      = "master.${var.name}"
+//  stage     = "${var.stage}"
+//  zone_id   = "${var.zone_id}"
+//  records   = ["${coalescelist(aws_rds_cluster.default.*.endpoint, list(""))}"]
+//  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
+//}
+//
+//module "dns_replicas" {
+//  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
+//  namespace = "${var.namespace}"
+//  name      = "replicas.${var.name}"
+//  stage     = "${var.stage}"
+//  zone_id   = "${var.zone_id}"
+//  records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
+//  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
+//}
 
 resource "aws_appautoscaling_target" "replicas" {
   count              = "${var.enabled == "true" && var.autoscaling_enabled == "true" ? 1 : 0}"
