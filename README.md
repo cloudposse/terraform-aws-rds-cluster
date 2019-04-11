@@ -300,6 +300,7 @@ Available targets:
 |------|-------------|
 | arn | Amazon Resource Name (ARN) of cluster |
 | cluster_name | Cluster Identifier |
+| dbi_resource_ids | List of the region-unique, immutable identifiers for the DB instances in the cluster. |
 | endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |

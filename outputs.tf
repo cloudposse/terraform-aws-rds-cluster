@@ -37,3 +37,8 @@ output "replicas_host" {
   value       = "${module.dns_replicas.hostname}"
   description = "Replicas hostname"
 }
+
+output "dbi_resource_ids" {
+  value       = ["${join("", aws_rds_cluster_instance.default.*.dbi_resource_id)}"]
+  description = "List of the region-unique, immutable identifiers for the DB instances in the cluster."
+}
