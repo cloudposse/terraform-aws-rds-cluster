@@ -1,5 +1,5 @@
 output "name" {
-  value       = "${join("", aws_rds_cluster.default.*.database_name)}"
+  value       = "${join("", aws_rds_cluster.default.database_name)}"
   description = "Database name"
 }
 
