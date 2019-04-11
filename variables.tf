@@ -175,8 +175,8 @@ variable "storage_encrypted" {
   default     = "false"
 }
 
-variable "kms_key_id" {
-  description = "The ARN for the KMS encryption key. When specifying kms_key_id, storage_encrypted needs to be set to true."
+variable "kms_key_arn" {
+  description = "The ARN for the KMS encryption key. When specifying kms_key_arn, storage_encrypted needs to be set to true."
   default     = ""
 }
 
