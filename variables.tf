@@ -274,6 +274,6 @@ variable "autoscaling_max_capacity" {
 }
 
 variable "instance_availability_zone" {
-  default = ""
+  default     = ""
   description = "Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly"
 }
