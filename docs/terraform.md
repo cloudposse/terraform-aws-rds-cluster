@@ -59,6 +59,7 @@
 |------|-------------|
 | arn | Amazon Resource Name (ARN) of cluster |
 | cluster_name | Cluster Identifier |
+| cluster_resource_id | The region-unique, immutable identifie of the cluster. |
 | dbi_resource_ids | List of the region-unique, immutable identifiers for the DB instances in the cluster. |
 | endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |

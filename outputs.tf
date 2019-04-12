@@ -42,3 +42,10 @@ output "dbi_resource_ids" {
   value       = ["${aws_rds_cluster_instance.default.*.dbi_resource_id}"]
   description = "List of the region-unique, immutable identifiers for the DB instances in the cluster."
 }
+
+output "cluster_resource_id" {
+  value       = "${join("", aws_rds_cluster.default.*.cluster_resource_id )}"
+  description = "The region-unique, immutable identifie of the cluster."
+}
+
+
