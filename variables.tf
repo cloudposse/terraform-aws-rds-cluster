@@ -278,3 +278,8 @@ variable "autoscaling_max_capacity" {
   default     = 5
   description = "Maximum number of instances to be maintained by the autoscaler"
 }
+
+variable "instance_availability_zone" {
+  default     = ""
+  description = "Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly"
+}

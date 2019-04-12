@@ -29,6 +29,7 @@
 | engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled. | string | `false` | no |
+| instance_availability_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | string | `` | no |
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | kms_key_arn | The ARN for the KMS encryption key. When specifying kms_key_arn, storage_encrypted needs to be set to true. | string | `` | no |
