@@ -262,6 +262,7 @@ Available targets:
 | cluster_size | Number of DB instances to create in the cluster | string | `2` | no |
 | db_name | Database name | string | - | yes |
 | db_port | Database port | string | `3306` | no |
+| deletion_protection | If the DB instance should have deletion protection enabled. | string | `false` | no |
 | delimiter | Delimiter to be used between `name`, `namespace`, `stage` and `attributes` | string | `-` | no |
 | enabled | Set to false to prevent the module from creating any resources | string | `true` | no |
 | enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | list | `<list>` | no |
@@ -272,7 +273,7 @@ Available targets:
 | instance_availability_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | string | `` | no |
 | instance_parameters | List of DB instance parameters to apply | list | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
-| kms_key_id | The ARN for the KMS encryption key. When specifying kms_key_id, storage_encrypted needs to be set to true. | string | `` | no |
+| kms_key_arn | The ARN for the KMS encryption key. When specifying kms_key_arn, storage_encrypted needs to be set to true. | string | `` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | string | - | yes |
@@ -300,6 +301,8 @@ Available targets:
 |------|-------------|
 | arn | Amazon Resource Name (ARN) of cluster |
 | cluster_name | Cluster Identifier |
+| cluster_resource_id | The region-unique, immutable identifie of the cluster. |
+| dbi_resource_ids | List of the region-unique, immutable identifiers for the DB instances in the cluster. |
 | endpoint | The DNS address of the RDS instance |
 | master_host | DB Master hostname |
 | name | Database name |

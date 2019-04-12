@@ -175,14 +175,20 @@ variable "storage_encrypted" {
   default     = "false"
 }
 
-variable "kms_key_id" {
-  description = "The ARN for the KMS encryption key. When specifying kms_key_id, storage_encrypted needs to be set to true."
+variable "kms_key_arn" {
+  description = "The ARN for the KMS encryption key. When specifying kms_key_arn, storage_encrypted needs to be set to true."
   default     = ""
 }
 
 variable "skip_final_snapshot" {
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted"
   default     = "true"
+}
+
+variable "deletion_protection" {
+  type        = "string"
+  description = "If the DB instance should have deletion protection enabled."
+  default     = "false"
 }
 
 variable "apply_immediately" {
