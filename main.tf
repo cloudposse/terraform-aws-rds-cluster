@@ -117,24 +117,31 @@ resource "aws_db_parameter_group" "default" {
   tags        = "${module.label.tags}"
 }
 
+locals {
+  cluster_dns_name_default = "master.${var.name}"
+  cluster_dns_name         = "${var.cluster_dns_name != "" ? var.cluster_dns_name : local.cluster_dns_name_default}"
+  reader_dns_name_default  = "replicas.${var.name}"
+  reader_dns_name          = "${var.reader_dns_name != "" ? var.reader_dns_name : local.reader_dns_name_default}"
+}
+
 module "dns_master" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.6"
+  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
   namespace = "${var.namespace}"
-  name      = "master.${var.name}"
+  name      = "${local.cluster_dns_name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.endpoint, list(""))}"]
-  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
 }
 
 module "dns_replicas" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
+  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.6"
+  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
   namespace = "${var.namespace}"
-  name      = "replicas.${var.name}"
+  name      = "${local.reader_dns_name}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
-  enabled   = "${var.enabled == "true" && length(var.zone_id) > 0 ? "true" : "false"}"
 }
 
 resource "aws_appautoscaling_target" "replicas" {
