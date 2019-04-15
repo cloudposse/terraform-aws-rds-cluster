@@ -16,6 +16,7 @@
 | autoscaling_target_metrics | The metrics type to use. If this value isn't provided the default is CPU utilization | string | `RDSReaderAverageCPUUtilization` | no |
 | autoscaling_target_value | The target value to scale with respect to target metrics | string | `75` | no |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
+| cluster_dns_name | Name of the cluster CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `master.var.name` | string | `` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB parameters to apply | list | `<list>` | no |
 | cluster_size | Number of DB instances to create in the cluster | string | `2` | no |
@@ -41,6 +42,7 @@
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | string | `false` | no |
 | rds_monitoring_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | string | `0` | no |
 | rds_monitoring_role_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | string | `` | no |
+| reader_dns_name | Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name` | string | `` | no |
 | replication_source_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | string | `` | no |
 | retention_period | Number of days to retain backups for | string | `5` | no |
 | scaling_configuration | List of nested attributes with scaling properties. Only valid when engine_mode is set to `serverless` | list | `<list>` | no |

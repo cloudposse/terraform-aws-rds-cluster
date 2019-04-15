@@ -283,3 +283,15 @@ variable "instance_availability_zone" {
   default     = ""
   description = "Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly"
 }
+
+variable "cluster_dns_name" {
+  type        = "string"
+  description = "Name of the cluster CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `master.var.name`"
+  default     = ""
+}
+
+variable "reader_dns_name" {
+  type        = "string"
+  description = "Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name`"
+  default     = ""
+}
