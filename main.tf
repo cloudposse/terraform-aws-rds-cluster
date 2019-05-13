@@ -142,6 +142,7 @@ module "dns_replicas" {
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${coalescelist(aws_rds_cluster.default.*.reader_endpoint, list(""))}"]
+  enabled   = "${var.enabled == "true" && var.engine_mode != "serverless" ? "true" : "false"}"
 }
 
 resource "aws_appautoscaling_target" "replicas" {
