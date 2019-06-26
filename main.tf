@@ -146,9 +146,9 @@ resource "aws_db_parameter_group" "default" {
       # produced a comprehensive set here. Consider simplifying
       # this after confirming which keys can be set in practice.
 
-      apply_method = lookup(parameter.value, "apply_method", null)
-      name         = parameter.value.name
-      value        = parameter.value.value
+      apply_method = parameter.apply_method
+      name         = parameter.name
+      value        = parameter.value
     }
   }
   tags = module.label.tags
