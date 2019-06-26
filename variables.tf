@@ -113,13 +113,21 @@ variable "tags" {
 }
 
 variable "cluster_parameters" {
-  type        = list(string)
+  type = list(object({
+    name         = string
+    value        = string
+    apply_method = string
+  }))
   default     = []
   description = "List of DB parameters to apply"
 }
 
 variable "instance_parameters" {
-  type        = list(string)
+  type = list(object({
+    name         = string
+    value        = string
+    apply_method = string
+  }))
   default     = []
   description = "List of DB instance parameters to apply"
 }
