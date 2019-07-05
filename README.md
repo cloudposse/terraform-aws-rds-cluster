@@ -150,11 +150,11 @@ module "rds_cluster_aurora_mysql" {
     },
     {
       name  = "collation_connection"
-      value = "uft8_bin"
+      value = "utf8_bin"
     },
     {
       name  = "collation_server"
-      value = "uft8_bin"
+      value = "utf8_bin"
     },
     {
       name         = "lower_case_table_names"

@@ -70,12 +70,12 @@ module "rds_cluster" {
     },
     {
       name         = "collation_connection"
-      value        = "uft8_bin"
+      value        = "utf8_bin"
       apply_method = "pending-reboot"
     },
     {
       name         = "collation_server"
-      value        = "uft8_bin"
+      value        = "utf8_bin"
       apply_method = "pending-reboot"
     },
     {
