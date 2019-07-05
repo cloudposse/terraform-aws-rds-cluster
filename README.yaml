@@ -34,9 +34,9 @@ github_repo: cloudposse/terraform-aws-rds-cluster
 
 # Badges to display
 badges:
-  - name: "Build Status"
-    image: "https://travis-ci.org/cloudposse/terraform-aws-rds-cluster.svg?branch=master"
-    url: "https://travis-ci.org/cloudposse/terraform-aws-rds-cluster"
+  - name: "Codefresh Build Status"
+    image: "https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-rds-cluster?type=cf-1"
+    url: "https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d1eb949a7e22e49dc7ea7c9"
   - name: "Latest Release"
     image: "https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg"
     url: "https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest"
@@ -113,7 +113,7 @@ usage: |-
         max_capacity             = 256
         min_capacity             = 2
         seconds_until_auto_pause = 300
-      },
+      }
     ]
   }
   ```
@@ -161,11 +161,11 @@ usage: |-
       },
       {
         name  = "collation_connection"
-        value = "uft8_bin"
+        value = "utf8_bin"
       },
       {
         name  = "collation_server"
-        value = "uft8_bin"
+        value = "utf8_bin"
       },
       {
         name         = "lower_case_table_names"
@@ -176,7 +176,7 @@ usage: |-
         name         = "skip-character-set-client-handshake"
         value        = "1"
         apply_method = "pending-reboot"
-      },
+      }
     ]
   }
   ```
@@ -187,12 +187,12 @@ usage: |-
   # create IAM role for monitoring
   resource "aws_iam_role" "enhanced_monitoring" {
     name               = "rds-cluster-example-1"
-    assume_role_policy = "${data.aws_iam_policy_document.enhanced_monitoring.json}"
+    assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
   }
 
   # Attach Amazon's managed policy for RDS enhanced monitoring
   resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
-    role       = "${aws_iam_role.enhanced_monitoring.name}"
+    role       = aws_iam_role.enhanced_monitoring.name
     policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
   }
 
@@ -231,10 +231,10 @@ usage: |-
     zone_id         = "Zxxxxxxxx"
 
     # enable monitoring every 30 seconds
-    rds_monitoring_interval = "30"
+    rds_monitoring_interval = 30
 
     # reference iam role created above
-    rds_monitoring_role_arn = "${aws_iam_role.enhanced_monitoring.arn}"
+    rds_monitoring_role_arn = aws_iam_role.enhanced_monitoring.arn
   }
   ```
 
