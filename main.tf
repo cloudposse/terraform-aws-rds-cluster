@@ -162,7 +162,7 @@ module "dns_master" {
 
 module "dns_replicas" {
   source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.3.0"
-  enabled = var.enabled && length(var.zone_id) > 0 ? true : false
+  enabled = var.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   name    = local.reader_dns_name
   zone_id = var.zone_id
   records = coalescelist(aws_rds_cluster.default.*.reader_endpoint, [""])
