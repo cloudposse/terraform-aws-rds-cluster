@@ -44,32 +44,39 @@ module "rds_cluster" {
 
   cluster_parameters = [
     {
-      name  = "character_set_client"
-      value = "utf8"
+      name         = "character_set_client"
+      value        = "utf8"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "character_set_connection"
-      value = "utf8"
+      name         = "character_set_connection"
+      value        = "utf8"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "character_set_database"
-      value = "utf8"
+      name         = "character_set_database"
+      value        = "utf8"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "character_set_results"
-      value = "utf8"
+      name         = "character_set_results"
+      value        = "utf8"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "character_set_server"
-      value = "utf8"
+      name         = "character_set_server"
+      value        = "utf8"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "collation_connection"
-      value = "uft8_bin"
+      name         = "collation_connection"
+      value        = "uft8_bin"
+      apply_method = "pending-reboot"
     },
     {
-      name  = "collation_server"
-      value = "uft8_bin"
+      name         = "collation_server"
+      value        = "uft8_bin"
+      apply_method = "pending-reboot"
     },
     {
       name         = "lower_case_table_names"
