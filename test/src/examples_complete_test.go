@@ -40,13 +40,13 @@ func TestExamplesComplete(t *testing.T) {
 	// Verify we're getting back the outputs we expect
 	assert.Equal(t, []string{"172.16.128.0/18", "172.16.192.0/18"}, publicSubnetCidrs)
 
-	//// Run `terraform output` to get the value of an output variable
-	//clusterIdentifier := terraform.Output(t, terraformOptions, "cluster_identifier")
-	//// Verify we're getting back the outputs we expect
-	//assert.Equal(t, "", clusterIdentifier)
-	//
-	//// Run `terraform output` to get the value of an output variable
-	//arn := terraform.Output(t, terraformOptions, "arn")
-	//// Verify we're getting back the outputs we expect
-	//assert.Contains(t, arn, "")
+	// Run `terraform output` to get the value of an output variable
+	clusterIdentifier := terraform.Output(t, terraformOptions, "cluster_identifier")
+	// Verify we're getting back the outputs we expect
+	assert.Equal(t, "eg-test-rds-cluster", clusterIdentifier)
+
+	// Run `terraform output` to get the value of an output variable
+	arn := terraform.Output(t, terraformOptions, "arn")
+	// Verify we're getting back the outputs we expect
+	assert.Equal(t, "arn:aws:rds:us-west-1:126450723953:cluster:eg-test-rds-cluster", arn)
 }
