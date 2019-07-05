@@ -3,7 +3,7 @@
 # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-west-1"
 
   # Make it faster by skipping some checks
   skip_get_ec2_platforms      = true
@@ -38,6 +38,6 @@ module "rds_cluster_aurora_mysql_serverless" {
       max_capacity             = 256
       min_capacity             = 2
       seconds_until_auto_pause = 300
-    },
+    }
   ]
 }

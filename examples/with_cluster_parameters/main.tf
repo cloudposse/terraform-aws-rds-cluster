@@ -1,7 +1,7 @@
 # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBClusterParameterGroup.html
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-west-1"
 
   # Make it faster by skipping some checks
   skip_get_ec2_platforms      = true
@@ -66,6 +66,6 @@ module "rds_cluster_aurora_mysql" {
       name         = "skip-character-set-client-handshake"
       value        = "1"
       apply_method = "pending-reboot"
-    },
+    }
   ]
 }
