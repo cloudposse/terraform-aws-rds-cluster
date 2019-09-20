@@ -52,6 +52,7 @@ resource "aws_rds_cluster" "default" {
   apply_immediately                   = var.apply_immediately
   storage_encrypted                   = var.storage_encrypted
   kms_key_id                          = var.kms_key_arn
+  source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = [join("", aws_security_group.default.*.id)]
   preferred_maintenance_window        = var.maintenance_window
@@ -62,6 +63,8 @@ resource "aws_rds_cluster" "default" {
   engine                              = var.engine
   engine_version                      = var.engine_version
   engine_mode                         = var.engine_mode
+  global_cluster_identifier = var.global_cluster_identifier
+  iam_roles = var.iam_roles
 
   dynamic "scaling_configuration" {
     for_each = var.scaling_configuration

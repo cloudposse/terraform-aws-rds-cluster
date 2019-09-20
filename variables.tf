@@ -324,3 +324,25 @@ variable "reader_dns_name" {
   description = "Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name`"
   default     = ""
 }
+
+variable "global_cluster_identifier" {
+  type = string
+  description = "ID of the Aurora global cluster"
+  default = ""
+}
+
+variable "source_region" {
+  type = string
+  description = "Source Region of primary cluster, needed when using encrypted storage and region replicas"
+  default = ""
+}
+
+variable "iam_roles" {
+  type = list
+  description = "Iam roles for the Aurora cluster"
+  default = []
+  
+}
+
+
+
