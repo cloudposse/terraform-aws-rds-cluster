@@ -29,7 +29,9 @@
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
 | engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
+| global_cluster_identifier | ID of the Aurora global cluster | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | bool | `false` | no |
+| iam_roles | Iam roles for the Aurora cluster | list(string) | `<list>` | no |
 | instance_availability_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | string | `` | no |
 | instance_parameters | List of DB instance parameters to apply | object | `<list>` | no |
 | instance_type | Instance type to use | string | `db.t2.small` | no |
@@ -49,6 +51,7 @@
 | security_groups | List of security groups to be allowed to connect to the DB instance | list(string) | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | bool | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |
+| source_region | Source Region of primary cluster, needed when using encrypted storage and region replicas | string | `` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | `` | no |
 | storage_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | bool | `false` | no |
 | subnets | List of VPC subnet IDs | list(string) | - | yes |
