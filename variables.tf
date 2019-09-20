@@ -326,22 +326,22 @@ variable "reader_dns_name" {
 }
 
 variable "global_cluster_identifier" {
-  type = string
+  type        = string
   description = "ID of the Aurora global cluster"
-  default = ""
+  default     = ""
 }
 
 variable "source_region" {
-  type = string
+  type        = string
   description = "Source Region of primary cluster, needed when using encrypted storage and region replicas"
-  default = ""
+  default     = ""
 }
 
 variable "iam_roles" {
-  type = list
+  type        = list(string)
   description = "Iam roles for the Aurora cluster"
-  default = []
-  
+  default     = []
+
 }
 
 

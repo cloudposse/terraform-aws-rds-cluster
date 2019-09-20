@@ -63,8 +63,8 @@ resource "aws_rds_cluster" "default" {
   engine                              = var.engine
   engine_version                      = var.engine_version
   engine_mode                         = var.engine_mode
-  global_cluster_identifier = var.global_cluster_identifier
-  iam_roles = var.iam_roles
+  global_cluster_identifier           = var.global_cluster_identifier
+  iam_roles                           = var.iam_roles
 
   dynamic "scaling_configuration" {
     for_each = var.scaling_configuration
