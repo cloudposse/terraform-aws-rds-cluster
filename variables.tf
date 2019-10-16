@@ -344,9 +344,9 @@ variable "iam_roles" {
 }
 
 variable "backtrack_window" {
-  type = string
+  type        = string
   description = "The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours)"
-  default = "0"
+  default     = "0"
 }
 
 
