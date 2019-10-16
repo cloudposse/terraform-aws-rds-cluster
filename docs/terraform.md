@@ -15,6 +15,7 @@
 | autoscaling_scale_out_cooldown | The amount of time, in seconds, after a scaling activity completes and before the next scaling up activity can start. Default is 300s | number | `300` | no |
 | autoscaling_target_metrics | The metrics type to use. If this value isn't provided the default is CPU utilization | string | `RDSReaderAverageCPUUtilization` | no |
 | autoscaling_target_value | The target value to scale with respect to target metrics | number | `75` | no |
+| backtrack_window | The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours) | number | `0` | no |
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_dns_name | Name of the cluster CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `master.var.name` | string | `` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |

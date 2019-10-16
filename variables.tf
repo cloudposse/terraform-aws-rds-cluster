@@ -341,7 +341,12 @@ variable "iam_roles" {
   type        = list(string)
   description = "Iam roles for the Aurora cluster"
   default     = []
+}
 
+variable "backtrack_window" {
+  type        = number
+  description = "The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours)"
+  default     = 0
 }
 
 
