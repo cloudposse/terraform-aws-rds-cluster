@@ -1,18 +1,49 @@
 variable "namespace" {
   type        = string
-  description = "Namespace (e.g. `eg` or `cp`)"
   default     = ""
+  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
+}
+
+variable "environment" {
+  type        = string
+  default     = ""
+  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
 }
 
 variable "stage" {
   type        = string
-  description = "Stage (e.g. `prod`, `dev`, `staging`)"
   default     = ""
+  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
 }
 
 variable "name" {
   type        = string
-  description = "Name of the application"
+  default     = ""
+  description = "Solution name, e.g. 'app' or 'jenkins'"
+}
+
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "delimiter" {
+  type        = string
+  default     = "-"
+  description = "Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`"
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = "Additional attributes (e.g. `1`)"
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
 }
 
 variable "zone_id" {
@@ -96,24 +127,6 @@ variable "maintenance_window" {
   description = "Weekly time range during which system maintenance can occur, in UTC"
 }
 
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `name`, `namespace`, `stage` and `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  default     = []
-  description = "Additional attributes (e.g. `1`)"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
-}
-
 variable "cluster_parameters" {
   type = list(object({
     apply_method = string
@@ -173,12 +186,6 @@ variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
   description = "List of CIDR blocks allowed to access the cluster"
-}
-
-variable "enabled" {
-  type        = bool
-  description = "Set to false to prevent the module from creating any resources"
-  default     = true
 }
 
 variable "publicly_accessible" {
@@ -348,6 +355,3 @@ variable "backtrack_window" {
   description = "The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours)"
   default     = 0
 }
-
-
-

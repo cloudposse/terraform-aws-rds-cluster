@@ -24,12 +24,13 @@
 | db_name | Database name | string | - | yes |
 | db_port | Database port | number | `3306` | no |
 | deletion_protection | If the DB instance should have deletion protection enabled | bool | `false` | no |
-| delimiter | Delimiter to be used between `name`, `namespace`, `stage` and `attributes` | string | `-` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
 | enabled | Set to false to prevent the module from creating any resources | bool | `true` | no |
 | enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | list(string) | `<list>` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
 | engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
 | engine_version | The version number of the database engine to use | string | `` | no |
+| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
 | global_cluster_identifier | ID of the Aurora global cluster | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | bool | `false` | no |
 | iam_roles | Iam roles for the Aurora cluster | list(string) | `<list>` | no |
@@ -38,8 +39,8 @@
 | instance_type | Instance type to use | string | `db.t2.small` | no |
 | kms_key_arn | The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | string | `` | no |
 | maintenance_window | Weekly time range during which system maintenance can occur, in UTC | string | `wed:03:00-wed:04:00` | no |
-| name | Name of the application | string | - | yes |
-| namespace | Namespace (e.g. `eg` or `cp`) | string | `` | no |
+| name | Solution name, e.g. 'app' or 'jenkins' | string | `` | no |
+| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | string | `` | no |
 | performance_insights_enabled | Whether to enable Performance Insights | bool | `false` | no |
 | performance_insights_kms_key_id | The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | string | `` | no |
 | publicly_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | bool | `false` | no |
@@ -53,10 +54,10 @@
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | bool | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |
 | source_region | Source Region of primary cluster, needed when using encrypted storage and region replicas | string | `` | no |
-| stage | Stage (e.g. `prod`, `dev`, `staging`) | string | `` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | string | `` | no |
 | storage_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | bool | `false` | no |
 | subnets | List of VPC subnet IDs | list(string) | - | yes |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map(string) | `<map>` | no |
+| tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | map(string) | `<map>` | no |
 | vpc_id | VPC ID to create the cluster in (e.g. `vpc-a22222ee`) | string | - | yes |
 | zone_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the DB master and replicas | string | `` | no |
 
