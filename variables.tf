@@ -356,3 +356,10 @@ variable "backtrack_window" {
   description = "The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours)"
   default     = 0
 }
+
+variable "vpc_security_group_ids" {
+  type        = list(string)
+  description = "Additional security group IDs to apply to the cluster, in addition to the provisioned default security group with ingress traffic from existing CIDR blocks and existing security groups"
+
+  default = []
+}

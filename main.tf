@@ -55,7 +55,7 @@ resource "aws_rds_cluster" "default" {
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = [join("", aws_security_group.default.*.id)]
+  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
