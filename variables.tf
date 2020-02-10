@@ -177,6 +177,7 @@ variable "scaling_configuration" {
     max_capacity             = number
     min_capacity             = number
     seconds_until_auto_pause = number
+    timeout_action           = string
   }))
   default     = []
   description = "List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
