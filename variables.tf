@@ -213,6 +213,12 @@ variable "skip_final_snapshot" {
   default     = true
 }
 
+variable "copy_tags_to_snapshot" {
+  type        = bool
+  description = "Copy tags to backup snapshots"
+  default     = false
+}
+
 variable "deletion_protection" {
   type        = bool
   description = "If the DB instance should have deletion protection enabled"
