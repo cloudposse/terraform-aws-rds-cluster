@@ -40,6 +40,13 @@ resource "aws_security_group" "default" {
   tags = module.label.tags
 }
 
+resource "aws_cloudwatch_log_group" "default" {
+  count             = var.enabled && var.enabled_cloudwatch_logs_exports ? 1 : 0
+  name              = "/aws/rds/cluster/${var.namespace}-/postgresql"
+  retention_in_days = var.logs_retention_in_days
+  kms_key_id        = var.kms_key_arn
+}
+
 resource "aws_rds_cluster" "default" {
   count                               = var.enabled ? 1 : 0
   cluster_identifier                  = module.label.id
@@ -82,6 +89,10 @@ resource "aws_rds_cluster" "default" {
   replication_source_identifier   = var.replication_source_identifier
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
+
+  depends_on = [
+    aws_cloudwatch_log_group.default
+  ]
 }
 
 locals {

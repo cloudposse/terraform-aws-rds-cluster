@@ -363,3 +363,8 @@ variable "vpc_security_group_ids" {
 
   default = []
 }
+
+variable "logs_retention_in_days" {
+  default = 1
+  type = number
+}
