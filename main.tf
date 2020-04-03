@@ -41,7 +41,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_cloudwatch_log_group" "default" {
-  count             = var.enabled && var.enabled_cloudwatch_logs_exports ? 1 : 0
+  count             = var.enabled && length(var.enabled_cloudwatch_logs_exports)>0 ? 1 : 0
   name              = "/aws/rds/cluster/${var.namespace}-/postgresql"
   retention_in_days = var.logs_retention_in_days
   kms_key_id        = var.kms_key_arn
