@@ -79,6 +79,15 @@ resource "aws_rds_cluster" "default" {
     }
   }
 
+  dynamic "timeouts" {
+    for_each = var.timeouts_configuration
+    content {
+      create = lookup(timeouts_configuration.value, "create", "120m")
+      update = lookup(timeouts_configuration.value, "update", "120m")
+      delete = lookup(timeouts_configuration.value, "delete", "120m")
+    }
+  }
+
   replication_source_identifier   = var.replication_source_identifier
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
