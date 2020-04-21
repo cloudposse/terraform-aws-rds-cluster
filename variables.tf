@@ -183,6 +183,16 @@ variable "scaling_configuration" {
   description = "List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
 }
 
+variable "timeouts_configuration" {
+  type = list(object({
+    create = string
+    update = string
+    delete = string
+  }))
+  default     = []
+  description = "List of timeout values per action. Only valid actions are `create`, `update` and `delete`"
+}
+
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
