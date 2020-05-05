@@ -48,6 +48,7 @@ resource "aws_rds_cluster" "default" {
   master_password                     = var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
+  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
   final_snapshot_identifier           = lower(module.label.id)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately

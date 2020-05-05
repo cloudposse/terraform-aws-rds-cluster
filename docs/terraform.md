@@ -21,6 +21,7 @@
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
 | cluster_parameters | List of DB cluster parameters to apply | object | `<list>` | no |
 | cluster_size | Number of DB instances to create in the cluster | number | `2` | no |
+| copy_tags_to_snapshot | Copy tags to backup snapshots | bool | `false` | no |
 | db_name | Database name | string | - | yes |
 | db_port | Database port | number | `3306` | no |
 | deletion_protection | If the DB instance should have deletion protection enabled | bool | `false` | no |
