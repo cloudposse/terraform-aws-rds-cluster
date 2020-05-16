@@ -88,7 +88,8 @@ variable "snapshot_identifier" {
 
 variable "db_name" {
   type        = string
-  description = "Database name"
+  default = ""
+  description = "Database name (default is not to create a database)"
 }
 
 variable "db_port" {
@@ -168,7 +169,7 @@ variable "engine_mode" {
 variable "engine_version" {
   type        = string
   default     = ""
-  description = "The version number of the database engine to use"
+  description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
 variable "scaling_configuration" {

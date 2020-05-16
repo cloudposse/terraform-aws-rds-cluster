@@ -305,7 +305,7 @@ Available targets:
 | cluster_parameters | List of DB cluster parameters to apply | object | `<list>` | no |
 | cluster_size | Number of DB instances to create in the cluster | number | `2` | no |
 | copy_tags_to_snapshot | Copy tags to backup snapshots | bool | `false` | no |
-| db_name | Database name | string | - | yes |
+| db_name | Database name (default is not to create a database) | string | `` | no |
 | db_port | Database port | number | `3306` | no |
 | deletion_protection | If the DB instance should have deletion protection enabled | bool | `false` | no |
 | delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
@@ -313,7 +313,7 @@ Available targets:
 | enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | list(string) | `<list>` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
 | engine_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | string | `provisioned` | no |
-| engine_version | The version number of the database engine to use | string | `` | no |
+| engine_version | The version of the database engine to use. See `aws rds describe-db-engine-versions` | string | `` | no |
 | environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
 | global_cluster_identifier | ID of the Aurora global cluster | string | `` | no |
 | iam_database_authentication_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | bool | `false` | no |
