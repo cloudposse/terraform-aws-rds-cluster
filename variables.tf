@@ -88,7 +88,7 @@ variable "snapshot_identifier" {
 
 variable "db_name" {
   type        = string
-  default = ""
+  default     = ""
   description = "Database name (default is not to create a database)"
 }
 
