@@ -1,5 +1,5 @@
 output "database_name" {
-  value       = join("", aws_rds_cluster.default.*.database_name)
+  value       = var.db_name
   description = "Database name"
 }
 
