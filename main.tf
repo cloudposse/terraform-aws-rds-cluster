@@ -55,6 +55,7 @@ resource "aws_rds_cluster" "default" {
   master_password                     = var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
+  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
   final_snapshot_identifier           = lower(module.label.id)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
@@ -83,6 +84,15 @@ resource "aws_rds_cluster" "default" {
       min_capacity             = lookup(scaling_configuration.value, "min_capacity", null)
       seconds_until_auto_pause = lookup(scaling_configuration.value, "seconds_until_auto_pause", null)
       timeout_action           = lookup(scaling_configuration.value, "timeout_action", null)
+    }
+  }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts_configuration
+    content {
+      create = lookup(timeouts.value, "create", "120m")
+      update = lookup(timeouts.value, "update", "120m")
+      delete = lookup(timeouts.value, "delete", "120m")
     }
   }
 

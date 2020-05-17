@@ -88,7 +88,8 @@ variable "snapshot_identifier" {
 
 variable "db_name" {
   type        = string
-  description = "Database name"
+  default     = ""
+  description = "Database name (default is not to create a database)"
 }
 
 variable "db_port" {
@@ -168,7 +169,7 @@ variable "engine_mode" {
 variable "engine_version" {
   type        = string
   default     = ""
-  description = "The version number of the database engine to use"
+  description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
 variable "scaling_configuration" {
@@ -181,6 +182,16 @@ variable "scaling_configuration" {
   }))
   default     = []
   description = "List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
+}
+
+variable "timeouts_configuration" {
+  type = list(object({
+    create = string
+    update = string
+    delete = string
+  }))
+  default     = []
+  description = "List of timeout values per action. Only valid actions are `create`, `update` and `delete`"
 }
 
 variable "allowed_cidr_blocks" {
@@ -211,6 +222,12 @@ variable "skip_final_snapshot" {
   type        = bool
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted"
   default     = true
+}
+
+variable "copy_tags_to_snapshot" {
+  type        = bool
+  description = "Copy tags to backup snapshots"
+  default     = false
 }
 
 variable "deletion_protection" {
