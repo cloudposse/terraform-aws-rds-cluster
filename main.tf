@@ -95,8 +95,7 @@ resource "aws_rds_cluster" "default" {
 }
 
 locals {
-  min_instance_count     = var.autoscaling_enabled ? var.autoscaling_min_capacity : var.cluster_size
-  cluster_instance_count = var.enabled ? local.min_instance_count : 0
+  cluster_instance_count = var.enabled ? var.cluster_size : 0
 }
 
 resource "aws_rds_cluster_instance" "default" {
