@@ -26,6 +26,7 @@
 | db_port | Database port | number | `3306` | no |
 | deletion_protection | If the DB instance should have deletion protection enabled | bool | `false` | no |
 | delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
+| enable_http_endpoint | Enable HTTP endpoint (data API). Only valid when engine_mode is set to serverless | bool | `false` | no |
 | enabled | Set to false to prevent the module from creating any resources | bool | `true` | no |
 | enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | list(string) | `<list>` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
@@ -51,7 +52,6 @@
 | replication_source_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | string | `` | no |
 | retention_period | Number of days to retain backups for | number | `5` | no |
 | scaling_configuration | List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless` | object | `<list>` | no |
-| enable_http_endpoint | Enable HTTP endpoint (data API). Only valid when `engine_mode` is set to `serverless` | bool | `false` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list(string) | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | bool | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |

@@ -134,8 +134,6 @@ module "rds_cluster_aurora_mysql_serverless" {
   security_groups      = ["sg-xxxxxxxx"]
   subnets              = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
   zone_id              = "Zxxxxxxxx"
-  enable_http_endpoint = true
-  
 
   scaling_configuration = [
     {
