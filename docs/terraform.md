@@ -51,6 +51,7 @@
 | replication_source_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | string | `` | no |
 | retention_period | Number of days to retain backups for | number | `5` | no |
 | scaling_configuration | List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless` | object | `<list>` | no |
+| enable_http_endpoint | Enable HTTP endpoint (data API).Only valid when `engine_mode` is set to `serverless` | bool | `true` | no |
 | security_groups | List of security groups to be allowed to connect to the DB instance | list(string) | `<list>` | no |
 | skip_final_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | bool | `true` | no |
 | snapshot_identifier | Specifies whether or not to create this cluster from a snapshot | string | `` | no |

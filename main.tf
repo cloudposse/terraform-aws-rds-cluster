@@ -68,6 +68,7 @@ resource "aws_rds_cluster" "default" {
   global_cluster_identifier           = var.global_cluster_identifier
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
+  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
 
   dynamic "scaling_configuration" {
     for_each = var.scaling_configuration

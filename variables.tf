@@ -374,6 +374,12 @@ variable "backtrack_window" {
   default     = 0
 }
 
+variable "enable_http_endpoint" {
+  type        = bool
+  description = "Enable HTTP endpoint (data API). Only valid when engine_mode is set to serverless"
+  default     = false
+}
+
 variable "vpc_security_group_ids" {
   type        = list(string)
   description = "Additional security group IDs to apply to the cluster, in addition to the provisioned default security group with ingress traffic from existing CIDR blocks and existing security groups"
