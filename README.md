@@ -117,23 +117,24 @@ module "rds_cluster_aurora_postgres" {
 
 ```hcl
 module "rds_cluster_aurora_mysql_serverless" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
-  namespace       = "eg"
-  stage           = "dev"
-  name            = "db"
-  engine          = "aurora"
-  engine_mode     = "serverless"
-  cluster_family  = "aurora5.6"
-  cluster_size    = "0"
-  admin_user      = "admin1"
-  admin_password  = "Test123456789"
-  db_name         = "dbname"
-  db_port         = "3306"
-  instance_type   = "db.t2.small"
-  vpc_id          = "vpc-xxxxxxxx"
-  security_groups = ["sg-xxxxxxxx"]
-  subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
-  zone_id         = "Zxxxxxxxx"
+  source               = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  namespace            = "eg"
+  stage                = "dev"
+  name                 = "db"
+  engine               = "aurora"
+  engine_mode          = "serverless"
+  cluster_family       = "aurora5.6"
+  cluster_size         = "0"
+  admin_user           = "admin1"
+  admin_password       = "Test123456789"
+  db_name              = "dbname"
+  db_port              = "3306"
+  instance_type        = "db.t2.small"
+  vpc_id               = "vpc-xxxxxxxx"
+  security_groups      = ["sg-xxxxxxxx"]
+  subnets              = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+  zone_id              = "Zxxxxxxxx"
+  enable_http_endpoint = true
 
   scaling_configuration = [
     {
@@ -309,6 +310,7 @@ Available targets:
 | db_port | Database port | number | `3306` | no |
 | deletion_protection | If the DB instance should have deletion protection enabled | bool | `false` | no |
 | delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
+| enable_http_endpoint | Enable HTTP endpoint (data API). Only valid when engine_mode is set to serverless | bool | `false` | no |
 | enabled | Set to false to prevent the module from creating any resources | bool | `true` | no |
 | enabled_cloudwatch_logs_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | list(string) | `<list>` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | string | `aurora` | no |
