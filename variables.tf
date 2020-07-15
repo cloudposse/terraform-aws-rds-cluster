@@ -74,6 +74,12 @@ variable "instance_type" {
   description = "Instance type to use"
 }
 
+variable "cluster_identifier" {
+  type        = string
+  default     = ""
+  description = "The RDS Cluster Identifier. Will use generated label ID if not supplied"
+}
+
 variable "cluster_size" {
   type        = number
   default     = 2

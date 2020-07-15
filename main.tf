@@ -42,7 +42,7 @@ resource "aws_security_group" "default" {
 
 resource "aws_rds_cluster" "default" {
   count                               = var.enabled ? 1 : 0
-  cluster_identifier                  = module.label.id
+  cluster_identifier                  = "${var.cluster_identifier == "" ? module.label.id : var.cluster_identifier}"
   database_name                       = var.db_name
   master_username                     = var.admin_user
   master_password                     = var.admin_password
@@ -101,7 +101,7 @@ locals {
 
 resource "aws_rds_cluster_instance" "default" {
   count                           = local.cluster_instance_count
-  identifier                      = "${module.label.id}-${count.index + 1}"
+  identifier                      = var.cluster_identifier == "" ? "${module.label.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier              = join("", aws_rds_cluster.default.*.id)
   instance_class                  = var.instance_type
   db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)

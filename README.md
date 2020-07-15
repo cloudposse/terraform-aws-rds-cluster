@@ -303,6 +303,7 @@ Available targets:
 | backup_window | Daily time range during which the backups happen | string | `07:00-09:00` | no |
 | cluster_dns_name | Name of the cluster CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `master.var.name` | string | `` | no |
 | cluster_family | The family of the DB cluster parameter group | string | `aurora5.6` | no |
+| cluster_identifier | The RDS Cluster Identifier. Will use generated label ID if not supplied | string | `` | no |
 | cluster_parameters | List of DB cluster parameters to apply | object | `<list>` | no |
 | cluster_size | Number of DB instances to create in the cluster | number | `2` | no |
 | copy_tags_to_snapshot | Copy tags to backup snapshots | bool | `false` | no |
