@@ -110,6 +110,7 @@ resource "aws_rds_cluster_instance" "default" {
   tags                            = module.label.tags
   engine                          = var.engine
   engine_version                  = var.engine_version
+  auto_minor_version_upgrade      = var.auto_minor_version_upgrade
   monitoring_interval             = var.rds_monitoring_interval
   monitoring_role_arn             = var.rds_monitoring_role_arn
   performance_insights_enabled    = var.performance_insights_enabled

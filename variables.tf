@@ -178,6 +178,12 @@ variable "engine_version" {
   description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
+variable "auto_minor_version_upgrade" {
+  type        = bool
+  default     = true
+  description = "Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window"
+}
+
 variable "scaling_configuration" {
   type = list(object({
     auto_pause               = bool
