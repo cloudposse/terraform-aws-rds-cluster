@@ -21,6 +21,7 @@
 | allowed\_cidr\_blocks | List of CIDR blocks allowed to access the cluster | `list(string)` | `[]` | no |
 | apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | `bool` | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
+| auto\_minor\_version\_upgrade | Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window | `bool` | `true` | no |
 | autoscaling\_enabled | Whether to enable cluster autoscaling | `bool` | `false` | no |
 | autoscaling\_max\_capacity | Maximum number of instances to be maintained by the autoscaler | `number` | `5` | no |
 | autoscaling\_min\_capacity | Minimum number of instances to be maintained by the autoscaler | `number` | `1` | no |
