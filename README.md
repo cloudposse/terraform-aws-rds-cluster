@@ -287,6 +287,7 @@ Available targets:
 | allowed\_cidr\_blocks | List of CIDR blocks allowed to access the cluster | `list(string)` | `[]` | no |
 | apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | `bool` | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
+| auto\_minor\_version\_upgrade | Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window | `bool` | `true` | no |
 | autoscaling\_enabled | Whether to enable cluster autoscaling | `bool` | `false` | no |
 | autoscaling\_max\_capacity | Maximum number of instances to be maintained by the autoscaler | `number` | `5` | no |
 | autoscaling\_min\_capacity | Minimum number of instances to be maintained by the autoscaler | `number` | `1` | no |
@@ -462,22 +463,24 @@ Copyright © 2017-2020 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 See [LICENSE](LICENSE) for full details.
 
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+```text
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-      https://www.apache.org/licenses/LICENSE-2.0
+  https://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+```
 
 
 
