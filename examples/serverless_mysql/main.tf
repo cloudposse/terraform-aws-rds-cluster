@@ -20,7 +20,7 @@ module "rds_cluster_aurora_mysql_serverless" {
   name                 = "db"
   engine               = "aurora"
   engine_mode          = "serverless"
-  cluster_family       = "aurora5.6"
+  cluster_family       = "aurora10.7"
   cluster_size         = "0"
   admin_user           = "admin1"
   admin_password       = "Test123456789"

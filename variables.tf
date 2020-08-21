@@ -156,7 +156,7 @@ variable "instance_parameters" {
 
 variable "cluster_family" {
   type        = string
-  default     = "aurora5.6"
+  default     = "aurora10.7"
   description = "The family of the DB cluster parameter group"
 }
 
