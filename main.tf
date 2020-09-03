@@ -53,7 +53,6 @@ resource "aws_rds_cluster" "default" {
   engine                              = var.engine
   engine_version                      = var.engine_version
   engine_mode                         = var.engine_mode
-  global_cluster_identifier           = var.global_cluster_identifier
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
@@ -78,9 +77,13 @@ resource "aws_rds_cluster" "default" {
     }
   }
 
-  replication_source_identifier   = var.replication_source_identifier
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
+
+  global_cluster_identifier = var.global_cluster_identifier
+
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
+  replication_source_identifier = var.global_cluster_identifier != "" ? var.replication_source_identifier : null
 }
 
 locals {
@@ -151,9 +154,9 @@ resource "aws_db_parameter_group" "default" {
 }
 
 locals {
-  cluster_dns_name_default = "master.${var.name}"
+  cluster_dns_name_default = "master.${module.this.name}"
   cluster_dns_name         = var.cluster_dns_name != "" ? var.cluster_dns_name : local.cluster_dns_name_default
-  reader_dns_name_default  = "replicas.${var.name}"
+  reader_dns_name_default  = "replicas.${module.this.name}"
   reader_dns_name          = var.reader_dns_name != "" ? var.reader_dns_name : local.reader_dns_name_default
 }
 
