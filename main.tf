@@ -1,6 +1,6 @@
 locals {
   cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_primary_cluster     = var.global_cluster_identifier != null && var.global_cluster_identifier != "" ? true : false
+  is_primary_cluster     = var.global_cluster_identifier == null || var.global_cluster_identifier == "" ? true : false
 }
 
 resource "aws_security_group" "default" {
