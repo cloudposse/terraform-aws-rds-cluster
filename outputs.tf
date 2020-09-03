@@ -15,7 +15,7 @@ output "cluster_identifier" {
 
 output "arn" {
   value       = join("", aws_rds_cluster.default.*.arn)
-  description = "Amazon Resource Name (ARN) of cluster"
+  description = "Amazon Resource Name (ARN) of the cluster"
 }
 
 output "endpoint" {

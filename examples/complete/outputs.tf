@@ -15,7 +15,7 @@ output "cluster_identifier" {
 
 output "arn" {
   value       = module.rds_cluster.arn
-  description = "Amazon Resource Name (ARN) of cluster"
+  description = "Amazon Resource Name (ARN) of the cluster"
 }
 
 output "endpoint" {

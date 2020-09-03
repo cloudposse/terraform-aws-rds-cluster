@@ -1,18 +1,6 @@
-module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  namespace   = var.namespace
-  name        = var.name
-  stage       = var.stage
-  environment = var.environment
-  delimiter   = var.delimiter
-  attributes  = var.attributes
-  tags        = var.tags
-  enabled     = var.enabled
-}
-
 resource "aws_security_group" "default" {
-  count       = var.enabled ? 1 : 0
-  name        = module.label.id
+  count       = module.this.enabled ? 1 : 0
+  name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = var.vpc_id
 
@@ -37,19 +25,19 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = module.label.tags
+  tags = module.this.tags
 }
 
 resource "aws_rds_cluster" "default" {
-  count                               = var.enabled ? 1 : 0
-  cluster_identifier                  = var.cluster_identifier == "" ? module.label.id : var.cluster_identifier
+  count                               = module.this.enabled ? 1 : 0
+  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user
   master_password                     = var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
-  final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.label.id) : lower(var.cluster_identifier)
+  final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
   storage_encrypted                   = var.storage_encrypted
@@ -61,7 +49,7 @@ resource "aws_rds_cluster" "default" {
   db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  tags                                = module.label.tags
+  tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
   engine_mode                         = var.engine_mode
@@ -96,18 +84,18 @@ resource "aws_rds_cluster" "default" {
 }
 
 locals {
-  cluster_instance_count = var.enabled ? var.cluster_size : 0
+  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
 }
 
 resource "aws_rds_cluster_instance" "default" {
   count                           = local.cluster_instance_count
-  identifier                      = var.cluster_identifier == "" ? "${module.label.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
+  identifier                      = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier              = join("", aws_rds_cluster.default.*.id)
   instance_class                  = var.instance_type
   db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name         = join("", aws_db_parameter_group.default.*.name)
   publicly_accessible             = var.publicly_accessible
-  tags                            = module.label.tags
+  tags                            = module.this.tags
   engine                          = var.engine
   engine_version                  = var.engine_version
   auto_minor_version_upgrade      = var.auto_minor_version_upgrade
@@ -119,16 +107,16 @@ resource "aws_rds_cluster_instance" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  count       = var.enabled ? 1 : 0
-  name        = module.label.id
+  count       = module.this.enabled ? 1 : 0
+  name        = module.this.id
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = var.subnets
-  tags        = module.label.tags
+  tags        = module.this.tags
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  count       = var.enabled ? 1 : 0
-  name        = module.label.id
+  count       = module.this.enabled ? 1 : 0
+  name        = module.this.id
   description = "DB cluster parameter group"
   family      = var.cluster_family
 
@@ -141,12 +129,12 @@ resource "aws_rds_cluster_parameter_group" "default" {
     }
   }
 
-  tags = module.label.tags
+  tags = module.this.tags
 }
 
 resource "aws_db_parameter_group" "default" {
-  count       = var.enabled ? 1 : 0
-  name        = module.label.id
+  count       = module.this.enabled ? 1 : 0
+  name        = module.this.id
   description = "DB instance parameter group"
   family      = var.cluster_family
 
@@ -159,7 +147,7 @@ resource "aws_db_parameter_group" "default" {
     }
   }
 
-  tags = module.label.tags
+  tags = module.this.tags
 }
 
 locals {
@@ -170,23 +158,29 @@ locals {
 }
 
 module "dns_master" {
-  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-  enabled = var.enabled && length(var.zone_id) > 0 ? true : false
+  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
+
+  enabled = module.this.enabled && length(var.zone_id) > 0 ? true : false
   name    = local.cluster_dns_name
   zone_id = var.zone_id
   records = coalescelist(aws_rds_cluster.default.*.endpoint, [""])
+
+  context = module.this.context
 }
 
 module "dns_replicas" {
-  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-  enabled = var.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
+  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
+
+  enabled = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   name    = local.reader_dns_name
   zone_id = var.zone_id
   records = coalescelist(aws_rds_cluster.default.*.reader_endpoint, [""])
+
+  context = module.this.context
 }
 
 resource "aws_appautoscaling_target" "replicas" {
-  count              = var.enabled && var.autoscaling_enabled ? 1 : 0
+  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${join("", aws_rds_cluster.default.*.id)}"
@@ -195,8 +189,8 @@ resource "aws_appautoscaling_target" "replicas" {
 }
 
 resource "aws_appautoscaling_policy" "replicas" {
-  count              = var.enabled && var.autoscaling_enabled ? 1 : 0
-  name               = module.label.id
+  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
+  name               = module.this.id
   service_namespace  = join("", aws_appautoscaling_target.replicas.*.service_namespace)
   scalable_dimension = join("", aws_appautoscaling_target.replicas.*.scalable_dimension)
   resource_id        = join("", aws_appautoscaling_target.replicas.*.resource_id)
