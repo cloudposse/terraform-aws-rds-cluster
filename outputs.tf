@@ -4,27 +4,27 @@ output "database_name" {
 }
 
 output "master_username" {
-  value       = join("", aws_rds_cluster.default.*.master_username)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.master_username), join("", aws_rds_cluster.secondary.*.master_username))
   description = "Username for the master DB user"
 }
 
 output "cluster_identifier" {
-  value       = join("", aws_rds_cluster.default.*.cluster_identifier)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.cluster_identifier), join("", aws_rds_cluster.secondary.*.cluster_identifier))
   description = "Cluster Identifier"
 }
 
 output "arn" {
-  value       = join("", aws_rds_cluster.default.*.arn)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.arn), join("", aws_rds_cluster.secondary.*.arn))
   description = "Amazon Resource Name (ARN) of the cluster"
 }
 
 output "endpoint" {
-  value       = join("", aws_rds_cluster.default.*.endpoint)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.endpoint), join("", aws_rds_cluster.secondary.*.endpoint))
   description = "The DNS address of the RDS instance"
 }
 
 output "reader_endpoint" {
-  value       = join("", aws_rds_cluster.default.*.reader_endpoint)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.reader_endpoint), join("", aws_rds_cluster.secondary.*.reader_endpoint))
   description = "A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas"
 }
 
@@ -44,11 +44,11 @@ output "dbi_resource_ids" {
 }
 
 output "cluster_resource_id" {
-  value       = join("", aws_rds_cluster.default.*.cluster_resource_id)
+  value       = coalesce(join("", aws_rds_cluster.primary.*.cluster_resource_id), join("", aws_rds_cluster.secondary.*.cluster_resource_id))
   description = "The region-unique, immutable identifie of the cluster"
 }
 
 output "cluster_security_groups" {
-  value       = coalescelist(aws_rds_cluster.default.*.vpc_security_group_ids, [""])
+  value       = coalescelist(aws_rds_cluster.primary.*.vpc_security_group_ids, aws_rds_cluster.secondary.*.vpc_security_group_ids, [""])
   description = "Default RDS cluster security groups"
 }

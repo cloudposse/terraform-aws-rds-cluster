@@ -1,3 +1,8 @@
+locals {
+  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
+  is_primary_cluster     = var.global_cluster_identifier != null && var.global_cluster_identifier != "" ? true : false
+}
+
 resource "aws_security_group" "default" {
   count       = module.this.enabled ? 1 : 0
   name        = module.this.id
@@ -28,8 +33,63 @@ resource "aws_security_group" "default" {
   tags = module.this.tags
 }
 
-resource "aws_rds_cluster" "default" {
-  count                               = module.this.enabled ? 1 : 0
+resource "aws_rds_cluster" "primary" {
+  count                               = module.this.enabled && local.is_primary_cluster == true ? 1 : 0
+  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  database_name                       = var.db_name
+  master_username                     = var.admin_user
+  master_password                     = var.admin_password
+  backup_retention_period             = var.retention_period
+  preferred_backup_window             = var.backup_window
+  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
+  final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
+  skip_final_snapshot                 = var.skip_final_snapshot
+  apply_immediately                   = var.apply_immediately
+  storage_encrypted                   = var.storage_encrypted
+  kms_key_id                          = var.kms_key_arn
+  source_region                       = var.source_region
+  snapshot_identifier                 = var.snapshot_identifier
+  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
+  preferred_maintenance_window        = var.maintenance_window
+  db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
+  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
+  iam_database_authentication_enabled = var.iam_database_authentication_enabled
+  tags                                = module.this.tags
+  engine                              = var.engine
+  engine_version                      = var.engine_version
+  engine_mode                         = var.engine_mode
+  iam_roles                           = var.iam_roles
+  backtrack_window                    = var.backtrack_window
+  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+
+  dynamic "scaling_configuration" {
+    for_each = var.scaling_configuration
+    content {
+      auto_pause               = lookup(scaling_configuration.value, "auto_pause", null)
+      max_capacity             = lookup(scaling_configuration.value, "max_capacity", null)
+      min_capacity             = lookup(scaling_configuration.value, "min_capacity", null)
+      seconds_until_auto_pause = lookup(scaling_configuration.value, "seconds_until_auto_pause", null)
+      timeout_action           = lookup(scaling_configuration.value, "timeout_action", null)
+    }
+  }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts_configuration
+    content {
+      create = lookup(timeouts.value, "create", "120m")
+      update = lookup(timeouts.value, "update", "120m")
+      delete = lookup(timeouts.value, "delete", "120m")
+    }
+  }
+
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
+  deletion_protection             = var.deletion_protection
+  replication_source_identifier   = var.replication_source_identifier
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
+resource "aws_rds_cluster" "secondary" {
+  count                               = module.this.enabled && local.is_primary_cluster == false ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user
@@ -83,17 +143,21 @@ resource "aws_rds_cluster" "default" {
   global_cluster_identifier = var.global_cluster_identifier
 
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
-  replication_source_identifier = var.global_cluster_identifier != "" ? var.replication_source_identifier : null
-}
+  # ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica.
+  # If DB Cluster is part of a Global Cluster, use the lifecycle configuration block ignore_changes argument
+  # to prevent Terraform from showing differences for this argument instead of configuring this value.
 
-locals {
-  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
+  lifecycle {
+    ignore_changes = [
+      replication_source_identifier
+    ]
+  }
 }
 
 resource "aws_rds_cluster_instance" "default" {
   count                           = local.cluster_instance_count
   identifier                      = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier              = join("", aws_rds_cluster.default.*.id)
+  cluster_identifier              = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
   instance_class                  = var.instance_type
   db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name         = join("", aws_db_parameter_group.default.*.name)
@@ -166,7 +230,7 @@ module "dns_master" {
   enabled = module.this.enabled && length(var.zone_id) > 0 ? true : false
   name    = local.cluster_dns_name
   zone_id = var.zone_id
-  records = coalescelist(aws_rds_cluster.default.*.endpoint, [""])
+  records = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
 
   context = module.this.context
 }
@@ -177,7 +241,7 @@ module "dns_replicas" {
   enabled = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   name    = local.reader_dns_name
   zone_id = var.zone_id
-  records = coalescelist(aws_rds_cluster.default.*.reader_endpoint, [""])
+  records = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
 
   context = module.this.context
 }
@@ -186,7 +250,7 @@ resource "aws_appautoscaling_target" "replicas" {
   count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
-  resource_id        = "cluster:${join("", aws_rds_cluster.default.*.id)}"
+  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))}"
   min_capacity       = var.autoscaling_min_capacity
   max_capacity       = var.autoscaling_max_capacity
 }
