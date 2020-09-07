@@ -102,5 +102,8 @@
 | master\_username | Username for the master DB user |
 | reader\_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas\_host | Replicas hostname |
+| security\_group\_arn | Security Group ARN |
+| security\_group\_id | Security Group ID |
+| security\_group\_name | Security Group name |
 
 <!-- markdownlint-restore -->
