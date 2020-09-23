@@ -3,13 +3,13 @@ output "name" {
   description = "Database name"
 }
 
-output "user" {
-  value       = module.rds_cluster_aurora_mysql_serverless.user
+output "master_username" {
+  value       = module.rds_cluster_aurora_mysql_serverless.master_username
   description = "Username for the master DB user"
 }
 
-output "cluster_name" {
-  value       = module.rds_cluster_aurora_mysql_serverless.cluster_name
+output "cluster_identifier" {
+  value       = module.rds_cluster_aurora_mysql_serverless.cluster_identifier
   description = "Cluster Identifier"
 }
 

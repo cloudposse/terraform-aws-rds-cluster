@@ -178,7 +178,7 @@ resource "aws_rds_cluster_instance" "default" {
   engine_version                  = var.engine_version
   auto_minor_version_upgrade      = var.auto_minor_version_upgrade
   monitoring_interval             = var.rds_monitoring_interval
-  monitoring_role_arn             = var.rds_monitoring_role_arn
+  monitoring_role_arn             = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
   performance_insights_enabled    = var.performance_insights_enabled
   performance_insights_kms_key_id = var.performance_insights_kms_key_id
   availability_zone               = var.instance_availability_zone

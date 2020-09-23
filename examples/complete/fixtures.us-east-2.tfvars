@@ -29,3 +29,7 @@ db_name = "test_db"
 admin_user = "admin"
 
 admin_password = "admin_password"
+
+enhanced_monitoring_role_enabled = true
+
+rds_monitoring_interval = 30

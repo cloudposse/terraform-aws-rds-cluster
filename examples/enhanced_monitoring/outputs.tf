@@ -3,13 +3,13 @@ output "name" {
   description = "Database name"
 }
 
-output "user" {
-  value       = module.rds_cluster_aurora_postgres.user
+output "master_username" {
+  value       = module.rds_cluster_aurora_postgres.master_username
   description = "Username for the master DB user"
 }
 
-output "cluster_name" {
-  value       = module.rds_cluster_aurora_postgres.cluster_name
+output "cluster_identifier" {
+  value       = module.rds_cluster_aurora_postgres.cluster_identifier
   description = "Cluster Identifier"
 }
 
