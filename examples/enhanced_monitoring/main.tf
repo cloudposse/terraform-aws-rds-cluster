@@ -2,13 +2,6 @@
 
 provider "aws" {
   region = "us-west-1"
-
-  # Make it faster by skipping some checks
-  skip_get_ec2_platforms      = true
-  skip_metadata_api_check     = true
-  skip_region_validation      = true
-  skip_credentials_validation = true
-  skip_requesting_account_id  = true
 }
 
 # create IAM role for monitoring
@@ -43,14 +36,14 @@ module "rds_cluster_aurora_postgres" {
   source          = "../../"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   name            = "db"
   admin_user      = "admin1"
   admin_password  = "Test123456789"
   db_name         = "dbname"
-  db_port         = "5432"
+  db_port         = 5432
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxx"
   security_groups = ["sg-xxxxxxxx"]
