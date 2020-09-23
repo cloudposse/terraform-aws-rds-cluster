@@ -214,14 +214,20 @@ variable "iam_database_authentication_enabled" {
 
 variable "rds_monitoring_interval" {
   type        = number
-  description = "Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60)"
+  description = "The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60"
   default     = 0
 }
 
 variable "rds_monitoring_role_arn" {
   type        = string
-  default     = ""
-  description = "The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs"
+  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs"
+  default     = null
+}
+
+variable "enhanced_monitoring_role_enabled" {
+  type        = bool
+  description = "A boolean flag to enable/disable the creation of the enhanced monitoring IAM role. If set to `false`, the module will not create a new role and will use `rds_monitoring_role_arn` for enhanced monitoring"
+  default     = false
 }
 
 variable "replication_source_identifier" {

@@ -69,6 +69,10 @@ Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest re
 
 
 
+For a complete example, see [examples/complete](examples/complete).
+
+For automated tests of the complete example using [bats](https://github.com/bats-core/bats-core) and [Terratest](https://github.com/gruntwork-io/terratest) (which tests and deploys the example on AWS), see [test](test).
+
 [Basic example](examples/basic)
 
 ```hcl
@@ -77,13 +81,13 @@ module "rds_cluster_aurora_postgres" {
   name            = "postgres"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   admin_user      = "admin1"
   admin_password  = "Test123456789"
   db_name         = "dbname"
-  db_port         = "5432"
+  db_port         = 5432
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxxx"
   security_groups = ["sg-xxxxxxxx"]
@@ -104,11 +108,11 @@ module "rds_cluster_aurora_mysql_serverless" {
   engine               = "aurora"
   engine_mode          = "serverless"
   cluster_family       = "aurora5.6"
-  cluster_size         = "0"
+  cluster_size         = 0
   admin_user           = "admin1"
   admin_password       = "Test123456789"
   db_name              = "dbname"
-  db_port              = "3306"
+  db_port              = 3306
   instance_type        = "db.t2.small"
   vpc_id               = "vpc-xxxxxxxx"
   security_groups      = ["sg-xxxxxxxx"]
@@ -134,7 +138,7 @@ module "rds_cluster_aurora_mysql" {
   source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine          = "aurora"
   cluster_family  = "aurora-mysql5.7"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   name            = "db"
@@ -225,14 +229,14 @@ module "rds_cluster_aurora_postgres" {
   source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   name            = "db"
   admin_user      = "admin1"
   admin_password  = "Test123456789"
   db_name         = "dbname"
-  db_port         = "5432"
+  db_port         = 5432
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxx"
   security_groups = ["sg-xxxxxxxx"]
@@ -249,6 +253,10 @@ module "rds_cluster_aurora_postgres" {
 
 
 
+
+## Examples
+
+Review the [complete example](examples/complete) to see how to use this module.
 
 
 
@@ -317,6 +325,7 @@ Available targets:
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | `string` | `"aurora"` | no |
 | engine\_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | `string` | `"provisioned"` | no |
 | engine\_version | The version of the database engine to use. See `aws rds describe-db-engine-versions` | `string` | `""` | no |
+| enhanced\_monitoring\_role\_enabled | A boolean flag to enable/disable the creation of the enhanced monitoring IAM role. If set to `false`, the module will not create a new role and will use `rds_monitoring_role_arn` for enhanced monitoring | `bool` | `false` | no |
 | environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | global\_cluster\_identifier | ID of the Aurora global cluster | `string` | `""` | no |
 | iam\_database\_authentication\_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | `bool` | `false` | no |
@@ -333,8 +342,8 @@ Available targets:
 | performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |
 | performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
 | publicly\_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | `bool` | `false` | no |
-| rds\_monitoring\_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | `number` | `0` | no |
-| rds\_monitoring\_role\_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | `string` | `""` | no |
+| rds\_monitoring\_interval | The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60 | `number` | `0` | no |
+| rds\_monitoring\_role\_arn | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs | `string` | `null` | no |
 | reader\_dns\_name | Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name` | `string` | `""` | no |
 | regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | replication\_source\_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | `string` | `""` | no |
