@@ -137,13 +137,13 @@ variable "auto_minor_version_upgrade" {
 }
 
 variable "s3_import" {
-  type = list(object({
+  type = object({
     bucket_name           = string
     bucket_prefix         = string
     ingestion_role        = string
     source_engine         = string
     source_engine_version = string
-  }))
+  })
   default     = []
   description = "Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource."
 }
