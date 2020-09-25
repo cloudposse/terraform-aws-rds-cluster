@@ -74,7 +74,7 @@ resource "aws_rds_cluster" "primary" {
   enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
 
   dynamic "s3_import" {
-    for_each = each.value.s3_import[*]
+    for_each = var.s3_import[*]
     content {
       bucket_name           = lookup(s3_import.value, "bucket_name", null)
       bucket_prefix         = lookup(s3_import.value, "bucket_prefix", null)
