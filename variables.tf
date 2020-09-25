@@ -144,7 +144,7 @@ variable "s3_import" {
     source_engine         = string
     source_engine_version = string
   })
-  default     = {}
+  default     = null
   description = "Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource."
 }
 
