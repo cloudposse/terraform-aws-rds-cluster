@@ -136,6 +136,18 @@ variable "auto_minor_version_upgrade" {
   description = "Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window"
 }
 
+variable "s3_import" {
+  type = object({
+    bucket_name           = string
+    bucket_prefix         = string
+    ingestion_role        = string
+    source_engine         = string
+    source_engine_version = string
+  })
+  default     = null
+  description = "Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource."
+}
+
 variable "scaling_configuration" {
   type = list(object({
     auto_pause               = bool

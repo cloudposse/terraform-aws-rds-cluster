@@ -73,6 +73,17 @@ resource "aws_rds_cluster" "primary" {
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
 
+  dynamic "s3_import" {
+    for_each = var.s3_import[*]
+    content {
+      bucket_name           = lookup(s3_import.value, "bucket_name", null)
+      bucket_prefix         = lookup(s3_import.value, "bucket_prefix", null)
+      ingestion_role        = lookup(s3_import.value, "ingestion_role", null)
+      source_engine         = lookup(s3_import.value, "source_engine", null)
+      source_engine_version = lookup(s3_import.value, "source_engine_version", null)
+    }
+  }
+
   dynamic "scaling_configuration" {
     for_each = var.scaling_configuration
     content {
