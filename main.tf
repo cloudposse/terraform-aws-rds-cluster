@@ -249,10 +249,10 @@ locals {
 module "dns_master" {
   source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0 ? true : false
-  name    = local.cluster_dns_name
-  zone_id = var.zone_id
-  records = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
+  enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
+  dns_name = local.cluster_dns_name
+  zone_id  = var.zone_id
+  records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
 
   context = module.this.context
 }
@@ -260,10 +260,10 @@ module "dns_master" {
 module "dns_replicas" {
   source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
-  name    = local.reader_dns_name
-  zone_id = var.zone_id
-  records = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
+  enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
+  dns_name = local.reader_dns_name
+  zone_id  = var.zone_id
+  records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
 
   context = module.this.context
 }
