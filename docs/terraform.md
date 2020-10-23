@@ -18,8 +18,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
-| admin\_password | (Required unless a snapshot_identifier or replication_source_identifier is provided or unless a global_cluster_identifier is provided when the cluster is the secondary cluster of a global database) Password for the master DB user | `string` | `""` | no |
-| admin\_user | (Required unless a snapshot_identifier or replication_source_identifier is provided or unless a global_cluster_identifier is provided when the cluster is the secondary cluster of a global database) Username for the master DB user | `string` | `""` | no |
+| admin\_password | (Required unless a snapshot\_identifier or replication\_source\_identifier is provided or unless a global\_cluster\_identifier is provided when the cluster is the secondary cluster of a global database) Password for the master DB user | `string` | `""` | no |
+| admin\_user | (Required unless a snapshot\_identifier or replication\_source\_identifier is provided or unless a global\_cluster\_identifier is provided when the cluster is the secondary cluster of a global database) Username for the master DB user | `string` | `""` | no |
 | allowed\_cidr\_blocks | List of CIDR blocks allowed to access the cluster | `list(string)` | `[]` | no |
 | apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window | `bool` | `true` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
