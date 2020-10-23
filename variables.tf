@@ -58,7 +58,7 @@ variable "db_port" {
 
 variable "admin_user" {
   type        = string
-  default     = "admin"
+  default     = ""
   description = "(Required unless a snapshot_identifier is provided) Username for the master DB user"
 }
 
