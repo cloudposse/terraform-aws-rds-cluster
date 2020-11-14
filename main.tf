@@ -56,7 +56,7 @@ resource "aws_rds_cluster" "primary" {
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
-  storage_encrypted                   = var.storage_encrypted
+  storage_encrypted                   = var.engine_mode == "serverless" ? null : var.storage_encrypted
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
