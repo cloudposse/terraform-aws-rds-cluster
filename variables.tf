@@ -40,7 +40,7 @@ variable "cluster_size" {
 
 variable "snapshot_identifier" {
   type        = string
-  default     = ""
+  default     = null
   description = "Specifies whether or not to create this cluster from a snapshot"
 }
 
@@ -168,6 +168,16 @@ variable "timeouts_configuration" {
   }))
   default     = []
   description = "List of timeout values per action. Only valid actions are `create`, `update` and `delete`"
+}
+
+variable "clone_configuration" {
+  type = list(object({
+    source_cluster_identifier  = string
+    restore_type               = string
+    use_latest_restorable_time = bool
+  }))
+  default     = []
+  description = "List point-in-time recovery options. Only valid actions are `source_cluster_identifier`, `restore_type` and `use_latest_restorable_time`"
 }
 
 variable "allowed_cidr_blocks" {

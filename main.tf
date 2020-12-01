@@ -104,6 +104,15 @@ resource "aws_rds_cluster" "primary" {
     }
   }
 
+  dynamic "restore_to_point_in_time" {
+    for_each = var.clone_configuration
+    content {
+      source_cluster_identifier  = lookup(restore_to_point_in_time.value, "source_cluster_identifier", "120m")
+      restore_type               = lookup(restore_to_point_in_time.value, "restore_type", "copy-on-write")
+      use_latest_restorable_time = lookup(restore_to_point_in_time.value, "use_latest_restorable_time", true)
+    }
+  }
+
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
   replication_source_identifier   = var.replication_source_identifier
