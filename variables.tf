@@ -170,7 +170,7 @@ variable "timeouts_configuration" {
   description = "List of timeout values per action. Only valid actions are `create`, `update` and `delete`"
 }
 
-variable "clone_configuration" {
+variable "restore_to_point_in_time" {
   type = list(object({
     source_cluster_identifier  = string
     restore_type               = string

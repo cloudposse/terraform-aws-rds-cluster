@@ -105,7 +105,7 @@ resource "aws_rds_cluster" "primary" {
   }
 
   dynamic "restore_to_point_in_time" {
-    for_each = var.clone_configuration
+    for_each = var.restore_to_point_in_time
     content {
       source_cluster_identifier  = lookup(restore_to_point_in_time.value, "source_cluster_identifier", "120m")
       restore_type               = lookup(restore_to_point_in_time.value, "restore_type", "copy-on-write")
