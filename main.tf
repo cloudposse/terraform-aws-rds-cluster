@@ -5,10 +5,13 @@ locals {
 
 resource "aws_security_group" "default" {
   count       = module.this.enabled ? 1 : 0
-  name        = module.this.id
+  name_prefix = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = var.vpc_id
   tags        = module.this.tags
+  lifecycle {
+    ignore_changes = [ name, name_prefix ]
+  }
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
