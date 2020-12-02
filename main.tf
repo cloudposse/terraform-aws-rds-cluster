@@ -10,7 +10,8 @@ resource "aws_security_group" "default" {
   vpc_id      = var.vpc_id
   tags        = module.this.tags
   lifecycle {
-    ignore_changes = [ name, name_prefix ]
+    create_before_destroy = true
+    ignore_changes        = [name, name_prefix]
   }
 }
 
