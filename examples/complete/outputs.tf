@@ -15,7 +15,7 @@ output "cluster_identifier" {
 
 output "arn" {
   value       = module.rds_cluster.arn
-  description = "Amazon Resource Name (ARN) of cluster"
+  description = "Amazon Resource Name (ARN) of the cluster"
 }
 
 output "endpoint" {
@@ -49,13 +49,31 @@ output "cluster_resource_id" {
 }
 
 output "public_subnet_cidrs" {
-  value = module.subnets.public_subnet_cidrs
+  value       = module.subnets.public_subnet_cidrs
+  description = "Public subnet CIDR blocks"
 }
 
 output "private_subnet_cidrs" {
-  value = module.subnets.private_subnet_cidrs
+  value       = module.subnets.private_subnet_cidrs
+  description = "Private subnet CIDR blocks"
 }
 
 output "vpc_cidr" {
-  value = module.vpc.vpc_cidr_block
+  value       = module.vpc.vpc_cidr_block
+  description = "VPC CIDR"
+}
+
+output "security_group_id" {
+  value       = module.rds_cluster.security_group_id
+  description = "Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.rds_cluster.security_group_arn
+  description = "Security Group ARN"
+}
+
+output "security_group_name" {
+  value       = module.rds_cluster.security_group_name
+  description = "Security Group name"
 }
