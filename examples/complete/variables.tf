@@ -7,21 +7,6 @@ variable "availability_zones" {
   type = list(string)
 }
 
-variable "namespace" {
-  type        = string
-  description = "Namespace (e.g. `eg` or `cp`)"
-}
-
-variable "stage" {
-  type        = string
-  description = "Stage (e.g. `prod`, `dev`, `staging`, `infra`)"
-}
-
-variable "name" {
-  type        = string
-  description = "Name  (e.g. `app` or `cluster`)"
-}
-
 variable "instance_type" {
   type        = string
   description = "Instance type to use"
@@ -70,4 +55,14 @@ variable "deletion_protection" {
 variable "autoscaling_enabled" {
   type        = bool
   description = "Whether to enable cluster autoscaling"
+}
+
+variable "enhanced_monitoring_role_enabled" {
+  type        = bool
+  description = "A boolean flag to enable/disable the creation of the enhanced monitoring IAM role. If set to `false`, the module will not create a new role and will use `rds_monitoring_role_arn` for enhanced monitoring"
+}
+
+variable "rds_monitoring_interval" {
+  type        = number
+  description = "The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60"
 }

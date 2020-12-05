@@ -1,6 +1,8 @@
-region = "us-west-1"
+enabled = true
 
-availability_zones = ["us-west-1b", "us-west-1c"]
+region = "us-east-2"
+
+availability_zones = ["us-east-2a", "us-east-2b"]
 
 namespace = "eg"
 
@@ -27,3 +29,7 @@ db_name = "test_db"
 admin_user = "admin"
 
 admin_password = "admin_password"
+
+enhanced_monitoring_role_enabled = true
+
+rds_monitoring_interval = 30
