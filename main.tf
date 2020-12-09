@@ -46,12 +46,12 @@ resource "aws_security_group_rule" "egress" {
 
 resource "aws_cloudwatch_log_group" "default" {
   count             = var.enabled && length(var.enabled_cloudwatch_logs_exports)>0 ? 1 : 0
-  name              = "/aws/rds/cluster/${var.db_name}/postgresql"
+  name              = "/aws/rds/cluster/${coalesce(join("", aws_rds_cluster.default.*.id), join("", aws_rds_cluster.secondary.*.id))}/postgresql"
   retention_in_days = var.logs_retention_in_days
   kms_key_id        = var.kms_key_arn
 }
 
-resource "aws_rds_cluster" "primary" {
+resource "aws_rds_cluster" "default" {
   count                               = module.this.enabled && local.is_primary_cluster == true ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
@@ -195,7 +195,7 @@ resource "aws_rds_cluster" "secondary" {
 resource "aws_rds_cluster_instance" "default" {
   count                           = local.cluster_instance_count
   identifier                      = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier              = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
+  cluster_identifier              = coalesce(join("", aws_rds_cluster.default.*.id), join("", aws_rds_cluster.secondary.*.id))
   instance_class                  = var.instance_type
   db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name         = join("", aws_db_parameter_group.default.*.name)
@@ -268,7 +268,7 @@ module "dns_master" {
   enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
   dns_name = local.cluster_dns_name
   zone_id  = var.zone_id
-  records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
+  records  = coalescelist(aws_rds_cluster.default.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
 
   context = module.this.context
 }
@@ -279,7 +279,7 @@ module "dns_replicas" {
   enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
-  records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
+  records  = coalescelist(aws_rds_cluster.default.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
 
   context = module.this.context
 }
@@ -288,7 +288,7 @@ resource "aws_appautoscaling_target" "replicas" {
   count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
-  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))}"
+  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.default.*.id), join("", aws_rds_cluster.secondary.*.id))}"
   min_capacity       = var.autoscaling_min_capacity
   max_capacity       = var.autoscaling_max_capacity
 }
