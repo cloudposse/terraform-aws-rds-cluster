@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "egress" {
 
 resource "aws_cloudwatch_log_group" "default" {
   count             = var.enabled && length(var.enabled_cloudwatch_logs_exports)>0 ? 1 : 0
-  name              = "/aws/rds/cluster/${module.label.id}/postgresql"
+  name              = "/aws/rds/cluster/${var.db_name}/postgresql"
   retention_in_days = var.logs_retention_in_days
   kms_key_id        = var.kms_key_arn
 }
