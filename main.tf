@@ -256,7 +256,7 @@ locals {
 }
 
 module "dns_master" {
-  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.7.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.8.0"
 
   enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
   dns_name = local.cluster_dns_name
@@ -267,7 +267,7 @@ module "dns_master" {
 }
 
 module "dns_replicas" {
-  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.7.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.8.0"
 
   enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   dns_name = local.reader_dns_name
