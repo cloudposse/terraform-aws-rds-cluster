@@ -1,38 +1,50 @@
 name: terraform-aws-rds-cluster
+
 tags:
-- aws
-- terraform
-- terraform-modules
-- databases
-- rds
-- rds-database
-- aurora
-- mysql
-- cluster
+  - aws
+  - terraform
+  - terraform-modules
+  - databases
+  - rds
+  - rds-database
+  - aurora
+  - mysql
+  - cluster
+
 categories:
-- terraform-modules/databases
+  - terraform-modules/databases
+
 license: APACHE2
+
 github_repo: cloudposse/terraform-aws-rds-cluster
+
 badges:
-- name: Latest Release
-  image: https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg
-  url: https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest
-- name: Slack Community
-  image: https://slack.cloudposse.com/badge.svg
-  url: https://slack.cloudposse.com
+  - name: Latest Release
+    image: https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg
+    url: https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest
+  - name: Slack Community
+    image: https://slack.cloudposse.com/badge.svg
+    url: https://slack.cloudposse.com
+
 related:
-- name: terraform-aws-rds
-  description: Terraform module to provision AWS RDS instances
-  url: https://github.com/cloudposse/terraform-aws-rds
-- name: terraform-aws-rds-cloudwatch-sns-alarms
-  description: Terraform module that configures important RDS alerts using CloudWatch
-    and sends them to an SNS topic
-  url: https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms
+  - name: terraform-aws-rds
+    description: Terraform module to provision AWS RDS instances
+    url: https://github.com/cloudposse/terraform-aws-rds
+  - name: terraform-aws-rds-cloudwatch-sns-alarms
+    description: Terraform module that configures important RDS alerts using CloudWatch
+      and sends them to an SNS topic
+    url: https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms
+
 description: |-
   Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/aurora) cluster for MySQL or Postgres.
 
   Supports [Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/).
+
 usage: |2-
+
+  For a complete example, see [examples/complete](examples/complete).
+
+  For automated tests of the complete example using [bats](https://github.com/bats-core/bats-core) and [Terratest](https://github.com/gruntwork-io/terratest) (which tests and deploys the example on AWS), see [test](test).
 
   [Basic example](examples/basic)
 
@@ -42,13 +54,13 @@ usage: |2-
     name            = "postgres"
     engine          = "aurora-postgresql"
     cluster_family  = "aurora-postgresql9.6"
-    cluster_size    = "2"
+    cluster_size    = 2
     namespace       = "eg"
     stage           = "dev"
     admin_user      = "admin1"
     admin_password  = "Test123456789"
     db_name         = "dbname"
-    db_port         = "5432"
+    db_port         = 5432
     instance_type   = "db.r4.large"
     vpc_id          = "vpc-xxxxxxxx"
     security_groups = ["sg-xxxxxxxx"]
@@ -58,7 +70,7 @@ usage: |2-
   ```
 
 
-  [Serverless MySQL](examples/serverless_mysql)
+  [Serverless Aurora MySQL 5.6](examples/serverless_mysql)
 
   ```hcl
   module "rds_cluster_aurora_mysql_serverless" {
@@ -69,11 +81,11 @@ usage: |2-
     engine               = "aurora"
     engine_mode          = "serverless"
     cluster_family       = "aurora5.6"
-    cluster_size         = "0"
+    cluster_size         = 0
     admin_user           = "admin1"
     admin_password       = "Test123456789"
     db_name              = "dbname"
-    db_port              = "3306"
+    db_port              = 3306
     instance_type        = "db.t2.small"
     vpc_id               = "vpc-xxxxxxxx"
     security_groups      = ["sg-xxxxxxxx"]
@@ -92,6 +104,41 @@ usage: |2-
   }
   ```
 
+  [Serverless Aurora 2.07.1 MySQL 5.7](examples/serverless_mysql57)
+
+  ```hcl
+  module "rds_cluster_aurora_mysql_serverless" {
+    source               = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+    namespace            = "eg"
+    stage                = "dev"
+    name                 = "db"
+    engine               = "aurora-mysql"
+    engine_mode          = "serverless"
+    engine_version       = "5.7.mysql_aurora.2.07.1"
+    cluster_family       = "aurora-mysql5.7"
+    cluster_size         = 0
+    admin_user           = "admin1"
+    admin_password       = "Test123456789"
+    db_name              = "dbname"
+    db_port              = 3306
+    vpc_id               = "vpc-xxxxxxxx"
+    security_groups      = ["sg-xxxxxxxx"]
+    subnets              = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+    zone_id              = "Zxxxxxxxx"
+    enable_http_endpoint = true
+
+    scaling_configuration = [
+      {
+        auto_pause               = true
+        max_capacity             = 16
+        min_capacity             = 1
+        seconds_until_auto_pause = 300
+        timeout_action           = "ForceApplyCapacityChange"
+      }
+    ]
+  }
+  ```
+
   [With cluster parameters](examples/with_cluster_parameters)
 
   ```hcl
@@ -99,7 +146,7 @@ usage: |2-
     source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
     engine          = "aurora"
     cluster_family  = "aurora-mysql5.7"
-    cluster_size    = "2"
+    cluster_size    = 2
     namespace       = "eg"
     stage           = "dev"
     name            = "db"
@@ -190,14 +237,14 @@ usage: |2-
     source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
     engine          = "aurora-postgresql"
     cluster_family  = "aurora-postgresql9.6"
-    cluster_size    = "2"
+    cluster_size    = 2
     namespace       = "eg"
     stage           = "dev"
     name            = "db"
     admin_user      = "admin1"
     admin_password  = "Test123456789"
     db_name         = "dbname"
-    db_port         = "5432"
+    db_port         = 5432
     instance_type   = "db.r4.large"
     vpc_id          = "vpc-xxxxxxx"
     security_groups = ["sg-xxxxxxxx"]
@@ -211,23 +258,28 @@ usage: |2-
     rds_monitoring_role_arn = aws_iam_role.enhanced_monitoring.arn
   }
   ```
+
+examples: |-
+  Review the [complete example](examples/complete) to see how to use this module.
+
 include:
-- docs/targets.md
-- docs/terraform.md
+  - docs/targets.md
+  - docs/terraform.md
+
 contributors:
-- name: Erik Osterman
-  github: osterman
-- name: Igor Rodionov
-  github: goruha
-- name: Andriy Knysh
-  github: aknysh
-- name: Sarkis Varozian
-  github: sarkis
-- name: Mike Crowe
-  github: mike-zipit
-- name: Sergey Vasilyev
-  github: s2504s
-- name: Todor Todorov
-  github: tptodorov
-- name: Lee Huffman
-  github: leehuffman
+  - name: Erik Osterman
+    github: osterman
+  - name: Igor Rodionov
+    github: goruha
+  - name: Andriy Knysh
+    github: aknysh
+  - name: Sarkis Varozian
+    github: sarkis
+  - name: Mike Crowe
+    github: mike-zipit
+  - name: Sergey Vasilyev
+    github: s2504s
+  - name: Todor Todorov
+    github: tptodorov
+  - name: Lee Huffman
+    github: leehuffman

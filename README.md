@@ -1,4 +1,6 @@
+<!-- markdownlint-disable -->
 # terraform-aws-rds-cluster [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg)](https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+<!-- markdownlint-restore -->
 
 [![README Header][readme_header_img]][readme_header_link]
 
@@ -69,6 +71,10 @@ Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest re
 
 
 
+For a complete example, see [examples/complete](examples/complete).
+
+For automated tests of the complete example using [bats](https://github.com/bats-core/bats-core) and [Terratest](https://github.com/gruntwork-io/terratest) (which tests and deploys the example on AWS), see [test](test).
+
 [Basic example](examples/basic)
 
 ```hcl
@@ -77,13 +83,13 @@ module "rds_cluster_aurora_postgres" {
   name            = "postgres"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   admin_user      = "admin1"
   admin_password  = "Test123456789"
   db_name         = "dbname"
-  db_port         = "5432"
+  db_port         = 5432
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxxx"
   security_groups = ["sg-xxxxxxxx"]
@@ -93,7 +99,7 @@ module "rds_cluster_aurora_postgres" {
 ```
 
 
-[Serverless MySQL](examples/serverless_mysql)
+[Serverless Aurora MySQL 5.6](examples/serverless_mysql)
 
 ```hcl
 module "rds_cluster_aurora_mysql_serverless" {
@@ -104,11 +110,11 @@ module "rds_cluster_aurora_mysql_serverless" {
   engine               = "aurora"
   engine_mode          = "serverless"
   cluster_family       = "aurora5.6"
-  cluster_size         = "0"
+  cluster_size         = 0
   admin_user           = "admin1"
   admin_password       = "Test123456789"
   db_name              = "dbname"
-  db_port              = "3306"
+  db_port              = 3306
   instance_type        = "db.t2.small"
   vpc_id               = "vpc-xxxxxxxx"
   security_groups      = ["sg-xxxxxxxx"]
@@ -127,6 +133,41 @@ module "rds_cluster_aurora_mysql_serverless" {
 }
 ```
 
+[Serverless Aurora 2.07.1 MySQL 5.7](examples/serverless_mysql57)
+
+```hcl
+module "rds_cluster_aurora_mysql_serverless" {
+  source               = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  namespace            = "eg"
+  stage                = "dev"
+  name                 = "db"
+  engine               = "aurora-mysql"
+  engine_mode          = "serverless"
+  engine_version       = "5.7.mysql_aurora.2.07.1"
+  cluster_family       = "aurora-mysql5.7"
+  cluster_size         = 0
+  admin_user           = "admin1"
+  admin_password       = "Test123456789"
+  db_name              = "dbname"
+  db_port              = 3306
+  vpc_id               = "vpc-xxxxxxxx"
+  security_groups      = ["sg-xxxxxxxx"]
+  subnets              = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
+  zone_id              = "Zxxxxxxxx"
+  enable_http_endpoint = true
+
+  scaling_configuration = [
+    {
+      auto_pause               = true
+      max_capacity             = 16
+      min_capacity             = 1
+      seconds_until_auto_pause = 300
+      timeout_action           = "ForceApplyCapacityChange"
+    }
+  ]
+}
+```
+
 [With cluster parameters](examples/with_cluster_parameters)
 
 ```hcl
@@ -134,7 +175,7 @@ module "rds_cluster_aurora_mysql" {
   source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine          = "aurora"
   cluster_family  = "aurora-mysql5.7"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   name            = "db"
@@ -225,14 +266,14 @@ module "rds_cluster_aurora_postgres" {
   source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
-  cluster_size    = "2"
+  cluster_size    = 2
   namespace       = "eg"
   stage           = "dev"
   name            = "db"
   admin_user      = "admin1"
   admin_password  = "Test123456789"
   db_name         = "dbname"
-  db_port         = "5432"
+  db_port         = 5432
   instance_type   = "db.r4.large"
   vpc_id          = "vpc-xxxxxxx"
   security_groups = ["sg-xxxxxxxx"]
@@ -250,6 +291,10 @@ module "rds_cluster_aurora_postgres" {
 
 
 
+## Examples
+
+Review the [complete example](examples/complete) to see how to use this module.
+
 
 
 <!-- markdownlint-disable -->
@@ -264,24 +309,26 @@ Available targets:
 
 ```
 <!-- markdownlint-restore -->
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0, < 0.14.0 |
-| aws | ~> 2.0 |
-| null | ~> 2.0 |
+| terraform | >= 0.12.0 |
+| aws | >= 2.0 |
+| null | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.0 |
+| aws | >= 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
 | admin\_password | (Required unless a snapshot\_identifier is provided) Password for the master DB user | `string` | `""` | no |
 | admin\_user | (Required unless a snapshot\_identifier is provided) Username for the master DB user | `string` | `"admin"` | no |
 | allowed\_cidr\_blocks | List of CIDR blocks allowed to access the cluster | `list(string)` | `[]` | no |
@@ -303,42 +350,49 @@ Available targets:
 | cluster\_identifier | The RDS Cluster Identifier. Will use generated label ID if not supplied | `string` | `""` | no |
 | cluster\_parameters | List of DB cluster parameters to apply | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | cluster\_size | Number of DB instances to create in the cluster | `number` | `2` | no |
+| context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | <pre>object({<br>    enabled             = bool<br>    namespace           = string<br>    environment         = string<br>    stage               = string<br>    name                = string<br>    delimiter           = string<br>    attributes          = list(string)<br>    tags                = map(string)<br>    additional_tag_map  = map(string)<br>    regex_replace_chars = string<br>    label_order         = list(string)<br>    id_length_limit     = number<br>  })</pre> | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_order": [],<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
 | copy\_tags\_to\_snapshot | Copy tags to backup snapshots | `bool` | `false` | no |
 | db\_name | Database name (default is not to create a database) | `string` | `""` | no |
 | db\_port | Database port | `number` | `3306` | no |
 | deletion\_protection | If the DB instance should have deletion protection enabled | `bool` | `false` | no |
-| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | `string` | `"-"` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | enable\_http\_endpoint | Enable HTTP endpoint (data API). Only valid when engine\_mode is set to serverless | `bool` | `false` | no |
-| enabled | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
+| enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | enabled\_cloudwatch\_logs\_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | `list(string)` | `[]` | no |
 | engine | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | `string` | `"aurora"` | no |
 | engine\_mode | The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless` | `string` | `"provisioned"` | no |
 | engine\_version | The version of the database engine to use. See `aws rds describe-db-engine-versions` | `string` | `""` | no |
-| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | `string` | `""` | no |
+| enhanced\_monitoring\_role\_enabled | A boolean flag to enable/disable the creation of the enhanced monitoring IAM role. If set to `false`, the module will not create a new role and will use `rds_monitoring_role_arn` for enhanced monitoring | `bool` | `false` | no |
+| environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | global\_cluster\_identifier | ID of the Aurora global cluster | `string` | `""` | no |
 | iam\_database\_authentication\_enabled | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | `bool` | `false` | no |
 | iam\_roles | Iam roles for the Aurora cluster | `list(string)` | `[]` | no |
+| id\_length\_limit | Limit `id` to this many characters.<br>Set to `0` for unlimited length.<br>Set to `null` for default, which is `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
 | instance\_availability\_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | `string` | `""` | no |
 | instance\_parameters | List of DB instance parameters to apply | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | instance\_type | Instance type to use | `string` | `"db.t2.small"` | no |
 | kms\_key\_arn | The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | `string` | `""` | no |
+| label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | maintenance\_window | Weekly time range during which system maintenance can occur, in UTC | `string` | `"wed:03:00-wed:04:00"` | no |
-| name | Solution name, e.g. 'app' or 'jenkins' | `string` | `""` | no |
-| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `""` | no |
+| name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
+| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |
 | performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
 | publicly\_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | `bool` | `false` | no |
-| rds\_monitoring\_interval | Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60) | `number` | `0` | no |
-| rds\_monitoring\_role\_arn | The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs | `string` | `""` | no |
+| rds\_monitoring\_interval | The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60 | `number` | `0` | no |
+| rds\_monitoring\_role\_arn | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs | `string` | `null` | no |
 | reader\_dns\_name | Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name` | `string` | `""` | no |
+| regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | replication\_source\_identifier | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | `string` | `""` | no |
+| restore\_to\_point\_in\_time | List point-in-time recovery options. Only valid actions are `source_cluster_identifier`, `restore_type` and `use_latest_restorable_time` | <pre>list(object({<br>    source_cluster_identifier  = string<br>    restore_type               = string<br>    use_latest_restorable_time = bool<br>  }))</pre> | `[]` | no |
 | retention\_period | Number of days to retain backups for | `number` | `5` | no |
+| s3\_import | Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource. | <pre>object({<br>    bucket_name           = string<br>    bucket_prefix         = string<br>    ingestion_role        = string<br>    source_engine         = string<br>    source_engine_version = string<br>  })</pre> | `null` | no |
 | scaling\_configuration | List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless` | <pre>list(object({<br>    auto_pause               = bool<br>    max_capacity             = number<br>    min_capacity             = number<br>    seconds_until_auto_pause = number<br>    timeout_action           = string<br>  }))</pre> | `[]` | no |
 | security\_groups | List of security groups to be allowed to connect to the DB instance | `list(string)` | `[]` | no |
 | skip\_final\_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted | `bool` | `true` | no |
-| snapshot\_identifier | Specifies whether or not to create this cluster from a snapshot | `string` | `""` | no |
+| snapshot\_identifier | Specifies whether or not to create this cluster from a snapshot | `string` | `null` | no |
 | source\_region | Source Region of primary cluster, needed when using encrypted storage and region replicas | `string` | `""` | no |
-| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `""` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | storage\_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | `bool` | `false` | no |
 | subnets | List of VPC subnet IDs | `list(string)` | n/a | yes |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
@@ -351,7 +405,7 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| arn | Amazon Resource Name (ARN) of cluster |
+| arn | Amazon Resource Name (ARN) of the cluster |
 | cluster\_identifier | Cluster Identifier |
 | cluster\_resource\_id | The region-unique, immutable identifie of the cluster |
 | cluster\_security\_groups | Default RDS cluster security groups |
@@ -362,7 +416,11 @@ Available targets:
 | master\_username | Username for the master DB user |
 | reader\_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas\_host | Replicas hostname |
+| security\_group\_arn | Security Group ARN |
+| security\_group\_id | Security Group ID |
+| security\_group\_name | Security Group name |
 
+<!-- markdownlint-restore -->
 
 
 
@@ -510,8 +568,10 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 
 ### Contributors
 
+<!-- markdownlint-disable -->
 |  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Sarkis Varozian][sarkis_avatar]][sarkis_homepage]<br/>[Sarkis Varozian][sarkis_homepage] | [![Mike Crowe][mike-zipit_avatar]][mike-zipit_homepage]<br/>[Mike Crowe][mike-zipit_homepage] | [![Sergey Vasilyev][s2504s_avatar]][s2504s_homepage]<br/>[Sergey Vasilyev][s2504s_homepage] | [![Todor Todorov][tptodorov_avatar]][tptodorov_homepage]<br/>[Todor Todorov][tptodorov_homepage] | [![Lee Huffman][leehuffman_avatar]][leehuffman_homepage]<br/>[Lee Huffman][leehuffman_homepage] |
 |---|---|---|---|---|---|---|---|
+<!-- markdownlint-restore -->
 
   [osterman_homepage]: https://github.com/osterman
   [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
