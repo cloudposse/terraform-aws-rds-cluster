@@ -86,7 +86,9 @@ For automated tests of the complete example using [bats](https://github.com/bats
 
 ```hcl
 module "rds_cluster_aurora_postgres" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source = "cloudposse/rds-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
   name            = "postgres"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
@@ -110,7 +112,9 @@ module "rds_cluster_aurora_postgres" {
 
 ```hcl
 module "rds_cluster_aurora_mysql_serverless" {
-  source               = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source = "cloudposse/rds-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
   namespace            = "eg"
   stage                = "dev"
   name                 = "db"
@@ -144,7 +148,9 @@ module "rds_cluster_aurora_mysql_serverless" {
 
 ```hcl
 module "rds_cluster_aurora_mysql_serverless" {
-  source               = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source = "cloudposse/rds-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
   namespace            = "eg"
   stage                = "dev"
   name                 = "db"
@@ -179,7 +185,9 @@ module "rds_cluster_aurora_mysql_serverless" {
 
 ```hcl
 module "rds_cluster_aurora_mysql" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source = "cloudposse/rds-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
   engine          = "aurora"
   cluster_family  = "aurora-mysql5.7"
   cluster_size    = 2
@@ -270,7 +278,9 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 module "rds_cluster_aurora_postgres" {
-  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=master"
+  source = "cloudposse/rds-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
   engine          = "aurora-postgresql"
   cluster_family  = "aurora-postgresql9.6"
   cluster_size    = 2
