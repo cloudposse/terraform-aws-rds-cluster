@@ -6,6 +6,7 @@ output "name" {
 output "master_username" {
   value       = module.rds_cluster_aurora_mysql_serverless.master_username
   description = "Username for the master DB user"
+  sensitive   = true
 }
 
 output "cluster_identifier" {

@@ -6,6 +6,7 @@ output "database_name" {
 output "master_username" {
   value       = module.rds_cluster.master_username
   description = "Username for the master DB user"
+  sensitive   = true
 }
 
 output "cluster_identifier" {
