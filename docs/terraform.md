@@ -4,14 +4,14 @@
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12.26 |
-| aws | >= 2.0 |
+| aws | >= 3.1.15 |
 | null | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 2.0 |
+| aws | >= 3.1.15 |
 
 ## Inputs
 
