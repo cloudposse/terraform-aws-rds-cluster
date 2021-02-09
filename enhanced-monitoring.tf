@@ -3,7 +3,7 @@
 
 module "enhanced_monitoring_label" {
   source  = "cloudposse/label/null"
-  version = "0.22.0"
+  version = "0.24.1"
 
   enabled    = module.this.enabled && var.enhanced_monitoring_role_enabled
   attributes = concat(module.this.attributes, ["enhanced-monitoring"])
