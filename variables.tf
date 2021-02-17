@@ -200,7 +200,7 @@ variable "storage_encrypted" {
 
 variable "kms_key_arn" {
   type        = string
-  description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
+  description = "The ARN for the KMS encryption key. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
   default     = ""
 }
 
@@ -273,7 +273,7 @@ variable "performance_insights_enabled" {
 variable "performance_insights_kms_key_id" {
   type        = string
   default     = ""
-  description = "The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
+  description = "The ARN for the KMS key to encrypt Performance Insights data. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
 }
 
 variable "autoscaling_enabled" {
