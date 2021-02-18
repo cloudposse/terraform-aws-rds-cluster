@@ -13,6 +13,32 @@
 |------|---------|
 | aws | >= 3.1.15 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| dns_master | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
+| dns_replicas | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
+| enhanced_monitoring_label | cloudposse/label/null | 0.24.1 |
+| this | cloudposse/label/null | 0.24.1 |
+
+## Resources
+
+| Name |
+|------|
+| [aws_appautoscaling_policy](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/appautoscaling_policy) |
+| [aws_appautoscaling_target](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/appautoscaling_target) |
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_parameter_group) |
+| [aws_db_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_subnet_group) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role_policy_attachment) |
+| [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster) |
+| [aws_rds_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_instance) |
+| [aws_rds_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_parameter_group) |
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group) |
+| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group_rule) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -65,6 +91,7 @@
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
 | maintenance\_window | Weekly time range during which system maintenance can occur, in UTC | `string` | `"wed:03:00-wed:04:00"` | no |
+| make\_primary\_cluster | Set true or false to force the cluster to be created as primary or secondary. Leave null to set automatically based on global\_cluster\_identifier. | `bool` | `null` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |
@@ -110,5 +137,4 @@
 | security\_group\_arn | Security Group ARN |
 | security\_group\_id | Security Group ID |
 | security\_group\_name | Security Group name |
-
 <!-- markdownlint-restore -->
