@@ -342,6 +342,12 @@ variable "reader_dns_name" {
   default     = ""
 }
 
+variable "make_primary_cluster" {
+  type        = bool
+  description = "Set true or false to force the cluster to be created as primary or secondary. Leave null to set automatically based on global_cluster_identifier."
+  default     = null
+}
+
 variable "global_cluster_identifier" {
   type        = string
   description = "ID of the Aurora global cluster"
