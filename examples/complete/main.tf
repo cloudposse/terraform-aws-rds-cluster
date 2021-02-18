@@ -25,6 +25,13 @@ module "subnets" {
   context = module.this.context
 }
 
+module "kms_key" {
+  source  = "cloudposse/kms-key/aws"
+  version = "0.9.0"
+
+  context = module.this.context
+}
+
 module "rds_cluster" {
   source = "../../"
 
@@ -41,6 +48,11 @@ module "rds_cluster" {
   security_groups     = [module.vpc.vpc_default_security_group_id]
   deletion_protection = var.deletion_protection
   autoscaling_enabled = var.autoscaling_enabled
+
+  storage_encrypted            = true
+  kms_key_arn                  = module.kms_key.key_arn
+  performance_insights_enabled = true
+  # performance_insights_kms_key_id = "" # Use aws/rds
 
   cluster_parameters = [
     {

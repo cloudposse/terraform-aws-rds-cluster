@@ -21,4 +21,7 @@ module "rds_cluster_aurora_postgres" {
   security_groups = ["sg-xxxxxxxx"]
   subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
   zone_id         = "Zxxxxxxxx"
+
+  storage_encrypted = true
+  # kms_key_arn = "" # Use aws/rds
 }
