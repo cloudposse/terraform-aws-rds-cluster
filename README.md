@@ -380,6 +380,7 @@ Available targets:
 | [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/iam_policy_document) |
 | [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role_policy_attachment) |
 | [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role) |
+| [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/kms_key) |
 | [aws_rds_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_instance) |
 | [aws_rds_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_parameter_group) |
 | [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster) |
@@ -434,7 +435,7 @@ Available targets:
 | instance\_availability\_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | `string` | `""` | no |
 | instance\_parameters | List of DB instance parameters to apply | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | instance\_type | Instance type to use | `string` | `"db.t2.small"` | no |
-| kms\_key\_arn | The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | `string` | `""` | no |
+| kms\_key\_arn | The ARN for the KMS encryption key. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | `string` | `""` | no |
 | label\_key\_case | The letter case of label keys (`tag` names) (i.e. `name`, `namespace`, `environment`, `stage`, `attributes`) to use in `tags`.<br>Possible values: `lower`, `title`, `upper`.<br>Default value: `title`. | `string` | `null` | no |
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
@@ -442,7 +443,7 @@ Available targets:
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |
-| performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
+| performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
 | publicly\_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | `bool` | `false` | no |
 | rds\_monitoring\_interval | The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60 | `number` | `0` | no |
 | rds\_monitoring\_role\_arn | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs | `string` | `null` | no |
