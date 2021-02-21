@@ -378,13 +378,13 @@ Available targets:
 | [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_parameter_group) |
 | [aws_db_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_subnet_group) |
 | [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/iam_policy_document) |
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role) |
 | [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role_policy_attachment) |
-| [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role) |
 | [aws_rds_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_instance) |
 | [aws_rds_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_parameter_group) |
-| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group) |
+| [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster) |
 | [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group_rule) |
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group) |
 
 ## Inputs
 
@@ -412,6 +412,7 @@ Available targets:
 | cluster\_identifier | The RDS Cluster Identifier. Will use generated label ID if not supplied | `string` | `""` | no |
 | cluster\_parameters | List of DB cluster parameters to apply | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | cluster\_size | Number of DB instances to create in the cluster | `number` | `2` | no |
+| cluster\_type | Either `regional` or `global`.<br>If `regional` will be created as a normal, standalone DB.<br>If `global`, will be made part of a Global cluster (requires `global_cluster_identifier`). | `string` | `"regional"` | no |
 | context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | `any` | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_key_case": null,<br>  "label_order": [],<br>  "label_value_case": null,<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
 | copy\_tags\_to\_snapshot | Copy tags to backup snapshots | `bool` | `false` | no |
 | db\_name | Database name (default is not to create a database) | `string` | `""` | no |
@@ -438,7 +439,6 @@ Available targets:
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
 | maintenance\_window | Weekly time range during which system maintenance can occur, in UTC | `string` | `"wed:03:00-wed:04:00"` | no |
-| make\_primary\_cluster | Set true or false to force the cluster to be created as primary or secondary. Leave null to set automatically based on global\_cluster\_identifier. | `bool` | `null` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |

@@ -1,6 +1,6 @@
 locals {
   cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_regional_cluster     = var.cluster_type == "regional"
+  is_regional_cluster    = var.cluster_type == "regional"
 }
 
 resource "aws_security_group" "default" {

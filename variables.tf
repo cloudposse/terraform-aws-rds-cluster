@@ -352,7 +352,7 @@ variable "cluster_type" {
   default     = "regional"
 
   validation {
-    condition     = contains(["regional","global"], var.cluster_type)
+    condition     = contains(["regional", "global"], var.cluster_type)
     error_message = "Allowed values: `regional` (standalone), `global` (part of global cluster)."
   }
 }
