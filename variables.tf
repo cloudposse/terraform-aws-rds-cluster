@@ -342,10 +342,19 @@ variable "reader_dns_name" {
   default     = ""
 }
 
-variable "make_primary_cluster" {
-  type        = bool
-  description = "Set true or false to force the cluster to be created as primary or secondary. Leave null to set automatically based on global_cluster_identifier."
-  default     = null
+variable "cluster_type" {
+  type        = string
+  description = <<-EOT
+    Either `regional` or `global`.
+    If `regional` will be created as a normal, standalone DB.
+    If `global`, will be made part of a Global cluster (requires `global_cluster_identifier`).
+    EOT
+  default     = "regional"
+
+  validation {
+    condition     = contains(["regional","global"], var.cluster_type)
+    error_message = "Allowed values: `regional` (standalone), `global` (part of global cluster)."
+  }
 }
 
 variable "global_cluster_identifier" {

@@ -1,6 +1,6 @@
 locals {
   cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_primary_cluster     = var.make_primary_cluster != null ? var.make_primary_cluster : var.global_cluster_identifier == null || var.global_cluster_identifier == "" ? true : false
+  is_regional_cluster     = var.cluster_type == "regional"
 }
 
 resource "aws_security_group" "default" {
@@ -44,8 +44,10 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
+# The name "primary" is poorly chosen. We actually mean standalone or regional.
+# The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count                               = module.this.enabled && local.is_primary_cluster ? 1 : 0
+  count                               = module.this.enabled && local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user
@@ -120,7 +122,7 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = module.this.enabled && ! local.is_primary_cluster ? 1 : 0
+  count                               = module.this.enabled && ! local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user

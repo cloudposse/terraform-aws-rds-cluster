@@ -6,7 +6,7 @@ module "enhanced_monitoring_label" {
   version = "0.24.1"
 
   enabled    = module.this.enabled && var.enhanced_monitoring_role_enabled
-  attributes = concat(module.this.attributes, ["enhanced-monitoring"])
+  attributes = ["enhanced-monitoring"]
 
   context = module.this.context
 }
