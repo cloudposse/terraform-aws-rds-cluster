@@ -196,7 +196,7 @@ resource "aws_rds_cluster" "secondary" {
   lifecycle {
     ignore_changes = [
       replication_source_identifier, # will be set/managed by Global Cluster
-      snapshot_identifier, # if created from a snapshot, will be non-null at creation, but null afterwards
+      snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
     ]
   }
 }
