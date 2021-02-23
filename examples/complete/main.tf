@@ -52,7 +52,7 @@ module "rds_cluster" {
   storage_encrypted            = true
   kms_key_arn                  = module.kms_key.key_arn
   performance_insights_enabled = true
-  # performance_insights_kms_key_id = "" # Use aws/rds
+  # performance_insights_kms_key_id = "" # Generate a key
 
   cluster_parameters = [
     {

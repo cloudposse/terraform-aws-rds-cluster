@@ -37,3 +37,13 @@ output "replicas_host" {
   value       = module.rds_cluster_aurora_postgres.replicas_host
   description = "Replicas hostname"
 }
+
+output "storage_kms_key_arn" {
+  value       = module.rds_cluster_aurora_postgres.storage_kms_key_arn
+  description = "Storage KMS key ARN"
+}
+
+output "performance_insights_kms_key_arn" {
+  value       = module.rds_cluster_aurora_postgres.performance_insights_kms_key_arn
+  description = "Performance Insights KMS key ARN"
+}

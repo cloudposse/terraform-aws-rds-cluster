@@ -22,6 +22,7 @@ module "rds_cluster_aurora_postgres" {
   subnets         = ["subnet-xxxxxxxx", "subnet-xxxxxxxx"]
   zone_id         = "Zxxxxxxxx"
 
-  storage_encrypted = true
-  # kms_key_arn = "" # Use aws/rds
+  # Create the KMS keys
+  storage_encrypted            = true
+  performance_insights_enabled = true
 }

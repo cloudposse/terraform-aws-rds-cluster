@@ -77,3 +77,13 @@ output "security_group_name" {
   value       = module.rds_cluster.security_group_name
   description = "Security Group name"
 }
+
+output "storage_kms_key_arn" {
+  value       = module.rds_cluster_aurora_postgres.storage_kms_key_arn
+  description = "Storage KMS key ARN"
+}
+
+output "performance_insights_kms_key_arn" {
+  value       = module.rds_cluster_aurora_postgres.performance_insights_kms_key_arn
+  description = "Performance Insights KMS key ARN"
+}
