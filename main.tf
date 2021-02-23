@@ -1,16 +1,6 @@
 locals {
   cluster_instance_count = module.this.enabled ? var.cluster_size : 0
   is_regional_cluster    = var.cluster_type == "regional"
-
-  storage_use_aws_managed_kms_key              = var.storage_encrypted && var.kms_key_arn == "" ? true : false
-  storage_kms_key_arn                          = local.storage_use_aws_managed_kms_key ? data.aws_kms_key.aws_rds[0].arn : var.kms_key_arn
-  performance_insights_use_aws_managed_kms_key = var.performance_insights_enabled && var.performance_insights_kms_key_id == "" ? true : false
-  performance_insights_kms_key_id              = local.performance_insights_use_aws_managed_kms_key ? data.aws_kms_key.aws_rds[0].arn : var.performance_insights_kms_key_id
-}
-
-data "aws_kms_key" "aws_rds" {
-  count  = local.storage_use_aws_managed_kms_key || local.performance_insights_use_aws_managed_kms_key ? 1 : 0
-  key_id = "alias/aws/rds"
 }
 
 resource "aws_security_group" "default" {

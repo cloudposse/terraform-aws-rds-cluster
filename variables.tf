@@ -194,13 +194,13 @@ variable "publicly_accessible" {
 
 variable "storage_encrypted" {
   type        = bool
-  description = "Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode`"
+  description = "Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode`. Specify the key to use with `kms_key_arn`"
   default     = false
 }
 
 variable "kms_key_arn" {
   type        = string
-  description = "The ARN for the KMS encryption key. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
+  description = "The ARN for the KMS encryption key. If not specified, a key will be created. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
   default     = ""
 }
 
@@ -267,13 +267,13 @@ variable "enabled_cloudwatch_logs_exports" {
 variable "performance_insights_enabled" {
   type        = bool
   default     = false
-  description = "Whether to enable Performance Insights"
+  description = "Whether to enable Performance Insights. Specify the KMS key to use with `performance_insights_kms_key_id`"
 }
 
 variable "performance_insights_kms_key_id" {
   type        = string
   default     = ""
-  description = "The ARN for the KMS key to encrypt Performance Insights data. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
+  description = "The ARN for the KMS key to encrypt Performance Insights data. If not specified, a key will be created. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
 }
 
 variable "autoscaling_enabled" {

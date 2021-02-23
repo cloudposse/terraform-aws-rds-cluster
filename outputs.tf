@@ -67,3 +67,13 @@ output "security_group_name" {
   value       = join("", aws_security_group.default.*.name)
   description = "Security Group name"
 }
+
+output "storage_kms_key_arn" {
+  value       = local.storage_kms_key_arn
+  description = "Storage KMS key ARN"
+}
+
+output "performance_insights_kms_key_arn" {
+  value       = local.performance_insights_kms_key_id
+  description = "Performance Insights KMS key ARN"
+}
