@@ -20,25 +20,29 @@
 | dns_master | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | dns_replicas | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | enhanced_monitoring_label | cloudposse/label/null | 0.24.1 |
+| performance_insights_kms_key | cloudposse/kms-key/aws | ~> 0.9 |
+| storage_kms_key | cloudposse/kms-key/aws | ~> 0.9 |
 | this | cloudposse/label/null | 0.24.1 |
 
 ## Resources
 
 | Name |
 |------|
-| [aws_appautoscaling_policy](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/appautoscaling_policy) |
-| [aws_appautoscaling_target](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/appautoscaling_target) |
-| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_parameter_group) |
-| [aws_db_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/db_subnet_group) |
-| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/iam_policy_document) |
-| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role_policy_attachment) |
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/iam_role) |
-| [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/data-sources/kms_key) |
-| [aws_rds_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_instance) |
-| [aws_rds_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster_parameter_group) |
-| [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/rds_cluster) |
-| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group_rule) |
-| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/3.1.15/docs/resources/security_group) |
+| [aws_appautoscaling_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy) |
+| [aws_appautoscaling_target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target) |
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) |
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group) |
+| [aws_db_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+| [aws_partition](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) |
+| [aws_rds_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) |
+| [aws_rds_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance) |
+| [aws_rds_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_parameter_group) |
+| [aws_region](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) |
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) |
+| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) |
 
 ## Inputs
 
@@ -88,15 +92,15 @@
 | instance\_availability\_zone | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | `string` | `""` | no |
 | instance\_parameters | List of DB instance parameters to apply | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | instance\_type | Instance type to use | `string` | `"db.t2.small"` | no |
-| kms\_key\_arn | The ARN for the KMS encryption key. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | `string` | `""` | no |
+| kms\_key\_arn | The ARN for the KMS encryption key. If not specified, a key will be created. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true` | `string` | `""` | no |
 | label\_key\_case | The letter case of label keys (`tag` names) (i.e. `name`, `namespace`, `environment`, `stage`, `attributes`) to use in `tags`.<br>Possible values: `lower`, `title`, `upper`.<br>Default value: `title`. | `string` | `null` | no |
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
 | maintenance\_window | Weekly time range during which system maintenance can occur, in UTC | `string` | `"wed:03:00-wed:04:00"` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
-| performance\_insights\_enabled | Whether to enable Performance Insights | `bool` | `false` | no |
-| performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. If not specified, the AWS-managed key `aws/rds` will be used (it must already exist). When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
+| performance\_insights\_enabled | Whether to enable Performance Insights. Specify the KMS key to use with `performance_insights_kms_key_id` | `bool` | `false` | no |
+| performance\_insights\_kms\_key\_id | The ARN for the KMS key to encrypt Performance Insights data. If not specified, a key will be created. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
 | publicly\_accessible | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | `bool` | `false` | no |
 | rds\_monitoring\_interval | The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60 | `number` | `0` | no |
 | rds\_monitoring\_role\_arn | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs | `string` | `null` | no |
@@ -112,7 +116,7 @@
 | snapshot\_identifier | Specifies whether or not to create this cluster from a snapshot | `string` | `null` | no |
 | source\_region | Source Region of primary cluster, needed when using encrypted storage and region replicas | `string` | `""` | no |
 | stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
-| storage\_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode` | `bool` | `false` | no |
+| storage\_encrypted | Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode`. Specify the key to use with `kms_key_arn` | `bool` | `false` | no |
 | subnets | List of VPC subnet IDs | `list(string)` | n/a | yes |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 | timeouts\_configuration | List of timeout values per action. Only valid actions are `create`, `update` and `delete` | <pre>list(object({<br>    create = string<br>    update = string<br>    delete = string<br>  }))</pre> | `[]` | no |
@@ -133,9 +137,11 @@
 | endpoint | The DNS address of the RDS instance |
 | master\_host | DB Master hostname |
 | master\_username | Username for the master DB user |
+| performance\_insights\_kms\_key\_arn | Performance Insights KMS key ARN |
 | reader\_endpoint | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | replicas\_host | Replicas hostname |
 | security\_group\_arn | Security Group ARN |
 | security\_group\_id | Security Group ID |
 | security\_group\_name | Security Group name |
+| storage\_kms\_key\_arn | Storage KMS key ARN |
 <!-- markdownlint-restore -->
