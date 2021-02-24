@@ -11,6 +11,15 @@ locals {
       "Id": "auto-rds-2",
       "Statement": [
           {
+              "Sid": "Allow management of the key",
+              "Effect": "Allow",
+              "Principal": {
+                  "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+              },
+              "Action": "kms:*",
+              "Resource": "*"
+          },
+          {
               "Sid": "Allow access through RDS for all principals in the account that are authorized to use RDS",
               "Effect": "Allow",
               "Principal": {
