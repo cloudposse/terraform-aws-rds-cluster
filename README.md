@@ -207,7 +207,7 @@ module "rds_cluster_aurora_mysql" {
   source = "cloudposse/rds-cluster/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  engine          = "aurora"
+  engine          = "aurora-mysql"
   cluster_family  = "aurora-mysql5.7"
   cluster_size    = 2
   namespace       = "eg"
