@@ -6,7 +6,7 @@ provider "aws" {
 
 module "rds_cluster_aurora_mysql" {
   source          = "../../"
-  engine          = "aurora"
+  engine          = "aurora-mysql"
   cluster_family  = "aurora-mysql5.7"
   cluster_size    = 2
   namespace       = "eg"
