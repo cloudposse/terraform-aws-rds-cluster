@@ -70,6 +70,7 @@ resource "aws_rds_cluster" "primary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
@@ -151,6 +152,7 @@ resource "aws_rds_cluster" "secondary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
