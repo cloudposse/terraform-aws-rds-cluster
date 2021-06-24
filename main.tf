@@ -40,7 +40,7 @@ resource "aws_security_group_rule" "egress" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"] #tfsec:ignore:AWS009
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
@@ -51,7 +51,7 @@ resource "aws_rds_cluster" "primary" {
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_password                     = var.admin_password #tfsec:ignore:GEN003
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -59,7 +59,7 @@ resource "aws_rds_cluster" "primary" {
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
   storage_encrypted                   = var.engine_mode == "serverless" ? null : var.storage_encrypted
-  kms_key_id                          = var.kms_key_arn
+  kms_key_id                          = var.kms_key_arn #tfsec:ignore:AWS051
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
@@ -133,7 +133,7 @@ resource "aws_rds_cluster" "secondary" {
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_password                     = var.admin_password #tfsec:ignore:GEN003
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -141,7 +141,7 @@ resource "aws_rds_cluster" "secondary" {
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
   storage_encrypted                   = var.storage_encrypted
-  kms_key_id                          = var.kms_key_arn
+  kms_key_id                          = var.kms_key_arn #tfsec:ignore:AWS051
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
