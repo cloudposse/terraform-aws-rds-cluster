@@ -1,51 +1,3 @@
-variable "namespace" {
-  type        = string
-  default     = ""
-  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
-}
-
-variable "environment" {
-  type        = string
-  default     = ""
-  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
-}
-
-variable "stage" {
-  type        = string
-  default     = ""
-  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
-}
-
-variable "name" {
-  type        = string
-  default     = ""
-  description = "Solution name, e.g. 'app' or 'jenkins'"
-}
-
-variable "enabled" {
-  type        = bool
-  default     = true
-  description = "Set to false to prevent the module from creating any resources"
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  default     = []
-  description = "Additional attributes (e.g. `1`)"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
-}
-
 variable "zone_id" {
   type        = string
   default     = ""
@@ -88,7 +40,7 @@ variable "cluster_size" {
 
 variable "snapshot_identifier" {
   type        = string
-  default     = ""
+  default     = null
   description = "Specifies whether or not to create this cluster from a snapshot"
 }
 
@@ -178,10 +130,28 @@ variable "engine_version" {
   description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
+variable "allow_major_version_upgrade" {
+  type        = bool
+  default     = false
+  description = "Enable to allow major engine version upgrades when changing engine versions. Defaults to false."
+}
+
 variable "auto_minor_version_upgrade" {
   type        = bool
   default     = true
   description = "Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window"
+}
+
+variable "s3_import" {
+  type = object({
+    bucket_name           = string
+    bucket_prefix         = string
+    ingestion_role        = string
+    source_engine         = string
+    source_engine_version = string
+  })
+  default     = null
+  description = "Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource."
 }
 
 variable "scaling_configuration" {
@@ -204,6 +174,16 @@ variable "timeouts_configuration" {
   }))
   default     = []
   description = "List of timeout values per action. Only valid actions are `create`, `update` and `delete`"
+}
+
+variable "restore_to_point_in_time" {
+  type = list(object({
+    source_cluster_identifier  = string
+    restore_type               = string
+    use_latest_restorable_time = bool
+  }))
+  default     = []
+  description = "List point-in-time recovery options. Only valid actions are `source_cluster_identifier`, `restore_type` and `use_latest_restorable_time`"
 }
 
 variable "allowed_cidr_blocks" {
@@ -262,14 +242,20 @@ variable "iam_database_authentication_enabled" {
 
 variable "rds_monitoring_interval" {
   type        = number
-  description = "Interval in seconds that metrics are collected, 0 to disable (values can only be 0, 1, 5, 10, 15, 30, 60)"
+  description = "The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60"
   default     = 0
 }
 
 variable "rds_monitoring_role_arn" {
   type        = string
-  default     = ""
-  description = "The ARN for the IAM role that can send monitoring metrics to CloudWatch Logs"
+  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs"
+  default     = null
+}
+
+variable "enhanced_monitoring_role_enabled" {
+  type        = bool
+  description = "A boolean flag to enable/disable the creation of the enhanced monitoring IAM role. If set to `false`, the module will not create a new role and will use `rds_monitoring_role_arn` for enhanced monitoring"
+  default     = false
 }
 
 variable "replication_source_identifier" {
@@ -360,6 +346,21 @@ variable "reader_dns_name" {
   type        = string
   description = "Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name`"
   default     = ""
+}
+
+variable "cluster_type" {
+  type        = string
+  description = <<-EOT
+    Either `regional` or `global`.
+    If `regional` will be created as a normal, standalone DB.
+    If `global`, will be made part of a Global cluster (requires `global_cluster_identifier`).
+    EOT
+  default     = "regional"
+
+  validation {
+    condition     = contains(["regional", "global"], var.cluster_type)
+    error_message = "Allowed values: `regional` (standalone), `global` (part of global cluster)."
+  }
 }
 
 variable "global_cluster_identifier" {
