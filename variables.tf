@@ -127,7 +127,13 @@ variable "engine_mode" {
 variable "engine_version" {
   type        = string
   default     = ""
-  description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
+  description = "The version of the database engine to use. See `aws rds describe-db-engine-versions`."
+}
+
+variable "engine_version_actual" {
+  type        = string
+  default     = null
+  description = "The exact version of the database engine to use. See `aws rds describe-db-engine-versions`."
 }
 
 variable "allow_major_version_upgrade" {
