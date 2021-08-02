@@ -70,6 +70,7 @@ resource "aws_rds_cluster" "primary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
+  engine_version_actual               = var.engine_version_actual
   allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
@@ -152,7 +153,7 @@ resource "aws_rds_cluster" "secondary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
-  engine_version_actual               = coalesce(var.engine_version_actual, var.engine_version)
+  engine_version_actual               = var.engine_version_actual
   allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
@@ -215,7 +216,7 @@ resource "aws_rds_cluster_instance" "default" {
   tags                            = module.this.tags
   engine                          = var.engine
   engine_version                  = var.engine_version
-  engine_version_actual           = coalesce(var.engine_version_actual, var.engine_version)
+  engine_version_actual           = var.engine_version_actual
   auto_minor_version_upgrade      = var.auto_minor_version_upgrade
   monitoring_interval             = var.rds_monitoring_interval
   monitoring_role_arn             = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
