@@ -70,10 +70,17 @@ resource "aws_rds_cluster" "primary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+
+  depends_on = [
+    aws_db_subnet_group.default,
+    aws_rds_cluster_parameter_group.default,
+    aws_security_group.default,
+  ]
 
   dynamic "s3_import" {
     for_each = var.s3_import[*]
@@ -145,10 +152,18 @@ resource "aws_rds_cluster" "secondary" {
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+
+  depends_on = [
+    aws_db_subnet_group.default,
+    aws_db_parameter_group.default,
+    aws_rds_cluster_parameter_group.default,
+    aws_security_group.default,
+  ]
 
   dynamic "scaling_configuration" {
     for_each = var.scaling_configuration
@@ -182,7 +197,8 @@ resource "aws_rds_cluster" "secondary" {
 
   lifecycle {
     ignore_changes = [
-      replication_source_identifier
+      replication_source_identifier, # will be set/managed by Global Cluster
+      snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
     ]
   }
 }
@@ -204,6 +220,18 @@ resource "aws_rds_cluster_instance" "default" {
   performance_insights_enabled    = var.performance_insights_enabled
   performance_insights_kms_key_id = local.performance_insights_kms_key_id
   availability_zone               = var.instance_availability_zone
+
+  depends_on = [
+    aws_db_subnet_group.default,
+    aws_db_parameter_group.default,
+    aws_iam_role.enhanced_monitoring,
+    aws_rds_cluster.secondary,
+    aws_rds_cluster_parameter_group.default,
+  ]
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_db_subnet_group" "default" {
@@ -216,7 +244,7 @@ resource "aws_db_subnet_group" "default" {
 
 resource "aws_rds_cluster_parameter_group" "default" {
   count       = module.this.enabled ? 1 : 0
-  name        = module.this.id
+  name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB cluster parameter group"
   family      = var.cluster_family
 
@@ -230,11 +258,15 @@ resource "aws_rds_cluster_parameter_group" "default" {
   }
 
   tags = module.this.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_db_parameter_group" "default" {
   count       = module.this.enabled ? 1 : 0
-  name        = module.this.id
+  name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB instance parameter group"
   family      = var.cluster_family
 
@@ -248,6 +280,10 @@ resource "aws_db_parameter_group" "default" {
   }
 
   tags = module.this.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 locals {
