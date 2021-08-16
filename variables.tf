@@ -130,6 +130,12 @@ variable "engine_version" {
   description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
+variable "allow_major_version_upgrade" {
+  type        = bool
+  default     = false
+  description = "Enable to allow major engine version upgrades when changing engine versions. Defaults to false."
+}
+
 variable "auto_minor_version_upgrade" {
   type        = bool
   default     = true
