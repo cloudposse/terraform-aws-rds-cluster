@@ -228,6 +228,10 @@ resource "aws_rds_cluster_instance" "default" {
     aws_rds_cluster.secondary,
     aws_rds_cluster_parameter_group.default,
   ]
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_db_subnet_group" "default" {
