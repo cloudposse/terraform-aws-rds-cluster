@@ -1,6 +1,7 @@
 locals {
-  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_regional_cluster    = var.cluster_type == "regional"
+  cluster_instance_count   = module.this.enabled ? var.cluster_size : 0
+  is_regional_cluster      = var.cluster_type == "regional"
+  ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
 
 resource "aws_security_group" "default" {
@@ -50,8 +51,8 @@ resource "aws_rds_cluster" "primary" {
   count                               = module.this.enabled && local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -132,8 +133,8 @@ resource "aws_rds_cluster" "secondary" {
   count                               = module.this.enabled && ! local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
