@@ -78,7 +78,7 @@ module "storage_kms_key" {
 module "performance_insights_kms_key" {
   for_each            = local.storage_create_kms_key ? [1] : []
   source              = "cloudposse/kms-key/aws"
-  version             = "~> 0.9"
+  version             = "0.11.0"
   context             = module.this.context
   attributes          = ["performance-insights"]
   description         = "RDS performance insights encryption for ${module.this.id}"
