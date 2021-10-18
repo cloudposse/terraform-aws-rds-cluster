@@ -366,8 +366,8 @@ Available targets:
 | <a name="module_dns_master"></a> [dns\_master](#module\_dns\_master) | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | <a name="module_dns_replicas"></a> [dns\_replicas](#module\_dns\_replicas) | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | <a name="module_enhanced_monitoring_label"></a> [enhanced\_monitoring\_label](#module\_enhanced\_monitoring\_label) | cloudposse/label/null | 0.24.1 |
-| <a name="module_performance_insights_kms_key"></a> [performance\_insights\_kms\_key](#module\_performance\_insights\_kms\_key) | cloudposse/kms-key/aws | ~> 0.9 |
-| <a name="module_storage_kms_key"></a> [storage\_kms\_key](#module\_storage\_kms\_key) | cloudposse/kms-key/aws | ~> 0.9 |
+| <a name="module_performance_insights_kms_key"></a> [performance\_insights\_kms\_key](#module\_performance\_insights\_kms\_key) | cloudposse/kms-key/aws | 0.11.0 |
+| <a name="module_storage_kms_key"></a> [storage\_kms\_key](#module\_storage\_kms\_key) | cloudposse/kms-key/aws | 0.11.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 
 ## Resources
