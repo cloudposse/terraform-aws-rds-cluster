@@ -1,6 +1,7 @@
 locals {
-  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_regional_cluster    = var.cluster_type == "regional"
+  cluster_instance_count   = module.this.enabled ? var.cluster_size : 0
+  is_regional_cluster      = var.cluster_type == "regional"
+  ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
 
 resource "aws_security_group" "default" {
@@ -50,8 +51,8 @@ resource "aws_rds_cluster" "primary" {
   count                               = module.this.enabled && local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -132,8 +133,8 @@ resource "aws_rds_cluster" "secondary" {
   count                               = module.this.enabled && ! local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -220,6 +221,7 @@ resource "aws_rds_cluster_instance" "default" {
   performance_insights_enabled    = var.performance_insights_enabled
   performance_insights_kms_key_id = local.performance_insights_kms_key_id
   availability_zone               = var.instance_availability_zone
+  apply_immediately               = var.apply_immediately
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -295,7 +297,7 @@ locals {
 
 module "dns_master" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
+  version = "0.12.2"
 
   enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
   dns_name = local.cluster_dns_name
@@ -307,7 +309,7 @@ module "dns_master" {
 
 module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
+  version = "0.12.2"
 
   enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
   dns_name = local.reader_dns_name

@@ -59,13 +59,13 @@ variable "db_port" {
 variable "admin_user" {
   type        = string
   default     = "admin"
-  description = "(Required unless a snapshot_identifier is provided) Username for the master DB user"
+  description = "Username for the master DB user. Ignored if snapshot_identifier or replication_source_identifier is provided"
 }
 
 variable "admin_password" {
   type        = string
   default     = ""
-  description = "(Required unless a snapshot_identifier is provided) Password for the master DB user"
+  description = "Password for the master DB user. Ignored if snapshot_identifier or replication_source_identifier is provided"
 }
 
 variable "retention_period" {
