@@ -69,7 +69,7 @@ module "storage_kms_key" {
   for_each            = local.storage_create_kms_key ? [1] : []
   source              = "cloudposse/kms-key/aws"
   version             = "0.11.0"
-  context             = module.this.id
+  context             = module.this.context
   description         = "RDS storage encryption for ${module.this.id}"
   enable_key_rotation = false
   policy              = local.kms_policy
