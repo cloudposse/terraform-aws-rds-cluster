@@ -27,7 +27,7 @@ module "subnets" {
 
 module "kms_key" {
   source  = "cloudposse/kms-key/aws"
-  version = "0.9.0"
+  version = "0.11.0"
 
   context = module.this.context
 }
