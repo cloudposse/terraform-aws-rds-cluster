@@ -1,7 +1,7 @@
 locals {
   storage_create_kms_key              = var.storage_encrypted && var.kms_key_arn == ""
   storage_kms_key_arn                 = local.storage_create_kms_key ? module.storage_kms_key[1].key_arn : var.kms_key_arn
-  performance_insights_create_kms_key = var.performance_insights_enabled && var.performance_insights_kms_key_id == "" ? true : false
+  performance_insights_create_kms_key = var.performance_insights_enabled && var.performance_insights_kms_key_id == ""
   performance_insights_kms_key_id     = local.performance_insights_create_kms_key ? module.performance_insights_kms_key[1].key_arn : var.performance_insights_kms_key_id
 
   # This policy is copied from aws/rds
