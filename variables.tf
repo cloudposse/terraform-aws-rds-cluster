@@ -32,10 +32,16 @@ variable "cluster_identifier" {
   description = "The RDS Cluster Identifier. Will use generated label ID if not supplied"
 }
 
+variable "instances" {
+  description = "Map of cluster instances and any specific/overriding attributes to be created"
+  type        = any
+  default     = {}
+}
+
 variable "cluster_size" {
   type        = number
   default     = 2
-  description = "Number of DB instances to create in the cluster"
+  description = "DEPRECATED: Use var.instances instead. Number of DB instances to create in the cluster"
 }
 
 variable "snapshot_identifier" {
