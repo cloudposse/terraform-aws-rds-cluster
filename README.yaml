@@ -53,10 +53,16 @@ usage: |2-
     source = "cloudposse/rds-cluster/aws"
     # Cloud Posse recommends pinning every module to a specific version
     # version     = "x.x.x"
+
     name            = "postgres"
     engine          = "aurora-postgresql"
     cluster_family  = "aurora-postgresql9.6"
+    # 1 writer, 1 reader
     cluster_size    = 2
+    # 1 writer, 3 reader
+    # cluster_size    = 4
+    # 1 writer, 5 reader
+    # cluster_size    = 6
     namespace       = "eg"
     stage           = "dev"
     admin_user      = "admin1"
@@ -293,3 +299,5 @@ contributors:
     github: tptodorov
   - name: Lee Huffman
     github: leehuffman
+  - name: RB
+    github: nitrocode
