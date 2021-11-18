@@ -1,11 +1,13 @@
 locals {
-  cluster_instance_count   = module.this.enabled ? var.cluster_size : 0
+  enabled = module.this.enabled
+
+  cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
 
 resource "aws_security_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = var.vpc_id
@@ -13,7 +15,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = module.this.enabled ? length(var.security_groups) : 0
+  count                    = local.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from existing security groups"
   type                     = "ingress"
   from_port                = var.db_port
@@ -24,7 +26,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from existing CIDR blocks"
   type              = "ingress"
   from_port         = var.db_port
@@ -35,7 +37,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = module.this.enabled ? 1 : 0
+  count             = local.enabled ? 1 : 0
   description       = "Allow outbound traffic"
   type              = "egress"
   from_port         = 0
@@ -48,7 +50,7 @@ resource "aws_security_group_rule" "egress" {
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
 # The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count                               = module.this.enabled && local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
@@ -130,7 +132,7 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = module.this.enabled && ! local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && ! local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
@@ -237,7 +239,7 @@ resource "aws_rds_cluster_instance" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name        = module.this.id
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = var.subnets
@@ -245,7 +247,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB cluster parameter group"
   family      = var.cluster_family
@@ -267,7 +269,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB instance parameter group"
   family      = var.cluster_family
@@ -299,7 +301,7 @@ module "dns_master" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
+  enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = local.cluster_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
@@ -311,7 +313,7 @@ module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
+  enabled  = local.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless"
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
@@ -320,7 +322,7 @@ module "dns_replicas" {
 }
 
 resource "aws_appautoscaling_target" "replicas" {
-  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
+  count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))}"
@@ -329,7 +331,7 @@ resource "aws_appautoscaling_target" "replicas" {
 }
 
 resource "aws_appautoscaling_policy" "replicas" {
-  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
+  count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   name               = module.this.id
   service_namespace  = join("", aws_appautoscaling_target.replicas.*.service_namespace)
   scalable_dimension = join("", aws_appautoscaling_target.replicas.*.scalable_dimension)
