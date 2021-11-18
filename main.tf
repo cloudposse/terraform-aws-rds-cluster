@@ -229,7 +229,7 @@ resource "aws_rds_cluster_instance" "default" {
   apply_immediately                     = var.apply_immediately
   preferred_maintenance_window          = var.maintenance_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
-  ca_cert_identifier                    = var.ca_cert_identifier  
+  ca_cert_identifier                    = var.ca_cert_identifier
 
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
