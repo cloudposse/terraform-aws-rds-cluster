@@ -3,9 +3,11 @@ locals {
 
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
+  is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
 
+# TODO: Use cloudposse/security-group module
 resource "aws_security_group" "default" {
   count       = local.enabled ? 1 : 0
   name        = module.this.id
@@ -61,7 +63,7 @@ resource "aws_rds_cluster" "primary" {
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
-  storage_encrypted                   = var.engine_mode == "serverless" ? null : var.storage_encrypted
+  storage_encrypted                   = local.is_serverless ? null : var.storage_encrypted
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
@@ -77,7 +79,7 @@ resource "aws_rds_cluster" "primary" {
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
-  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+  enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -159,7 +161,8 @@ resource "aws_rds_cluster" "secondary" {
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
-  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+  enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
+  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -207,24 +210,37 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                           = local.cluster_instance_count
-  identifier                      = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier              = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
-  instance_class                  = var.instance_type
-  db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)
-  db_parameter_group_name         = join("", aws_db_parameter_group.default.*.name)
-  publicly_accessible             = var.publicly_accessible
-  tags                            = module.this.tags
-  engine                          = var.engine
-  engine_version                  = var.engine_version
-  auto_minor_version_upgrade      = var.auto_minor_version_upgrade
-  monitoring_interval             = var.rds_monitoring_interval
-  monitoring_role_arn             = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
-  performance_insights_enabled    = var.performance_insights_enabled
-  performance_insights_kms_key_id = var.performance_insights_kms_key_id
-  availability_zone               = var.instance_availability_zone
-  apply_immediately               = var.apply_immediately
+  for_each = local.enabled && !local.is_serverless ? var.instances : {}
 
+  identifier = format(
+    "%s%s%s",
+    var.cluster_identifier == "" ? module.this.id : var.cluster_identifier,
+    module.this.delimiter,
+    lookup(each.value, "identifier", each.key)
+  )
+
+  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
+  instance_class                        = lookup(each.value, "instance_type", var.instance_type)
+  db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
+  db_parameter_group_name               = lookup(each.value, "db_parameter_group_name", join("", aws_db_parameter_group.default.*.name))
+  publicly_accessible                   = lookup(each.value, "publicly_accessible", var.publicly_accessible)
+  engine                                = var.engine
+  engine_version                        = var.engine_version
+  auto_minor_version_upgrade            = lookup(each.value, "auto_minor_version_upgrade", var.auto_minor_version_upgrade)
+  monitoring_interval                   = lookup(each.value, "monitoring_interval", var.rds_monitoring_interval)
+  monitoring_role_arn                   = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
+  performance_insights_enabled          = lookup(each.value, "performance_insights_enabled", var.performance_insights_enabled)
+  performance_insights_kms_key_id       = lookup(each.value, "performance_insights_kms_key_id", var.performance_insights_kms_key_id)
+  performance_insights_retention_period = lookup(each.value, "performance_insights_retention_period", var.performance_insights_retention_period)
+  availability_zone                     = lookup(each.value, "availability_zone", null)
+  apply_immediately                     = lookup(each.value, "apply_immediately", var.apply_immediately)
+  promotion_tier                        = lookup(each.value, "promotion_tier", null)
+  preferred_maintenance_window          = lookup(each.value, "preferred_maintenance_window", var.maintenance_window)
+  copy_tags_to_snapshot                 = lookup(each.value, "copy_tags_to_snapshot", var.copy_tags_to_snapshot)
+  ca_cert_identifier                    = var.ca_cert_identifier
+
+  tags = module.this.tags  
+  
   depends_on = [
     aws_db_subnet_group.default,
     aws_db_parameter_group.default,
@@ -313,7 +329,7 @@ module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled  = local.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless"
+  enabled  = local.enabled && length(var.zone_id) > 0 && local.is_serverless
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
