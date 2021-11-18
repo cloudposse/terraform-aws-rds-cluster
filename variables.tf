@@ -411,9 +411,3 @@ variable "ca_cert_identifier" {
   type        = string
   default     = null
 }
-
-variable "copy_tags_to_snapshot" {
-  description = "Copy all Cluster `tags` to snapshots"
-  type        = bool
-  default     = null
-}
