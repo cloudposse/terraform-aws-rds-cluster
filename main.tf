@@ -224,7 +224,7 @@ resource "aws_rds_cluster_instance" "default" {
   monitoring_role_arn                   = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_kms_key_id       = var.performance_insights_kms_key_id
-  performance_insights_retention_period = lookup(each.value, "performance_insights_retention_period", var.performance_insights_retention_period)
+  performance_insights_retention_period = var.performance_insights_retention_period
   availability_zone                     = var.instance_availability_zone
   apply_immediately                     = var.apply_immediately
   preferred_maintenance_window          = var.maintenance_window
