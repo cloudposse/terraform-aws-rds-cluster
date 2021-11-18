@@ -282,6 +282,12 @@ variable "performance_insights_kms_key_id" {
   description = "The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
 }
 
+variable "performance_insights_retention_period" {
+  description = "Amount of time in days to retain Performance Insights data. Either 7 (7 days) or 731 (2 years)"
+  type        = number
+  default     = null
+}
+
 variable "autoscaling_enabled" {
   type        = bool
   default     = false
@@ -398,4 +404,16 @@ variable "vpc_security_group_ids" {
   description = "Additional security group IDs to apply to the cluster, in addition to the provisioned default security group with ingress traffic from existing CIDR blocks and existing security groups"
 
   default = []
+}
+
+variable "ca_cert_identifier" {
+  description = "The identifier of the CA certificate for the DB instance"
+  type        = string
+  default     = null
+}
+
+variable "copy_tags_to_snapshot" {
+  description = "Copy all Cluster `tags` to snapshots"
+  type        = bool
+  default     = null
 }
