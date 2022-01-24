@@ -412,8 +412,8 @@ variable "ca_cert_identifier" {
   default     = null
 }
 
-variable "disable_egress" {
+variable "enabled_egress" {
   description = "Whether or not apply the egress security group rule to default security group"
   type        = bool
-  default     = false
+  default     = true
 }

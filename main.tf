@@ -5,7 +5,6 @@ locals {
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
-  disable_egress = var.disable_egress ? 0 : 1
 }
 
 # TODO: Use cloudposse/security-group module
@@ -40,7 +39,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = local.enabled ? local.disable_egress : 0
+  count             = local.enabled && var.enabled_egress ? 1 : 0
   description       = "Allow outbound traffic"
   type              = "egress"
   from_port         = 0
