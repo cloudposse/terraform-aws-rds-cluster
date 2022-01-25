@@ -134,7 +134,7 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = local.enabled && !local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && ! local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
@@ -328,7 +328,7 @@ module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
+  enabled  = local.enabled && length(var.zone_id) > 0 && ! local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
