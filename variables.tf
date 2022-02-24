@@ -417,3 +417,9 @@ variable "egress_enabled" {
   type        = bool
   default     = true
 }
+
+variable "enhanced_monitoring_attributes" {
+  description = "Whether or not to apply the egress security group rule to default security group, defaults to `true`"
+  type        = list(string)
+  default     = ["enhanced-monitoring"]
+}
