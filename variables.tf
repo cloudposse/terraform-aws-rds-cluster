@@ -417,3 +417,9 @@ variable "egress_enabled" {
   type        = bool
   default     = true
 }
+
+variable "enhanced_monitoring_attributes" {
+  description = "The attributes for the enhanced monitoring IAM role"
+  type        = list(string)
+  default     = ["enhanced-monitoring"]
+}

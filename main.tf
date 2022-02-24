@@ -1,10 +1,16 @@
 locals {
   enabled = module.this.enabled
 
+  partition = join("", data.aws_partition.current.*.partition)
+
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+}
+
+data "aws_partition" "current" {
+  count = local.enabled ? 1 : 0
 }
 
 # TODO: Use cloudposse/security-group module

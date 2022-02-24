@@ -6,7 +6,7 @@ module "enhanced_monitoring_label" {
   version = "0.25.0"
 
   enabled    = module.this.enabled && var.enhanced_monitoring_role_enabled
-  attributes = ["enhanced-monitoring"]
+  attributes = var.enhanced_monitoring_attributes
 
   context = module.this.context
 }
@@ -23,7 +23,7 @@ resource "aws_iam_role" "enhanced_monitoring" {
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
   count      = module.this.enabled && var.enhanced_monitoring_role_enabled ? 1 : 0
   role       = join("", aws_iam_role.enhanced_monitoring.*.name)
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
 # Allow RDS monitoring to assume the enhanced monitoring role
