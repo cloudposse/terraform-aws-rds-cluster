@@ -8,7 +8,7 @@ locals {
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
-  
+
 data "aws_partition" "current" {
   count = local.enabled ? 1 : 0
 }
