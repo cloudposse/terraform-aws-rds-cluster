@@ -419,7 +419,7 @@ variable "egress_enabled" {
 }
 
 variable "enhanced_monitoring_attributes" {
-  description = "Whether or not to apply the egress security group rule to default security group, defaults to `true`"
+  description = "The attributes for the enhanced monitoring IAM role"
   type        = list(string)
   default     = ["enhanced-monitoring"]
 }
