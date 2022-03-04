@@ -423,3 +423,9 @@ variable "enhanced_monitoring_attributes" {
   type        = list(string)
   default     = ["enhanced-monitoring"]
 }
+
+variable "subnet_group_name" {
+  description = "Database subnet group name. Will use generated label ID if not supplied."
+  type        = string
+  default     = ""
+}
