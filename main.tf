@@ -261,7 +261,7 @@ resource "aws_rds_cluster_instance" "default" {
 
 resource "aws_db_subnet_group" "default" {
   count       = local.enabled ? 1 : 0
-  name        = var.subnet_group_name == "" ? module.this.id : var.subnet_group_name
+  name        = try(length(var.subnet_group_name), 0) == 0 ? module.this.id : var.subnet_group_name
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = var.subnets
   tags        = module.this.tags
