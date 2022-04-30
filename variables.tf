@@ -166,6 +166,16 @@ variable "scaling_configuration" {
   description = "List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
 }
 
+variable "serverlessv2_scaling_configuration" {
+  type = object({
+    min_capacity = number
+    max_capacity = number
+  })
+  default     = null
+  description = "serverlessv2 scaling properties"
+}
+
+
 variable "timeouts_configuration" {
   type = list(object({
     create = string
