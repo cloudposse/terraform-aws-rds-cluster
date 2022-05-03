@@ -123,8 +123,6 @@ resource "aws_rds_cluster" "primary" {
     }
   }
 
-
-
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
     content {
