@@ -175,7 +175,6 @@ variable "serverlessv2_scaling_configuration" {
   description = "serverlessv2 scaling properties"
 }
 
-
 variable "timeouts_configuration" {
   type = list(object({
     create = string
