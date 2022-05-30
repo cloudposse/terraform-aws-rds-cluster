@@ -6,7 +6,7 @@ output "database_name" {
 output "master_username" {
   value       = module.rds_cluster_aurora_serverlessv2_postgres_13.master_username
   description = "Username for the master DB user"
-  sensitive  =  true
+  sensitive   = true
 }
 
 output "cluster_identifier" {
