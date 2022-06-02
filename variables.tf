@@ -204,6 +204,24 @@ variable "storage_encrypted" {
   default     = false
 }
 
+variable "storage_type" {
+  type        = string
+  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
+  default     = "standard"
+}
+
+variable "iops" {
+  type        = number
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. Default is 0 if rds storage type is not 'io1'"
+  default     = 0
+}
+
+variable "allocated_storage" {
+  type        = number
+  description = "The allocated storage in GBs"
+  default     = null
+}
+
 variable "kms_key_arn" {
   type        = string
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
