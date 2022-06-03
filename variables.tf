@@ -212,8 +212,8 @@ variable "storage_type" {
 
 variable "iops" {
   type        = number
-  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. Default is 0 if rds storage type is not 'io1'"
-  default     = 0
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. This setting is required to create a Multi-AZ DB cluster. Check TF docs for values based on db engine"
+  default     = null
 }
 
 variable "allocated_storage" {
