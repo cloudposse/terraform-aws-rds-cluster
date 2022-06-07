@@ -3,11 +3,6 @@ output "database_name" {
   description = "Database name"
 }
 
-output "master_username" {
-  value       = module.rds_cluster.master_username
-  description = "Username for the master DB user"
-}
-
 output "cluster_identifier" {
   value       = module.rds_cluster.cluster_identifier
   description = "Cluster Identifier"
