@@ -70,7 +70,7 @@ variable "rds_monitoring_interval" {
 variable "storage_type" {
   type        = string
   description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
-  default     = "io1"
+  default     = null
 }
 
 variable "iops" {
