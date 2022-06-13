@@ -118,6 +118,14 @@ resource "aws_rds_cluster" "primary" {
     }
   }
 
+  dynamic "serverlessv2_scaling_configuration" {
+    for_each = var.serverlessv2_scaling_configuration[*]
+    content {
+      max_capacity = serverlessv2_scaling_configuration.value.max_capacity
+      min_capacity = serverlessv2_scaling_configuration.value.min_capacity
+    }
+  }
+
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
     content {
@@ -221,7 +229,7 @@ resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
-  instance_class                        = var.instance_type
+  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
   db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
   publicly_accessible                   = var.publicly_accessible
