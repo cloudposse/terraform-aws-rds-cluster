@@ -1,37 +1,40 @@
 package test
 
 import (
-	"math/rand"
-	"strconv"
+	"strings"
 	"testing"
-	"time"
 
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	testStructure "github.com/gruntwork-io/terratest/modules/test-structure"
 	"github.com/stretchr/testify/assert"
 )
 
-// Test the Terraform module in examples/complete using Terratest.
+// Test the Terraform module in examples/serverlessv2_postgres using Terratest.
 func TestExamplesServerlessv2Postgres(t *testing.T) {
 	t.Parallel()
+	randID := strings.ToLower(random.UniqueId())
+	attributes := []string{randID}
 
-	rand.Seed(time.Now().UnixNano())
+	rootFolder := "../../"
+	terraformFolderRelativeToRoot := "examples/serverlessv2_postgres"
+	varFiles := []string{"fixtures.us-east-2.tfvars"}
 
-	randId := strconv.Itoa(rand.Intn(100000))
-	attributes := []string{randId}
+	tempTestFolder := testStructure.CopyTerraformFolderToTemp(t, rootFolder, terraformFolderRelativeToRoot)
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
-		TerraformDir: "../../examples/serverlessv2_postgres",
+		TerraformDir: tempTestFolder,
 		Upgrade:      true,
 		// Variables to pass to our Terraform code using -var-file options
-		VarFiles: []string{"fixtures.us-east-2.tfvars"},
+		VarFiles: varFiles,
 		Vars: map[string]interface{}{
 			"attributes": attributes,
 		},
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
-	defer terraform.Destroy(t, terraformOptions)
+	defer cleanup(t, terraformOptions, tempTestFolder)
 
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, terraformOptions)
@@ -53,7 +56,7 @@ func TestExamplesServerlessv2Postgres(t *testing.T) {
 
 	// Run `terraform output` to get the value of an output variable
 	clusterIdentifier := terraform.Output(t, terraformOptions, "cluster_identifier")
-	expectedClusterIdentifier := "eg-test-rds-cluster-" + randId
+	expectedClusterIdentifier := "eg-test-rds-cluster-" + randID
 	// Verify we're getting back the outputs we expect
 	assert.Equal(t, expectedClusterIdentifier, clusterIdentifier)
 
