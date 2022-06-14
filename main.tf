@@ -115,6 +115,14 @@ resource "aws_rds_cluster" "primary" {
     }
   }
 
+  dynamic "serverlessv2_scaling_configuration" {
+    for_each = var.serverlessv2_scaling_configuration[*]
+    content {
+      max_capacity = serverlessv2_scaling_configuration.value.max_capacity
+      min_capacity = serverlessv2_scaling_configuration.value.min_capacity
+    }
+  }
+
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
     content {
@@ -146,7 +154,7 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = local.enabled && ! local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && !local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
@@ -225,7 +233,7 @@ resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
-  instance_class                        = var.instance_type
+  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
   db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
   publicly_accessible                   = var.publicly_accessible
@@ -341,7 +349,7 @@ module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled  = local.enabled && length(var.zone_id) > 0 && ! local.is_serverless && local.cluster_instance_count > 0
+  enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
