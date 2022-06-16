@@ -213,6 +213,24 @@ variable "storage_encrypted" {
   default     = false
 }
 
+variable "storage_type" {
+  type        = string
+  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
+  default     = null
+}
+
+variable "iops" {
+  type        = number
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. This setting is required to create a Multi-AZ DB cluster. Check TF docs for values based on db engine"
+  default     = null
+}
+
+variable "allocated_storage" {
+  type        = number
+  description = "The allocated storage in GBs"
+  default     = null
+}
+
 variable "kms_key_arn" {
   type        = string
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"

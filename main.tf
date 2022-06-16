@@ -70,6 +70,9 @@ resource "aws_rds_cluster" "primary" {
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
   storage_encrypted                   = local.is_serverless ? null : var.storage_encrypted
+  storage_type                        = var.storage_type
+  iops                                = var.iops
+  allocated_storage                   = var.allocated_storage
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
