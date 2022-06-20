@@ -7,11 +7,6 @@ variable "availability_zones" {
   type = list(string)
 }
 
-variable "instance_type" {
-  type        = string
-  description = "Instance type to use"
-}
-
 variable "cluster_size" {
   type        = number
   description = "Number of DB instances to create in the cluster"
@@ -32,19 +27,14 @@ variable "admin_password" {
   description = "(Required unless a snapshot_identifier is provided) Password for the master DB user"
 }
 
-variable "cluster_family" {
-  type        = string
-  description = "The family of the DB cluster parameter group"
+variable "max_capacity" {
+  type        = number
+  description = "The maximum capacity for an Aurora DB cluster in provisioned DB engine mode"
 }
 
-variable "engine" {
-  type        = string
-  description = "The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql`"
-}
-
-variable "engine_mode" {
-  type        = string
-  description = "The database engine mode. Valid values: `parallelquery`, `provisioned`, `serverless`"
+variable "min_capacity" {
+  type        = number
+  description = "The minimum capacity for an Aurora DB cluster in provisioned DB engine mode"
 }
 
 variable "deletion_protection" {
@@ -65,22 +55,4 @@ variable "enhanced_monitoring_role_enabled" {
 variable "rds_monitoring_interval" {
   type        = number
   description = "The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60"
-}
-
-variable "storage_type" {
-  type        = string
-  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
-  default     = null
-}
-
-variable "iops" {
-  type        = number
-  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. This setting is required to create a Multi-AZ DB cluster. Check TF docs for values based on db engine"
-  default     = null
-}
-
-variable "allocated_storage" {
-  type        = number
-  description = "The allocated storage in GBs"
-  default     = null
 }

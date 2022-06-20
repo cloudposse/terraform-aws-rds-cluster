@@ -6,6 +6,7 @@ output "database_name" {
 output "master_username" {
   value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary.*.master_username) : join("", aws_rds_cluster.secondary.*.master_username)
   description = "Username for the master DB user"
+  sensitive   = true
 }
 
 output "cluster_identifier" {
