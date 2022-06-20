@@ -1,10 +1,21 @@
 locals {
-  cluster_instance_count = module.this.enabled ? var.cluster_size : 0
-  is_regional_cluster    = var.cluster_type == "regional"
+  enabled = module.this.enabled
+
+  partition = join("", data.aws_partition.current.*.partition)
+
+  cluster_instance_count   = local.enabled ? var.cluster_size : 0
+  is_regional_cluster      = var.cluster_type == "regional"
+  is_serverless            = var.engine_mode == "serverless"
+  ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
 }
 
+data "aws_partition" "current" {
+  count = local.enabled ? 1 : 0
+}
+
+# TODO: Use cloudposse/security-group module
 resource "aws_security_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = var.vpc_id
@@ -12,7 +23,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = module.this.enabled ? length(var.security_groups) : 0
+  count                    = local.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from existing security groups"
   type                     = "ingress"
   from_port                = var.db_port
@@ -23,7 +34,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from existing CIDR blocks"
   type              = "ingress"
   from_port         = var.db_port
@@ -34,7 +45,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = module.this.enabled ? 1 : 0
+  count             = local.enabled && var.egress_enabled ? 1 : 0
   description       = "Allow outbound traffic"
   type              = "egress"
   from_port         = 0
@@ -47,18 +58,21 @@ resource "aws_security_group_rule" "egress" {
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
 # The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count                               = module.this.enabled && local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password #tfsec:ignore:GEN003
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password #tfsec:ignore:GEN003
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
-  storage_encrypted                   = var.engine_mode == "serverless" ? null : var.storage_encrypted
+  storage_encrypted                   = local.is_serverless ? null : var.storage_encrypted
+  storage_type                        = var.storage_type
+  iops                                = var.iops
+  allocated_storage                   = var.allocated_storage
   kms_key_id                          = var.kms_key_arn #tfsec:ignore:AWS051
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
@@ -74,7 +88,7 @@ resource "aws_rds_cluster" "primary" {
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
-  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+  enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -104,6 +118,14 @@ resource "aws_rds_cluster" "primary" {
     }
   }
 
+  dynamic "serverlessv2_scaling_configuration" {
+    for_each = var.serverlessv2_scaling_configuration[*]
+    content {
+      max_capacity = serverlessv2_scaling_configuration.value.max_capacity
+      min_capacity = serverlessv2_scaling_configuration.value.min_capacity
+    }
+  }
+
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
     content {
@@ -129,11 +151,11 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = module.this.enabled && ! local.is_regional_cluster ? 1 : 0
+  count                               = local.enabled && !local.is_regional_cluster ? 1 : 0
   cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name                       = var.db_name
-  master_username                     = var.admin_user
-  master_password                     = var.admin_password #tfsec:ignore:GEN003
+  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
+  master_password                     = local.ignore_admin_credentials ? null : var.admin_password #tfsec:ignore:GEN003
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -156,7 +178,7 @@ resource "aws_rds_cluster" "secondary" {
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
-  enable_http_endpoint                = var.engine_mode == "serverless" && var.enable_http_endpoint ? true : false
+  enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -204,22 +226,36 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                           = local.cluster_instance_count
-  identifier                      = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier              = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
-  instance_class                  = var.instance_type
-  db_subnet_group_name            = join("", aws_db_subnet_group.default.*.name)
-  db_parameter_group_name         = join("", aws_db_parameter_group.default.*.name)
-  publicly_accessible             = var.publicly_accessible
-  tags                            = module.this.tags
-  engine                          = var.engine
-  engine_version                  = var.engine_version
-  auto_minor_version_upgrade      = var.auto_minor_version_upgrade
-  monitoring_interval             = var.rds_monitoring_interval
-  monitoring_role_arn             = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
-  performance_insights_enabled    = var.performance_insights_enabled
-  performance_insights_kms_key_id = var.performance_insights_kms_key_id
-  availability_zone               = var.instance_availability_zone
+  count                                 = local.cluster_instance_count
+  identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
+  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
+  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
+  db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
+  publicly_accessible                   = var.publicly_accessible
+  tags                                  = module.this.tags
+  engine                                = var.engine
+  engine_version                        = var.engine_version
+  auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  monitoring_interval                   = var.rds_monitoring_interval
+  monitoring_role_arn                   = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_kms_key_id       = var.performance_insights_kms_key_id
+  performance_insights_retention_period = var.performance_insights_retention_period
+  availability_zone                     = var.instance_availability_zone
+  apply_immediately                     = var.apply_immediately
+  preferred_maintenance_window          = var.maintenance_window
+  copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
+  ca_cert_identifier                    = var.ca_cert_identifier
+
+  dynamic "timeouts" {
+    for_each = var.timeouts_configuration
+    content {
+      create = lookup(timeouts.value, "create", "120m")
+      update = lookup(timeouts.value, "update", "120m")
+      delete = lookup(timeouts.value, "delete", "120m")
+    }
+  }
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -228,18 +264,22 @@ resource "aws_rds_cluster_instance" "default" {
     aws_rds_cluster.secondary,
     aws_rds_cluster_parameter_group.default,
   ]
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_db_subnet_group" "default" {
-  count       = module.this.enabled ? 1 : 0
-  name        = module.this.id
+  count       = local.enabled ? 1 : 0
+  name        = try(length(var.subnet_group_name), 0) == 0 ? module.this.id : var.subnet_group_name
   description = "Allowed subnets for DB cluster instances"
   subnet_ids  = var.subnets
   tags        = module.this.tags
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB cluster parameter group"
   family      = var.cluster_family
@@ -261,7 +301,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB instance parameter group"
   family      = var.cluster_family
@@ -291,9 +331,9 @@ locals {
 
 module "dns_master" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
+  version = "0.12.2"
 
-  enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
+  enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = local.cluster_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
@@ -303,9 +343,9 @@ module "dns_master" {
 
 module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
+  version = "0.12.2"
 
-  enabled  = module.this.enabled && length(var.zone_id) > 0 && var.engine_mode != "serverless" ? true : false
+  enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
   zone_id  = var.zone_id
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
@@ -314,7 +354,7 @@ module "dns_replicas" {
 }
 
 resource "aws_appautoscaling_target" "replicas" {
-  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
+  count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
   resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))}"
@@ -323,7 +363,7 @@ resource "aws_appautoscaling_target" "replicas" {
 }
 
 resource "aws_appautoscaling_policy" "replicas" {
-  count              = module.this.enabled && var.autoscaling_enabled ? 1 : 0
+  count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   name               = module.this.id
   service_namespace  = join("", aws_appautoscaling_target.replicas.*.service_namespace)
   scalable_dimension = join("", aws_appautoscaling_target.replicas.*.scalable_dimension)
