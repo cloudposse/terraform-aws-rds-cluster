@@ -59,13 +59,13 @@ variable "db_port" {
 variable "admin_user" {
   type        = string
   default     = "admin"
-  description = "(Required unless a snapshot_identifier is provided) Username for the master DB user"
+  description = "Username for the master DB user. Ignored if snapshot_identifier or replication_source_identifier is provided"
 }
 
 variable "admin_password" {
   type        = string
   default     = ""
-  description = "(Required unless a snapshot_identifier is provided) Password for the master DB user"
+  description = "Password for the master DB user. Ignored if snapshot_identifier or replication_source_identifier is provided"
 }
 
 variable "retention_period" {
@@ -130,6 +130,12 @@ variable "engine_version" {
   description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
 }
 
+variable "allow_major_version_upgrade" {
+  type        = bool
+  default     = false
+  description = "Enable to allow major engine version upgrades when changing engine versions. Defaults to false."
+}
+
 variable "auto_minor_version_upgrade" {
   type        = bool
   default     = true
@@ -158,6 +164,15 @@ variable "scaling_configuration" {
   }))
   default     = []
   description = "List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
+}
+
+variable "serverlessv2_scaling_configuration" {
+  type = object({
+    min_capacity = number
+    max_capacity = number
+  })
+  default     = null
+  description = "serverlessv2 scaling properties"
 }
 
 variable "timeouts_configuration" {
@@ -196,6 +211,24 @@ variable "storage_encrypted" {
   type        = bool
   description = "Specifies whether the DB cluster is encrypted. The default is `false` for `provisioned` `engine_mode` and `true` for `serverless` `engine_mode`"
   default     = false
+}
+
+variable "storage_type" {
+  type        = string
+  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
+  default     = null
+}
+
+variable "iops" {
+  type        = number
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'. This setting is required to create a Multi-AZ DB cluster. Check TF docs for values based on db engine"
+  default     = null
+}
+
+variable "allocated_storage" {
+  type        = number
+  description = "The allocated storage in GBs"
+  default     = null
 }
 
 variable "kms_key_arn" {
@@ -276,6 +309,12 @@ variable "performance_insights_kms_key_id" {
   description = "The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true"
 }
 
+variable "performance_insights_retention_period" {
+  description = "Amount of time in days to retain Performance Insights data. Either 7 (7 days) or 731 (2 years)"
+  type        = number
+  default     = null
+}
+
 variable "autoscaling_enabled" {
   type        = bool
   default     = false
@@ -342,6 +381,21 @@ variable "reader_dns_name" {
   default     = ""
 }
 
+variable "cluster_type" {
+  type        = string
+  description = <<-EOT
+    Either `regional` or `global`.
+    If `regional` will be created as a normal, standalone DB.
+    If `global`, will be made part of a Global cluster (requires `global_cluster_identifier`).
+    EOT
+  default     = "regional"
+
+  validation {
+    condition     = contains(["regional", "global"], var.cluster_type)
+    error_message = "Allowed values: `regional` (standalone), `global` (part of global cluster)."
+  }
+}
+
 variable "global_cluster_identifier" {
   type        = string
   description = "ID of the Aurora global cluster"
@@ -377,4 +431,28 @@ variable "vpc_security_group_ids" {
   description = "Additional security group IDs to apply to the cluster, in addition to the provisioned default security group with ingress traffic from existing CIDR blocks and existing security groups"
 
   default = []
+}
+
+variable "ca_cert_identifier" {
+  description = "The identifier of the CA certificate for the DB instance"
+  type        = string
+  default     = null
+}
+
+variable "egress_enabled" {
+  description = "Whether or not to apply the egress security group rule to default security group, defaults to `true`"
+  type        = bool
+  default     = true
+}
+
+variable "enhanced_monitoring_attributes" {
+  description = "The attributes for the enhanced monitoring IAM role"
+  type        = list(string)
+  default     = ["enhanced-monitoring"]
+}
+
+variable "subnet_group_name" {
+  description = "Database subnet group name. Will use generated label ID if not supplied."
+  type        = string
+  default     = ""
 }
