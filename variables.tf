@@ -456,3 +456,9 @@ variable "subnet_group_name" {
   type        = string
   default     = ""
 }
+
+variable "allow_traffic_inside_security_group" {
+  type        = bool
+  default     = false
+  description = "Whether to allow traffic between resources inside the database's security group."
+}
