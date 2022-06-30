@@ -34,14 +34,14 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "traffic_inside_security_group" {
-  count                    = local.enabled && var.allow_traffic_inside_security_group ? 1 : 0
-  description              = "Allow traffic between members of the database security group"
-  type                     = "ingress"
-  from_port                = var.db_port
-  to_port                  = var.db_port
-  protocol                 = "tcp"
-  self                     = true
-  security_group_id        = join("", aws_security_group.default.*.id)
+  count             = local.enabled && var.allow_traffic_inside_security_group ? 1 : 0
+  description       = "Allow traffic between members of the database security group"
+  type              = "ingress"
+  from_port         = var.db_port
+  to_port           = var.db_port
+  protocol          = "tcp"
+  self              = true
+  security_group_id = join("", aws_security_group.default.*.id)
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
