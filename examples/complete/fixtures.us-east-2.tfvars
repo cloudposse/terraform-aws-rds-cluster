@@ -32,4 +32,4 @@ enhanced_monitoring_role_enabled = true
 
 rds_monitoring_interval = 30
 
-allow_traffic_inside_security_group = true
+intra_security_group_traffic_enabled = true

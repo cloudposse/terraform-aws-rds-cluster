@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "traffic_inside_security_group" {
-  count             = local.enabled && var.allow_traffic_inside_security_group ? 1 : 0
+  count             = local.enabled && var.intra_security_group_traffic_enabled ? 1 : 0
   description       = "Allow traffic between members of the database security group"
   type              = "ingress"
   from_port         = var.db_port
