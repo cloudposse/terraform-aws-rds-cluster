@@ -84,3 +84,9 @@ variable "allocated_storage" {
   description = "The allocated storage in GBs"
   default     = null
 }
+
+variable "intra_security_group_traffic_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to allow traffic between resources inside the database's security group."
+}
