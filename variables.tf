@@ -109,7 +109,7 @@ variable "instance_parameters" {
 variable "db_cluster_instance_class" {
   type        = string
   default     = ""
-  description = "This setting is required to create a Multi-AZ DB cluste"
+  description = "This setting is required to create a provisioned Multi-AZ DB cluster"
 }
 
 variable "cluster_family" {
