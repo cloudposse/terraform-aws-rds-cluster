@@ -80,6 +80,7 @@ resource "aws_rds_cluster" "primary" {
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
+  db_cluster_instance_class           = local.is_serverless ? null : var.db_cluster_instance_class
   storage_encrypted                   = local.is_serverless ? null : var.storage_encrypted
   storage_type                        = var.storage_type
   iops                                = var.iops
