@@ -108,7 +108,7 @@ variable "instance_parameters" {
 
 variable "db_cluster_instance_class" {
   type        = string
-  default     = ""
+  default     = null
   description = "This setting is required to create a provisioned Multi-AZ DB cluster"
 }
 
