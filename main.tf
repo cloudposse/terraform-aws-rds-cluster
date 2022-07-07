@@ -346,7 +346,7 @@ module "dns_master" {
 
   enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = local.cluster_dns_name
-  zone_id  = var.zone_id
+  zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
   records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
 
   context = module.this.context
@@ -358,7 +358,7 @@ module "dns_replicas" {
 
   enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
-  zone_id  = var.zone_id
+  zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
   records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
 
   context = module.this.context
