@@ -110,6 +110,12 @@ variable "instance_parameters" {
   description = "List of DB instance parameters to apply"
 }
 
+variable "db_cluster_instance_class" {
+  type        = string
+  default     = null
+  description = "This setting is required to create a provisioned Multi-AZ DB cluster"
+}
+
 variable "cluster_family" {
   type        = string
   default     = "aurora5.6"
