@@ -500,6 +500,7 @@ Available targets:
 | <a name="output_cluster_resource_id"></a> [cluster\_resource\_id](#output\_cluster\_resource\_id) | The region-unique, immutable identifie of the cluster |
 | <a name="output_cluster_security_groups"></a> [cluster\_security\_groups](#output\_cluster\_security\_groups) | Default RDS cluster security groups |
 | <a name="output_database_name"></a> [database\_name](#output\_database\_name) | Database name |
+| <a name="output_dbi_ids"></a> [dbi\_ids](#output\_dbi\_ids) | List of the identifiers for the DB instances in the cluster |
 | <a name="output_dbi_resource_ids"></a> [dbi\_resource\_ids](#output\_dbi\_resource\_ids) | List of the region-unique, immutable identifiers for the DB instances in the cluster |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The DNS address of the RDS instance |
 | <a name="output_master_host"></a> [master\_host](#output\_master\_host) | DB Master hostname |

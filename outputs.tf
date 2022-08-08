@@ -39,6 +39,11 @@ output "replicas_host" {
   description = "Replicas hostname"
 }
 
+output "dbi_ids" {
+  value       = aws_rds_cluster_instance.default.*.id
+  description = "List of the identifiers for the DB instances in the cluster"
+}
+
 output "dbi_resource_ids" {
   value       = aws_rds_cluster_instance.default.*.dbi_resource_id
   description = "List of the region-unique, immutable identifiers for the DB instances in the cluster"
