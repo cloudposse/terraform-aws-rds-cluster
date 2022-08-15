@@ -239,7 +239,7 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                                 = contains(regex("^(?:.*(aurora))?.*$", var.engine), "aurora") ? local.cluster_instance_count : 0
+  count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
   instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type

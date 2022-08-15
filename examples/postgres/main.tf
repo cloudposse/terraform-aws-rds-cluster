@@ -32,7 +32,7 @@ module "rds_cluster" {
   engine_mode               = var.engine_mode
   engine_version            = var.engine_version
   cluster_family            = var.cluster_family
-  cluster_size              = var.cluster_size
+  cluster_size              = contains(regex("^(?:.*(aurora))?.*$", var.engine), "aurora") ? var.cluster_size : 0
   admin_user                = var.admin_user
   admin_password            = var.admin_password
   db_name                   = var.db_name
