@@ -7,6 +7,8 @@ locals {
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+  primary_tags             = merge(module.this.tags, var.additional_primary_tags)
+  replica_tags             = merge(module.this.tags, var.additional_reader_tags)
 }
 
 data "aws_partition" "current" {
@@ -184,7 +186,7 @@ resource "aws_rds_cluster" "secondary" {
   db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  tags                                = module.this.tags
+  tags                                = local.replica_tags
   engine                              = var.engine
   engine_version                      = var.engine_version
   allow_major_version_upgrade         = var.allow_major_version_upgrade
@@ -246,7 +248,7 @@ resource "aws_rds_cluster_instance" "default" {
   db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
   publicly_accessible                   = var.publicly_accessible
-  tags                                  = module.this.tags
+  tags                                  = local.primary_tags
   engine                                = var.engine
   engine_version                        = var.engine_version
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade

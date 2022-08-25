@@ -472,3 +472,15 @@ variable "intra_security_group_traffic_enabled" {
   default     = false
   description = "Whether to allow traffic between resources inside the database's security group."
 }
+
+variable "additional_primary_tags" {
+  type = map(string)
+  description = "Map of additional tags to add to primary instance tags."
+  default = {}
+}
+
+variable "additional_reader_tags" {
+  type = map(string)
+  description = "Map of additional tags to add to all reader instances."
+  default = {}
+}
