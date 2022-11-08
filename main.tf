@@ -46,13 +46,13 @@ resource "aws_security_group_rule" "traffic_inside_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  for_each          = local.allowed_cidr_blocks
+  for_each          = toset(local.allowed_cidr_blocks)
   description       = "Allow inbound traffic from existing CIDR blocks"
   type              = "ingress"
   from_port         = var.db_port
   to_port           = var.db_port
   protocol          = "tcp"
-  cidr_blocks       = [each.key]
+  cidr_blocks       = [ each.key ]
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
