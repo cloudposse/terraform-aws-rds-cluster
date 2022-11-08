@@ -7,6 +7,7 @@ locals {
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+  allowed_cidr_blocks      = local.enabled && length(var.allowed_cidr_blocks) > 0 ? var.allowed_cidr_blocks : []
 }
 
 data "aws_partition" "current" {
@@ -45,13 +46,13 @@ resource "aws_security_group_rule" "traffic_inside_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  for_each          = local.allowed_cidr_blocks
   description       = "Allow inbound traffic from existing CIDR blocks"
   type              = "ingress"
   from_port         = var.db_port
   to_port           = var.db_port
   protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
+  cidr_blocks       = [ each.key ]
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
