@@ -400,5 +400,5 @@ resource "aws_rds_cluster_activity_stream" "primary" {
   
   resource_arn = aws_rds_cluster.primary.arn
   mode         = var.activity_stream_mode
-  kms_key_id   = var.activity_stream_key_id
+  kms_key_id   = var.activity_stream_kms_key_id
 }
