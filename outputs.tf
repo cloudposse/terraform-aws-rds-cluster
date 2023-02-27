@@ -68,3 +68,13 @@ output "security_group_name" {
   value       = join("", aws_security_group.default.*.name)
   description = "Security Group name"
 }
+
+output "activity_stream_arn" {
+  value       = join("", aws_rds_cluster_activity_stream.primary.*.id)
+  description = "Activity Stream ARN"
+}
+
+output "activity_stream_name" {
+  value       = join("", aws_rds_cluster_activity_stream.primary.*.kinesis_stream_name)
+  description = "Activity Stream Name"
+}
