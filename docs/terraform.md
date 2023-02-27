@@ -147,6 +147,8 @@
 
 | Name | Description |
 |------|-------------|
+| <a name="output_activity_stream_arn"></a> [activity_stream_arn](#output\_activity_\stream_\arn) | Amazon Resource Name (ARN) of the cluster activity stream |
+| <a name="output_activity_stream_name"></a> [activity_stream_name](#output\_activity_\stream_\name) | Databsae activity stream name (Kinesis Data Stream) |
 | <a name="output_arn"></a> [arn](#output\_arn) | Amazon Resource Name (ARN) of the cluster |
 | <a name="output_cluster_identifier"></a> [cluster\_identifier](#output\_cluster\_identifier) | Cluster Identifier |
 | <a name="output_cluster_resource_id"></a> [cluster\_resource\_id](#output\_cluster\_resource\_id) | The region-unique, immutable identifie of the cluster |
