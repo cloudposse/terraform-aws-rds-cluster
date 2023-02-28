@@ -482,7 +482,7 @@ variable "activity_stream_enabled" {
 variable "activity_stream_mode" {
   type        = string
   default     = "async"
-  description = "The Mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async`"
+  description = "The mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async`"
 }
 
 variable "activity_stream_kms_key_id" {
