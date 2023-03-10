@@ -472,3 +472,21 @@ variable "intra_security_group_traffic_enabled" {
   default     = false
   description = "Whether to allow traffic between resources inside the database's security group."
 }
+
+variable "activity_stream_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to enable Activity Streams"
+}
+
+variable "activity_stream_mode" {
+  type        = string
+  default     = "async"
+  description = "The mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async`"
+}
+
+variable "activity_stream_kms_key_id" {
+  type        = string
+  default     = ""
+  description = "The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true"
+}

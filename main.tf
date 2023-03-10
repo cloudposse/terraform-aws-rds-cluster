@@ -394,3 +394,11 @@ resource "aws_appautoscaling_policy" "replicas" {
     scale_out_cooldown = var.autoscaling_scale_out_cooldown
   }
 }
+
+resource "aws_rds_cluster_activity_stream" "primary" {
+  count = local.enabled && var.activity_stream_enabled ? 1 : 0
+
+  resource_arn = join("", aws_rds_cluster.primary.*.arn)
+  mode         = var.activity_stream_mode
+  kms_key_id   = var.activity_stream_kms_key_id
+}

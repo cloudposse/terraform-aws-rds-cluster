@@ -386,6 +386,7 @@ Available targets:
 | [aws_iam_role_policy_attachment.enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_rds_cluster.primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) | resource |
 | [aws_rds_cluster.secondary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) | resource |
+| [aws_rds_cluster_activity_stream.primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_activity_stream) | resource |
 | [aws_rds_cluster_instance.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance) | resource |
 | [aws_rds_cluster_parameter_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_parameter_group) | resource |
 | [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
@@ -400,6 +401,9 @@ Available targets:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_activity_stream_enabled"></a> [activity\_stream\_enabled](#input\_activity\_stream\_enabled) | Whether to enable Activity Streams | `bool` | `false` | no |
+| <a name="input_activity_stream_kms_key_id"></a> [activity\_stream\_kms\_key\_id](#input\_activity\_stream\_kms\_key\_id) | The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true | `string` | `""` | no |
+| <a name="input_activity_stream_mode"></a> [activity\_stream\_mode](#input\_activity\_stream\_mode) | The mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async` | `string` | `"async"` | no |
 | <a name="input_additional_tag_map"></a> [additional\_tag\_map](#input\_additional\_tag\_map) | Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.<br>This is for some rare cases where resources want additional configuration of tags<br>and therefore take a list of maps with tag key, value, and additional configuration. | `map(string)` | `{}` | no |
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Password for the master DB user. Ignored if snapshot\_identifier or replication\_source\_identifier is provided | `string` | `""` | no |
 | <a name="input_admin_user"></a> [admin\_user](#input\_admin\_user) | Username for the master DB user. Ignored if snapshot\_identifier or replication\_source\_identifier is provided | `string` | `"admin"` | no |
@@ -495,6 +499,8 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
+| <a name="output_activity_stream_arn"></a> [activity\_stream\_arn](#output\_activity\_stream\_arn) | Activity Stream ARN |
+| <a name="output_activity_stream_name"></a> [activity\_stream\_name](#output\_activity\_stream\_name) | Activity Stream Name |
 | <a name="output_arn"></a> [arn](#output\_arn) | Amazon Resource Name (ARN) of the cluster |
 | <a name="output_cluster_identifier"></a> [cluster\_identifier](#output\_cluster\_identifier) | Cluster Identifier |
 | <a name="output_cluster_resource_id"></a> [cluster\_resource\_id](#output\_cluster\_resource\_id) | The region-unique, immutable identifie of the cluster |
@@ -599,7 +605,7 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 ## Copyright
 
-Copyright © 2017-2022 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2023 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 
 
@@ -682,7 +688,7 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
-
+<!-- markdownlint-disable -->
   [logo]: https://cloudposse.com/logo-300x69.svg
   [docs]: https://cpco.io/docs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=docs
   [website]: https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=website
@@ -713,3 +719,4 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [share_googleplus]: https://plus.google.com/share?url=https://github.com/cloudposse/terraform-aws-rds-cluster
   [share_email]: mailto:?subject=terraform-aws-rds-cluster&body=https://github.com/cloudposse/terraform-aws-rds-cluster
   [beacon]: https://ga-beacon.cloudposse.com/UA-76589703-4/cloudposse/terraform-aws-rds-cluster?pixel&cs=github&cm=readme&an=terraform-aws-rds-cluster
+<!-- markdownlint-restore -->
