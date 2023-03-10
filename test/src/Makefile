@@ -15,7 +15,8 @@ init:
 ## Run tests
 test: init
 	go mod download
-	go test -v -timeout 60m
+	# Allow more parallel tests than there are CPU cores because most of the time tests are just waiting for AWS
+	go test -v -timeout 60m -parallel 8
 
 ## Run tests in docker container
 docker/test:
