@@ -401,7 +401,7 @@ resource "aws_rds_cluster_activity_stream" "primary" {
   resource_arn = join("", aws_rds_cluster.primary.*.arn)
   mode         = var.activity_stream_mode
   kms_key_id   = var.activity_stream_kms_key_id
-  
+
   timeouts = {
     create = "60m"
     delete = "60m"
