@@ -402,8 +402,7 @@ resource "aws_rds_cluster_activity_stream" "primary" {
   mode         = var.activity_stream_mode
   kms_key_id   = var.activity_stream_kms_key_id
 
-  timeouts = {
-    create = "60m"
-    delete = "60m"
-  }
+  depends_on = [
+    aws_rds_cluster_instance.default
+  ]
 }
