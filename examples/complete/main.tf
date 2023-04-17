@@ -45,6 +45,7 @@ module "rds_cluster" {
   iops                                 = var.iops
   allocated_storage                    = var.allocated_storage
   intra_security_group_traffic_enabled = var.intra_security_group_traffic_enabled
+  storage_encrypted                    = true
 
   cluster_parameters = [
     {
