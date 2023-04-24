@@ -220,7 +220,7 @@ variable "allowed_cidr_blocks" {
 variable "egress_allowed_cidr_blocks" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
-  description = "List of CIDR blocks allowed to go in outbound from the cluster"
+  description = "List of allowed egress CIDR blocks"
 }
 
 variable "publicly_accessible" {
