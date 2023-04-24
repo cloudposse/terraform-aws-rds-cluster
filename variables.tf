@@ -14,6 +14,12 @@ variable "security_groups" {
   description = "List of security groups to be allowed to connect to the DB instance"
 }
 
+variable "egress_security_groups" {
+  type        = list(string)
+  default     = []
+  description = "List of security groups to be allowed to go in outbound from the DB instance"
+}
+
 variable "vpc_id" {
   type        = string
   description = "VPC ID to create the cluster in (e.g. `vpc-a22222ee`)"
@@ -209,6 +215,12 @@ variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
   description = "List of CIDR blocks allowed to access the cluster"
+}
+
+variable "egress_allowed_cidr_blocks" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks allowed to go in outbound from the cluster"
 }
 
 variable "publicly_accessible" {
