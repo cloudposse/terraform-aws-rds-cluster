@@ -17,7 +17,7 @@ variable "security_groups" {
 variable "egress_security_groups" {
   type        = list(string)
   default     = []
-  description = "List of security groups to be allowed to go in outbound from the DB instance"
+  description = "List of allowed egress Security Groups"
 }
 
 variable "vpc_id" {
