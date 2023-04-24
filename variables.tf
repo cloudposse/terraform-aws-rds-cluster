@@ -14,7 +14,7 @@ variable "security_groups" {
   description = "List of security groups to be allowed to connect to the DB instance"
 }
 
-variable "egress_security_groups" {
+variable "allowed_egress_security_groups" {
   type        = list(string)
   default     = []
   description = "List of allowed egress Security Groups"
@@ -217,7 +217,7 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks allowed to access the cluster"
 }
 
-variable "egress_allowed_cidr_blocks" {
+variable "allowed_egress_cidr_blocks" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
   description = "List of allowed egress CIDR blocks"

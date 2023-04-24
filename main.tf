@@ -62,18 +62,18 @@ resource "aws_security_group_rule" "egress_cidr_blocks" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = var.egress_allowed_cidr_blocks
+  cidr_blocks       = var.allowed_egress_cidr_blocks
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
 resource "aws_security_group_rule" "egress_security_groups" {
-  count                    = local.enabled && var.egress_enabled ? length(var.security_groups) : 0
+  count                    = local.enabled && var.egress_enabled ? length(var.allowed_egress_security_groups) : 0
   description              = "Allow outbound traffic from existing security groups"
   type                     = "egress"
   from_port                = 0
   to_port                  = 0
   protocol                 = "-1"
-  source_security_group_id = var.egress_security_groups[count.index]
+  source_security_group_id = var.allowed_egress_security_groups[count.index]
   security_group_id        = join("", aws_security_group.default.*.id)
 }
 
