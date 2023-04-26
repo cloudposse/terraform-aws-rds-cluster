@@ -10,7 +10,7 @@ name = "rds-cluster"
 
 instance_type = "db.t3.small"
 
-cluster_family = "aurora5.6"
+cluster_family = "aurora-mysql5.7"
 
 cluster_size = 1
 
@@ -18,7 +18,7 @@ deletion_protection = false
 
 autoscaling_enabled = false
 
-engine = "aurora"
+engine = "aurora-mysql"
 
 engine_mode = "provisioned"
 
