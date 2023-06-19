@@ -175,6 +175,7 @@ resource "aws_rds_cluster" "secondary" {
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
+  db_cluster_instance_class           = local.is_serverless ? null : var.db_cluster_instance_class
   storage_encrypted                   = var.storage_encrypted
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
@@ -250,7 +251,7 @@ resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
-  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  instance_class                        = var.instance_type
   db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
   publicly_accessible                   = var.publicly_accessible
