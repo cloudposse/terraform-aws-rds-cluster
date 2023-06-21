@@ -13,7 +13,7 @@ module "rds_cluster_aurora_mysql_serverless" {
   name                 = "db"
   engine               = "aurora-mysql"
   engine_mode          = "serverless"
-  engine_version       = "5.7.mysql_aurora[2].07.1"
+  engine_version       = "5.7.mysql_aurora.2.07.1"
   cluster_family       = "aurora-mysql5.7"
   cluster_size         = 0
   admin_user           = "admin1"
