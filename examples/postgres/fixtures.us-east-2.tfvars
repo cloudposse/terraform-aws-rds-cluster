@@ -10,7 +10,7 @@ name = "rds-cluster"
 
 instance_type = "db.m5d.large"
 
-cluster_family = "postgres13"
+cluster_family = "postgres14"
 
 cluster_size = 1
 
