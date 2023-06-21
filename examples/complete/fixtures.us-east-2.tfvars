@@ -10,7 +10,7 @@ name = "rds-cluster"
 
 instance_type = "db.t3.small"
 
-cluster_family = "aurora5.6"
+cluster_family = "aurora5.7"
 
 cluster_size = 1
 
