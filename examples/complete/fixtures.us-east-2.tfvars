@@ -18,7 +18,7 @@ deletion_protection = false
 
 autoscaling_enabled = false
 
-engine = "aurora"
+engine = "aurora-mysql"
 
 engine_mode = "provisioned"
 
