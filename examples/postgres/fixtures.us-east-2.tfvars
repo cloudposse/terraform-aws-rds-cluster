@@ -10,7 +10,7 @@ name = "rds-cluster"
 
 instance_type = "db.m5d.large"
 
-cluster_family = "postgres13"
+cluster_family = "postgres14"
 
 cluster_size = 1
 
@@ -22,7 +22,7 @@ engine = "postgres"
 
 engine_mode = "provisioned"
 
-engine_version = "13.4"
+engine_version = "14.7"
 
 db_name = "test_db"
 

@@ -15,14 +15,14 @@ module "enhanced_monitoring_label" {
 resource "aws_iam_role" "enhanced_monitoring" {
   count              = module.this.enabled && var.enhanced_monitoring_role_enabled ? 1 : 0
   name               = module.enhanced_monitoring_label.id
-  assume_role_policy = join("", data.aws_iam_policy_document.enhanced_monitoring.*.json)
+  assume_role_policy = join("", data.aws_iam_policy_document.enhanced_monitoring[*].json)
   tags               = module.enhanced_monitoring_label.tags
 }
 
 # Attach Amazon's managed policy for RDS enhanced monitoring
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
   count      = module.this.enabled && var.enhanced_monitoring_role_enabled ? 1 : 0
-  role       = join("", aws_iam_role.enhanced_monitoring.*.name)
+  role       = join("", aws_iam_role.enhanced_monitoring[*].name)
   policy_arn = "arn:${local.partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
