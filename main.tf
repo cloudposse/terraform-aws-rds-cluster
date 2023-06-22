@@ -250,10 +250,10 @@ resource "aws_rds_cluster" "secondary" {
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
+  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
   instance_class                        = var.instance_type
-  db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
-  db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
+  db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
+  db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
   tags                                  = module.this.tags
   engine                                = var.engine
