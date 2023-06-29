@@ -1,7 +1,7 @@
 locals {
   enabled = module.this.enabled
 
-  partition = join("", data.aws_partition.current.*.partition)
+  partition = join("", data.aws_partition.current[*].partition)
 
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
@@ -30,7 +30,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
   to_port                  = var.db_port
   protocol                 = "tcp"
   source_security_group_id = var.security_groups[count.index]
-  security_group_id        = join("", aws_security_group.default.*.id)
+  security_group_id        = join("", aws_security_group.default[*].id)
 }
 
 resource "aws_security_group_rule" "traffic_inside_security_group" {
@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "traffic_inside_security_group" {
   to_port           = var.db_port
   protocol          = "tcp"
   self              = true
-  security_group_id = join("", aws_security_group.default.*.id)
+  security_group_id = join("", aws_security_group.default[*].id)
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
@@ -52,7 +52,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   to_port           = var.db_port
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.default.*.id)
+  security_group_id = join("", aws_security_group.default[*].id)
 }
 
 resource "aws_security_group_rule" "egress_cidr_blocks" {
@@ -63,7 +63,7 @@ resource "aws_security_group_rule" "egress_cidr_blocks" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = var.allowed_egress_cidr_blocks
-  security_group_id = join("", aws_security_group.default.*.id)
+  security_group_id = join("", aws_security_group.default[*].id)
 }
 
 resource "aws_security_group_rule" "egress_security_groups" {
@@ -99,16 +99,16 @@ resource "aws_rds_cluster" "primary" {
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
+  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
-  db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
+  db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
+  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
   allow_major_version_upgrade         = var.allow_major_version_upgrade
-  db_instance_parameter_group_name    = var.allow_major_version_upgrade ? join("", aws_db_parameter_group.default.*.name) : null
+  db_instance_parameter_group_name    = var.allow_major_version_upgrade ? join("", aws_db_parameter_group.default[*].name) : null
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
@@ -190,10 +190,10 @@ resource "aws_rds_cluster" "secondary" {
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
+  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
-  db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
+  db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
+  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
@@ -252,17 +252,17 @@ resource "aws_rds_cluster" "secondary" {
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
-  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
+  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
   instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
-  db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
-  db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
+  db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
+  db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
   tags                                  = module.this.tags
   engine                                = var.engine
   engine_version                        = var.engine_version
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   monitoring_interval                   = var.rds_monitoring_interval
-  monitoring_role_arn                   = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring.*.arn) : var.rds_monitoring_role_arn
+  monitoring_role_arn                   = var.enhanced_monitoring_role_enabled ? join("", aws_iam_role.enhanced_monitoring[*].arn) : var.rds_monitoring_role_arn
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_kms_key_id       = var.performance_insights_kms_key_id
   performance_insights_retention_period = var.performance_insights_retention_period
@@ -360,7 +360,7 @@ module "dns_master" {
   enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = local.cluster_dns_name
   zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
-  records  = coalescelist(aws_rds_cluster.primary.*.endpoint, aws_rds_cluster.secondary.*.endpoint, [""])
+  records  = coalescelist(aws_rds_cluster.primary[*].endpoint, aws_rds_cluster.secondary[*].endpoint, [""])
 
   context = module.this.context
 }
@@ -372,7 +372,7 @@ module "dns_replicas" {
   enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
   zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
-  records  = coalescelist(aws_rds_cluster.primary.*.reader_endpoint, aws_rds_cluster.secondary.*.reader_endpoint, [""])
+  records  = coalescelist(aws_rds_cluster.primary[*].reader_endpoint, aws_rds_cluster.secondary[*].reader_endpoint, [""])
 
   context = module.this.context
 }
@@ -381,7 +381,7 @@ resource "aws_appautoscaling_target" "replicas" {
   count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
-  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))}"
+  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))}"
   min_capacity       = var.autoscaling_min_capacity
   max_capacity       = var.autoscaling_max_capacity
 }
@@ -389,9 +389,9 @@ resource "aws_appautoscaling_target" "replicas" {
 resource "aws_appautoscaling_policy" "replicas" {
   count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   name               = module.this.id
-  service_namespace  = join("", aws_appautoscaling_target.replicas.*.service_namespace)
-  scalable_dimension = join("", aws_appautoscaling_target.replicas.*.scalable_dimension)
-  resource_id        = join("", aws_appautoscaling_target.replicas.*.resource_id)
+  service_namespace  = join("", aws_appautoscaling_target.replicas[*].service_namespace)
+  scalable_dimension = join("", aws_appautoscaling_target.replicas[*].scalable_dimension)
+  resource_id        = join("", aws_appautoscaling_target.replicas[*].resource_id)
   policy_type        = var.autoscaling_policy_type
 
   target_tracking_scaling_policy_configuration {
@@ -409,7 +409,7 @@ resource "aws_appautoscaling_policy" "replicas" {
 resource "aws_rds_cluster_activity_stream" "primary" {
   count = local.enabled && var.activity_stream_enabled ? 1 : 0
 
-  resource_arn = join("", aws_rds_cluster.primary.*.arn)
+  resource_arn = join("", aws_rds_cluster.primary[*].arn)
   mode         = var.activity_stream_mode
   kms_key_id   = var.activity_stream_kms_key_id
 }
