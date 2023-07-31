@@ -69,29 +69,31 @@ resource "aws_security_group_rule" "egress" {
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
 # The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count                               = local.enabled && local.is_regional_cluster ? 1 : 0
-  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name                       = var.db_name
-  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
-  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
-  backup_retention_period             = var.retention_period
-  preferred_backup_window             = var.backup_window
-  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
-  final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
-  skip_final_snapshot                 = var.skip_final_snapshot
-  apply_immediately                   = var.apply_immediately
-  db_cluster_instance_class           = local.is_serverless ? null : var.db_cluster_instance_class
-  storage_encrypted                   = local.is_serverless ? null : var.storage_encrypted
-  storage_type                        = var.storage_type
-  iops                                = var.iops
-  allocated_storage                   = var.allocated_storage
-  kms_key_id                          = var.kms_key_arn
-  source_region                       = var.source_region
-  snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
+  count                     = local.enabled && local.is_regional_cluster ? 1 : 0
+  cluster_identifier        = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  database_name             = var.db_name
+  master_username           = local.ignore_admin_credentials ? null : var.admin_user
+  master_password           = local.ignore_admin_credentials ? null : var.admin_password
+  backup_retention_period   = var.retention_period
+  preferred_backup_window   = var.backup_window
+  copy_tags_to_snapshot     = var.copy_tags_to_snapshot
+  final_snapshot_identifier = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
+  skip_final_snapshot       = var.skip_final_snapshot
+  apply_immediately         = var.apply_immediately
+  db_cluster_instance_class = local.is_serverless ? null : var.db_cluster_instance_class
+  storage_encrypted         = local.is_serverless ? null : var.storage_encrypted
+  storage_type              = var.storage_type
+  iops                      = var.iops
+  allocated_storage         = var.allocated_storage
+  kms_key_id                = var.kms_key_arn
+  source_region             = var.source_region
+  snapshot_identifier       = var.snapshot_identifier
+  vpc_security_group_ids    = compact(flatten([
+    join("", aws_security_group.default[*].id), var.vpc_security_group_ids
+  ]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
+  db_cluster_parameter_group_name     = var.db_cluster_parameter_group_name != "" ? var.db_cluster_parameter_group_name : join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
@@ -164,25 +166,27 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = local.enabled && !local.is_regional_cluster ? 1 : 0
-  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name                       = var.db_name
-  master_username                     = local.ignore_admin_credentials ? null : var.admin_user
-  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
-  backup_retention_period             = var.retention_period
-  preferred_backup_window             = var.backup_window
-  copy_tags_to_snapshot               = var.copy_tags_to_snapshot
-  final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
-  skip_final_snapshot                 = var.skip_final_snapshot
-  apply_immediately                   = var.apply_immediately
-  storage_encrypted                   = var.storage_encrypted
-  kms_key_id                          = var.kms_key_arn
-  source_region                       = var.source_region
-  snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
+  count                     = local.enabled && !local.is_regional_cluster ? 1 : 0
+  cluster_identifier        = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  database_name             = var.db_name
+  master_username           = local.ignore_admin_credentials ? null : var.admin_user
+  master_password           = local.ignore_admin_credentials ? null : var.admin_password
+  backup_retention_period   = var.retention_period
+  preferred_backup_window   = var.backup_window
+  copy_tags_to_snapshot     = var.copy_tags_to_snapshot
+  final_snapshot_identifier = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
+  skip_final_snapshot       = var.skip_final_snapshot
+  apply_immediately         = var.apply_immediately
+  storage_encrypted         = var.storage_encrypted
+  kms_key_id                = var.kms_key_arn
+  source_region             = var.source_region
+  snapshot_identifier       = var.snapshot_identifier
+  vpc_security_group_ids    = compact(flatten([
+    join("", aws_security_group.default[*].id), var.vpc_security_group_ids
+  ]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
+  db_cluster_parameter_group_name     = var.db_cluster_parameter_group_name != "" ? var.db_cluster_parameter_group_name : join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
@@ -233,7 +237,7 @@ resource "aws_rds_cluster" "secondary" {
   lifecycle {
     ignore_changes = [
       replication_source_identifier, # will be set/managed by Global Cluster
-      snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
+      snapshot_identifier, # if created from a snapshot, will be non-null at creation, but null afterwards
     ]
   }
 }
@@ -292,7 +296,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  count       = local.enabled ? 1 : 0
+  count       = local.enabled ? (var.db_cluster_parameter_group_name != "" ? 0 : 1) : 0
   name_prefix = "${module.this.id}${module.this.delimiter}"
   description = "DB cluster parameter group"
   family      = var.cluster_family
@@ -361,7 +365,9 @@ module "dns_replicas" {
   enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
   zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
-  records  = coalescelist(aws_rds_cluster.primary[*].reader_endpoint, aws_rds_cluster.secondary[*].reader_endpoint, [""])
+  records  = coalescelist(aws_rds_cluster.primary[*].reader_endpoint, aws_rds_cluster.secondary[*].reader_endpoint, [
+    ""
+  ])
 
   context = module.this.context
 }

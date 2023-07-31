@@ -490,3 +490,9 @@ variable "activity_stream_kms_key_id" {
   default     = ""
   description = "The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true"
 }
+
+variable "db_cluster_parameter_group_name" {
+  type = string
+  default = ""
+  description = "Name of an existing rds cluster parameter group. When specifying, no new cluster parameter group created"
+}
