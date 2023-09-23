@@ -211,6 +211,13 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks allowed to access the cluster"
 }
 
+variable "allowed_ipv6_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = "List of IPv6 CIDR blocks allowed to access the cluster"
+}
+
+
 variable "publicly_accessible" {
   type        = bool
   description = "Set to true if you want your cluster to be publicly accessible (such as via QuickSight)"
@@ -489,4 +496,10 @@ variable "activity_stream_kms_key_id" {
   type        = string
   default     = ""
   description = "The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true"
+}
+
+variable "network_type" {
+  type        = string
+  default     = "IPV4"
+  description = "The network type of the cluster. Valid values: IPV4, DUAL."
 }
