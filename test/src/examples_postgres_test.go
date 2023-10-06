@@ -1,6 +1,7 @@
 package test
 
 import (
+	"regexp"
 	"strings"
 	"testing"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Test the Terraform module in examples/complete using Terratest.
+// Test the Terraform module in examples/postgres using Terratest.
 func TestExamplesPostgres(t *testing.T) {
 	t.Parallel()
 	randID := strings.ToLower(random.UniqueId())
@@ -85,7 +86,7 @@ func TestExamplesPostgresDisabled(t *testing.T) {
 		VarFiles: varFiles,
 		Vars: map[string]interface{}{
 			"attributes": attributes,
-			"enabled":    "false",
+			"enabled":    false,
 		},
 	}
 
@@ -95,6 +96,9 @@ func TestExamplesPostgresDisabled(t *testing.T) {
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	results := terraform.InitAndApply(t, terraformOptions)
 
-	// Should complete successfully without creating or changing any resources
-	assert.Contains(t, results, "Resources: 0 added, 0 changed, 0 destroyed.")
+	// Should complete successfully without creating or changing any resources.
+	// Extract the "Resources:" section of the output to make the error message more readable.
+	re := regexp.MustCompile(`Resources: [^.]+\.`)
+	match := re.FindString(results)
+	assert.Equal(t, "Resources: 0 added, 0 changed, 0 destroyed.", match, "Re-applying the same configuration should not change any resources")
 }
