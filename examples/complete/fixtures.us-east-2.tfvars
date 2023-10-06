@@ -8,7 +8,7 @@ stage = "test"
 
 name = "rds-cluster"
 
-instance_type = "db.t3.small"
+instance_type = "db.t3.medium"
 
 cluster_family = "aurora-mysql8.0"
 
