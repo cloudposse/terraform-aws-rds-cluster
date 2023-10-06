@@ -12,9 +12,6 @@ name = "rds-cluster"
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance
 instance_type = "db.t3.large"
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#db_cluster_instance_class
-db_cluster_instance_class = "db.t3.large"
-
 cluster_family = "aurora-postgresql15"
 
 engine_version = "15.3"
