@@ -35,7 +35,3 @@ admin_password = "admin_password"
 enhanced_monitoring_role_enabled = true
 
 rds_monitoring_interval = 30
-
-allocated_storage = 100
-
-storage_type = "gp2"
