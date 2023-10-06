@@ -8,21 +8,22 @@ stage = "test"
 
 name = "rds-cluster"
 
-instance_type = "db.m5d.large"
+# https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora
+instance_type = "db.t3.large"
 
-cluster_family = "postgres14"
+cluster_family = "aurora-postgresql15"
+
+engine_version = "15.3"
+
+engine = "aurora-postgresql"
+
+engine_mode = "provisioned"
 
 cluster_size = 1
 
 deletion_protection = false
 
 autoscaling_enabled = false
-
-engine = "postgres"
-
-engine_mode = "provisioned"
-
-engine_version = "14.7"
 
 db_name = "test_db"
 

@@ -4,7 +4,29 @@ variable "region" {
 }
 
 variable "availability_zones" {
-  type = list(string)
+  type        = list(string)
+  description = "Availability zones"
+}
+
+variable "cluster_family" {
+  type        = string
+  description = "The family of the DB cluster parameter group"
+}
+
+variable "engine" {
+  type        = string
+  description = "The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql`"
+}
+
+variable "engine_version" {
+  type        = string
+  default     = ""
+  description = "The version of the database engine to use. See `aws rds describe-db-engine-versions` "
+}
+
+variable "instance_type" {
+  type        = string
+  description = "Instance type to use"
 }
 
 variable "cluster_size" {

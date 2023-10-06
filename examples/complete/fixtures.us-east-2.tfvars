@@ -8,19 +8,20 @@ stage = "test"
 
 name = "rds-cluster"
 
+# https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora
 instance_type = "db.t3.medium"
 
 cluster_family = "aurora-mysql8.0"
+
+engine = "aurora-mysql"
+
+engine_mode = "provisioned"
 
 cluster_size = 1
 
 deletion_protection = false
 
 autoscaling_enabled = false
-
-engine = "aurora-mysql"
-
-engine_mode = "provisioned"
 
 db_name = "test_db"
 
