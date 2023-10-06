@@ -4,7 +4,8 @@ variable "region" {
 }
 
 variable "availability_zones" {
-  type = list(string)
+  type        = list(string)
+  description = "Availability zones"
 }
 
 variable "instance_type" {

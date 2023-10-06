@@ -8,21 +8,23 @@ stage = "test"
 
 name = "rds-cluster"
 
-instance_type = "db.m5d.large"
+# https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance
+instance_type = "db.t3.large"
 
-cluster_family = "postgres14"
+cluster_family = "aurora-postgresql15"
+
+engine_version = "15.3"
+
+engine = "aurora-postgresql"
+
+engine_mode = "provisioned"
 
 cluster_size = 1
 
 deletion_protection = false
 
 autoscaling_enabled = false
-
-engine = "postgres"
-
-engine_mode = "provisioned"
-
-engine_version = "14.7"
 
 db_name = "test_db"
 
@@ -33,11 +35,3 @@ admin_password = "admin_password"
 enhanced_monitoring_role_enabled = true
 
 rds_monitoring_interval = 30
-
-allocated_storage = 100
-
-storage_type = "io1"
-
-iops = 1000
-
-db_cluster_instance_class = "db.m5d.large"

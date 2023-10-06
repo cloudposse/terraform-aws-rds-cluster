@@ -292,8 +292,11 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  count       = local.enabled ? 1 : 0
-  name_prefix = "${module.this.id}${module.this.delimiter}"
+  count = local.enabled ? 1 : 0
+
+  name_prefix = var.parameter_group_name_prefix_enabled ? "${module.this.id}${module.this.delimiter}" : null
+  name        = !var.parameter_group_name_prefix_enabled ? module.this.id : null
+
   description = "DB cluster parameter group"
   family      = var.cluster_family
 
@@ -314,8 +317,11 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  count       = local.enabled ? 1 : 0
-  name_prefix = "${module.this.id}${module.this.delimiter}"
+  count = local.enabled ? 1 : 0
+
+  name_prefix = var.parameter_group_name_prefix_enabled ? "${module.this.id}${module.this.delimiter}" : null
+  name        = !var.parameter_group_name_prefix_enabled ? module.this.id : null
+
   description = "DB instance parameter group"
   family      = var.cluster_family
 
