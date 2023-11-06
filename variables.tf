@@ -74,13 +74,13 @@ variable "admin_password" {
 
 variable "retention_period" {
   type        = number
-  default     = 5
+  default     = null
   description = "Number of days to retain backups for"
 }
 
 variable "backup_window" {
   type        = string
-  default     = "07:00-09:00"
+  default     = null
   description = "Daily time range during which the backups happen"
 }
 
