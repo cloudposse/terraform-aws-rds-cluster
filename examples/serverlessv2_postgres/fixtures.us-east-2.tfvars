@@ -10,9 +10,9 @@ name = "rds-cluster"
 
 engine = "aurora-postgresql"
 
-cluster_family = "aurora-postgresql13"
+cluster_family = "aurora-postgresql15"
 
-engine_version = "13.6"
+engine_version = "15.3"
 
 instance_type = "db.serverless"
 
