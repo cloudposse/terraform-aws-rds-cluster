@@ -102,6 +102,7 @@ resource "aws_rds_cluster" "primary" {
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
+  enable_global_write_forwarding      = var.enable_global_write_forwarding
 
   depends_on = [
     aws_db_subnet_group.default,
