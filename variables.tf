@@ -146,6 +146,11 @@ variable "allow_major_version_upgrade" {
   description = "Enable to allow major engine version upgrades when changing engine versions. Defaults to false."
 }
 
+variable "force_db_parameter_group_name" {
+  type        = string
+  description = "Enforce using a specific parameter group for cluster and instances"
+}
+
 variable "auto_minor_version_upgrade" {
   type        = bool
   default     = true

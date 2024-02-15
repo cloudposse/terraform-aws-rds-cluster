@@ -91,13 +91,13 @@ resource "aws_rds_cluster" "primary" {
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
+  db_cluster_parameter_group_name     = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
   engine_version                      = var.engine_version
   allow_major_version_upgrade         = var.allow_major_version_upgrade
-  db_instance_parameter_group_name    = var.allow_major_version_upgrade ? join("", aws_db_parameter_group.default[*].name) : null
+  db_instance_parameter_group_name    = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : (var.allow_major_version_upgrade ? join("", aws_db_parameter_group.default[*].name) : null)
   engine_mode                         = var.engine_mode
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
@@ -182,7 +182,7 @@ resource "aws_rds_cluster" "secondary" {
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
+  db_cluster_parameter_group_name     = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
