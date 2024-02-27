@@ -248,11 +248,19 @@ resource "aws_rds_cluster" "secondary" {
   }
 }
 
+resource "random_pet" "instance" {
+  prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  keepers = {
+    cluster_family = var.cluster_family
+    instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  }
+}
+
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
-  identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
+  identifier                            = "${random_pet.instance.id}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
-  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  instance_class                        = random_pet.instance.keepers.instance_class
   db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
@@ -290,7 +298,8 @@ resource "aws_rds_cluster_instance" "default" {
   ]
 
   lifecycle {
-    ignore_changes = [engine_version]
+    ignore_changes        = [engine_version]
+    create_before_destroy = true
   }
 }
 
