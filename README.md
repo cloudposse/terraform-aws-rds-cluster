@@ -28,6 +28,7 @@ Terraform module to provision an [`RDS Aurora`](https://aws.amazon.com/rds/auror
 
 Supports [Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/).
 
+
 ---
 > [!NOTE]
 > This project is part of Cloud Posse's comprehensive ["SweetOps"](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=) approach towards DevOps.
@@ -47,7 +48,6 @@ Supports [Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless
 > </details>
 
 <a href="https://cloudposse.com/readme/header/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=readme_header_link"><img src="https://cloudposse.com/readme/header/img"/></a>
-
 
 
 
@@ -535,6 +535,7 @@ Dropped straight into your Inbox every week — and usually a 5-minute read.
 ### 📆 Office Hours <a href="https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=office_hours"><img src="https://img.cloudposse.com/fit-in/200x200/https://cloudposse.com/wp-content/uploads/2019/08/Powered-by-Zoom.png" align="right" /></a>
 
 [Join us every Wednesday via Zoom](https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-rds-cluster&utm_content=office_hours) for your weekly dose of insider DevOps trends, AWS news and Terraform insights, all sourced from our SweetOps community, plus a _live Q&A_ that you can’t find anywhere else.
+It's **FREE** for everyone!
 
 ## About
 
