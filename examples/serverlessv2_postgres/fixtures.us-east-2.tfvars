@@ -1,5 +1,3 @@
-enabled = true
-
 region = "us-east-2"
 
 availability_zones = ["us-east-2a", "us-east-2b"]
@@ -10,12 +8,19 @@ stage = "test"
 
 name = "rds-cluster"
 
+engine = "aurora-postgresql"
+
+cluster_family = "aurora-postgresql15"
+
+engine_version = "15.3"
+
+instance_type = "db.serverless"
+
 cluster_size = 1
 
 deletion_protection = false
 
 autoscaling_enabled = false
-
 
 db_name = "test_db"
 

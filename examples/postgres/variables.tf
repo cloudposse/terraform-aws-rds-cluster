@@ -93,6 +93,6 @@ variable "allocated_storage" {
 
 variable "db_cluster_instance_class" {
   type        = string
-  default     = "db.m5d.large"
-  description = "This setting is required to create a Multi-AZ DB cluste"
+  default     = null
+  description = "This setting is required to create a Multi-AZ RDS cluster (not Aurora)"
 }
