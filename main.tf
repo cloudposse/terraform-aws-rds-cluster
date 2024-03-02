@@ -285,6 +285,7 @@ resource "aws_rds_cluster_instance" "default" {
     aws_iam_role.enhanced_monitoring,
     aws_rds_cluster.secondary,
     aws_rds_cluster_parameter_group.default,
+    aws_rds_cluster_instance.default[0],
   ]
 
   lifecycle {
