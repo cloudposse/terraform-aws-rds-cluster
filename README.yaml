@@ -20,19 +20,22 @@ github_repo: cloudposse/terraform-aws-rds-cluster
 
 badges:
   - name: Latest Release
-    image: https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg
+    image: https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge
     url: https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest
+  - name: Last Updated
+    image: https://img.shields.io/github/last-commit/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge
+    url: https://github.com/cloudposse/terraform-aws-rds-cluster/commits
   - name: Slack Community
-    image: https://slack.cloudposse.com/badge.svg
+    image: https://slack.cloudposse.com/for-the-badge.svg
     url: https://slack.cloudposse.com
 
+# List any related terraform modules that this module may be used with or that this module depends on.
 related:
   - name: terraform-aws-rds
     description: Terraform module to provision AWS RDS instances
     url: https://github.com/cloudposse/terraform-aws-rds
   - name: terraform-aws-rds-cloudwatch-sns-alarms
-    description: Terraform module that configures important RDS alerts using CloudWatch
-      and sends them to an SNS topic
+    description: Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic
     url: https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms
 
 description: |-
@@ -282,22 +285,4 @@ include:
   - docs/targets.md
   - docs/terraform.md
 
-contributors:
-  - name: Erik Osterman
-    github: osterman
-  - name: Igor Rodionov
-    github: goruha
-  - name: Andriy Knysh
-    github: aknysh
-  - name: Sarkis Varozian
-    github: sarkis
-  - name: Mike Crowe
-    github: mike-zipit
-  - name: Sergey Vasilyev
-    github: s2504s
-  - name: Todor Todorov
-    github: tptodorov
-  - name: Lee Huffman
-    github: leehuffman
-  - name: RB
-    github: nitrocode
+contributors: []
