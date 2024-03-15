@@ -496,3 +496,9 @@ variable "parameter_group_name_prefix_enabled" {
   default     = true
   description = "Set to `true` to use `name_prefix` to name the cluster and database parameter groups. Set to `false` to use `name` instead"
 }
+
+variable "enable_global_write_forwarding" {
+  type        = bool
+  default     = false
+  description = "Set to `true`, to forward writes to an associated global cluster."
+}
