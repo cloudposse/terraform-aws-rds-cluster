@@ -3,3 +3,5 @@ _extends: .github
 repository:
   name: terraform-aws-rds-cluster
   description: Terraform module to provision an RDS Aurora cluster for MySQL or Postgres
+  homepage: https://cloudposse.com/accelerate
+  topics: terraform, terraform-modules, rds, rds-database, aurora, aws, mysql, cluster, hcl2, terratest
