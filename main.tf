@@ -3,6 +3,7 @@ locals {
 
   partition = join("", data.aws_partition.current[*].partition)
 
+  cluster_identifier       = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
@@ -249,7 +250,7 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "random_pet" "instance" {
-  prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  prefix = local.enabled ? local.cluster_identifier : "disabled"
   keepers = {
     cluster_family = var.cluster_family
     instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
