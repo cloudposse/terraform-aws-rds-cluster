@@ -3,7 +3,6 @@ locals {
 
   partition = join("", data.aws_partition.current[*].partition)
 
-  cluster_identifier       = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
@@ -250,7 +249,8 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "random_pet" "instance" {
-  prefix = local.enabled ? local.cluster_identifier : "disabled"
+  count  = local.enabled ? 1 : 0
+  prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   keepers = {
     cluster_family = var.cluster_family
     instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
@@ -259,9 +259,9 @@ resource "random_pet" "instance" {
 
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
-  identifier                            = "${random_pet.instance.id}-${count.index + 1}"
+  identifier                            = "${random_pet.instance[0].id}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
-  instance_class                        = random_pet.instance.keepers.instance_class
+  instance_class                        = random_pet.instance[0].keepers.instance_class
   db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
