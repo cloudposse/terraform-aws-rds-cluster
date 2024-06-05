@@ -200,9 +200,25 @@ variable "restore_to_point_in_time" {
     source_cluster_identifier  = string
     restore_type               = string
     use_latest_restorable_time = bool
+    restore_to_time            = string
   }))
   default     = []
-  description = "List point-in-time recovery options. Only valid actions are `source_cluster_identifier`, `restore_type` and `use_latest_restorable_time`"
+  description = <<-EOT
+    List of point-in-time recovery options. Valid parameters are:
+
+    `source_cluster_identifier`
+      Identifier of the source database cluster from which to restore.
+      default: "120m"
+    `restore_type`:
+      Type of restore to be performed. Valid options are "full-copy" and "copy-on-write".
+      default: "copy-on-write"
+    `use_latest_restorable_time`:
+      Set to true to restore the database cluster to the latest restorable backup time. Conflicts with `restore_to_time`.
+      default: true
+    `restore_to_time`:
+      Date and time in UTC format to restore the database cluster to. Conflicts with `use_latest_restorable_time`.
+      default: null
+EOT
 }
 
 variable "allowed_cidr_blocks" {
