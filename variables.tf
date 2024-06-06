@@ -197,7 +197,7 @@ variable "timeouts_configuration" {
 
 variable "restore_to_point_in_time" {
   type = list(object({
-    source_cluster_identifier  = optional(string, "120m")
+    source_cluster_identifier  = string
     restore_type               = optional(string, "copy-on-write")
     use_latest_restorable_time = optional(bool, true)
     restore_to_time            = optional(string, null)
