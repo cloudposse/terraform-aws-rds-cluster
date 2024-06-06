@@ -197,10 +197,10 @@ variable "timeouts_configuration" {
 
 variable "restore_to_point_in_time" {
   type = list(object({
-    source_cluster_identifier  = string
-    restore_type               = string
-    use_latest_restorable_time = bool
-    restore_to_time            = string
+    source_cluster_identifier  = optional(string, "120m")
+    restore_type               = optional(string, "copy-on-write")
+    use_latest_restorable_time = optional(bool, true)
+    restore_to_time            = optional(string, null)
   }))
   default     = []
   description = <<-EOT
@@ -208,16 +208,12 @@ variable "restore_to_point_in_time" {
 
     `source_cluster_identifier`
       Identifier of the source database cluster from which to restore.
-      default: "120m"
     `restore_type`:
       Type of restore to be performed. Valid options are "full-copy" and "copy-on-write".
-      default: "copy-on-write"
     `use_latest_restorable_time`:
       Set to true to restore the database cluster to the latest restorable backup time. Conflicts with `restore_to_time`.
-      default: true
     `restore_to_time`:
       Date and time in UTC format to restore the database cluster to. Conflicts with `use_latest_restorable_time`.
-      default: null
 EOT
 }
 
