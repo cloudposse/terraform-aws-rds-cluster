@@ -7,6 +7,19 @@ locals {
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+
+  # Only set one of `use_latest_restorable_time` and `restore_to_time` since they conflict.
+  # For backwards compatibility, `use_latest_restorable_time` defaults to true if both of these values are null.
+  restore_to_point_in_time_configuration = [for config in var.restore_to_point_in_time : {
+    source_cluster_identifier = config.source_cluster_identifier
+    restore_type              = config.restore_type
+    use_latest_restorable_time = (
+      config.use_latest_restorable_time == null && config.restore_to_time == null ?
+      true :
+      coalesce(config.use_latest_restorable_time, true)
+    )
+    restore_to_time = config.restore_to_time
+  }]
 }
 
 data "aws_partition" "current" {
@@ -150,7 +163,7 @@ resource "aws_rds_cluster" "primary" {
   }
 
   dynamic "restore_to_point_in_time" {
-    for_each = var.restore_to_point_in_time
+    for_each = local.restore_to_point_in_time_configuration
     content {
       source_cluster_identifier  = restore_to_point_in_time.value.source_cluster_identifier
       restore_type               = restore_to_point_in_time.value.restore_type

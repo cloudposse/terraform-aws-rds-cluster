@@ -199,7 +199,7 @@ variable "restore_to_point_in_time" {
   type = list(object({
     source_cluster_identifier  = string
     restore_type               = optional(string, "copy-on-write")
-    use_latest_restorable_time = optional(bool, true)
+    use_latest_restorable_time = optional(bool, null)
     restore_to_time            = optional(string, null)
   }))
   default     = []
