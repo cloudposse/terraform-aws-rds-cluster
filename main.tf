@@ -152,9 +152,11 @@ resource "aws_rds_cluster" "primary" {
   dynamic "restore_to_point_in_time" {
     for_each = var.restore_to_point_in_time
     content {
-      source_cluster_identifier  = restore_to_point_in_time.value.source_cluster_identifier
-      restore_type               = restore_to_point_in_time.value.restore_type
-      use_latest_restorable_time = restore_to_point_in_time.value.use_latest_restorable_time
+      source_cluster_identifier = restore_to_point_in_time.value.source_cluster_identifier
+      restore_type              = restore_to_point_in_time.value.restore_type
+      # use_latest_restorable_time and restore_to_time are mutually exclusive.
+      # If restore_to_time is given, then we ignore use_latest_restorable_time
+      use_latest_restorable_time = restore_to_point_in_time.value.restore_to_time != null ? null : restore_to_point_in_time.value.use_latest_restorable_time
       restore_to_time            = restore_to_point_in_time.value.restore_to_time
     }
   }
