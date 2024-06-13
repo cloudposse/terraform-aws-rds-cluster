@@ -60,6 +60,18 @@ variable "db_port" {
   description = "Database port"
 }
 
+variable "manage_admin_user_password" {
+  type = string
+  default = false
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if master_password is provided"
+}
+
+variable "admin_user_secret_kms_key_id" {
+  type = string
+  default = null
+  description = "Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN. If not specified, the default KMS key for your Amazon Web Services account is used"
+}
+
 variable "admin_user" {
   type        = string
   default     = "admin"
