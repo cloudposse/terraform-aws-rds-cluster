@@ -62,7 +62,7 @@ variable "db_port" {
 
 variable "manage_admin_user_password" {
   type        = bool
-  default     = null
+  default     = false
   description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if master_password is provided"
 }
 
