@@ -73,7 +73,7 @@ resource "aws_rds_cluster" "primary" {
   cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name      = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
-  manage_master_user_password         = var.manage_admin_user_password == false ? null : var.manage_admin_user_password
+  manage_master_user_password         = var.manage_admin_user_password ? var.manage_admin_user_password : null
   master_user_secret_kms_key_id       = var.admin_user_secret_kms_key_id
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
   master_password                     = local.ignore_admin_credentials || var.manage_admin_user_password ? null : var.admin_password
@@ -176,7 +176,7 @@ resource "aws_rds_cluster" "secondary" {
   cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   database_name      = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
-  manage_master_user_password         = var.manage_admin_user_password == false ? null : var.manage_admin_user_password
+  manage_master_user_password         = var.manage_admin_user_password ? var.manage_admin_user_password : null
   master_user_secret_kms_key_id       = var.admin_user_secret_kms_key_id
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
   master_password                     = local.ignore_admin_credentials || var.manage_admin_user_password ? null : var.admin_password
