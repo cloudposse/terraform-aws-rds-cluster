@@ -531,3 +531,9 @@ variable "enable_global_write_forwarding" {
   default     = false
   description = "Set to `true`, to forward writes to an associated global cluster."
 }
+
+variable "enable_local_write_forwarding" {
+  type        = bool
+  default     = false
+  description = "Set to `true`, to forward writes to an associated local cluster."
+}
