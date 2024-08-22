@@ -269,7 +269,7 @@ resource "random_pet" "instance" {
 }
 
 module "rds_identifier" {
-  count  = local.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
 
   source  = "cloudposse/label/null"
   version = "0.25.0"
