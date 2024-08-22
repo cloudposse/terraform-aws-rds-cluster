@@ -283,10 +283,6 @@ module "rds_identifier" {
   id_length_limit = 60
 }
 
-output "cropped_id" {
-  value = module.rds_identifier[0].id
-}
-
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
