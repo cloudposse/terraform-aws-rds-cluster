@@ -268,9 +268,24 @@ resource "random_pet" "instance" {
   }
 }
 
+module "rds_identifier" {
+  count = local.enabled ? 1 : 0
+
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  name = random_pet.instance[0].id
+  # Max length of RDS identifier is 63 characters, but in `aws_rds_cluster_instance`
+  # we append the instance index to the identifier
+  # Setting the limit to 60 allow to use up to 99 instances, when only 16 is allowed
+  # (1 writer + 15 readers)
+  # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html
+  id_length_limit = 60
+}
+
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
-  identifier                            = "${random_pet.instance[0].id}-${count.index + 1}"
+  identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
   instance_class                        = random_pet.instance[0].keepers.instance_class
   db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
