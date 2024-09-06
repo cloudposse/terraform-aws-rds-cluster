@@ -55,6 +55,17 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
+resource "aws_security_group_rule" "ingress_ipv6_cidr_blocks" {
+  count             = local.enabled && length(var.allowed_ipv6_cidr_blocks) > 0 ? 1 : 0
+  description       = "Allow inbound traffic from existing CIDR blocks"
+  type              = "ingress"
+  from_port         = var.db_port
+  to_port           = var.db_port
+  protocol          = "tcp"
+  cidr_blocks       = var.allowed_ipv6_cidr_blocks
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
 resource "aws_security_group_rule" "egress" {
   count             = local.enabled && var.egress_enabled ? 1 : 0
   description       = "Allow outbound traffic"
@@ -63,6 +74,17 @@ resource "aws_security_group_rule" "egress" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
+resource "aws_security_group_rule" "egress_ipv6" {
+  count             = local.enabled && var.egress_enabled ? 1 : 0
+  description       = "Allow outbound ipv6 traffic"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["::/0"]
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
@@ -93,6 +115,7 @@ resource "aws_rds_cluster" "primary" {
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
+  network_type                        = var.network_type
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
@@ -193,6 +216,7 @@ resource "aws_rds_cluster" "secondary" {
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
+  network_type                        = var.network_type
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
