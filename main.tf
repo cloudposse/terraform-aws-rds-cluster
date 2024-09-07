@@ -62,7 +62,7 @@ resource "aws_security_group_rule" "ingress_ipv6_cidr_blocks" {
   from_port         = var.db_port
   to_port           = var.db_port
   protocol          = "tcp"
-  cidr_blocks       = var.allowed_ipv6_cidr_blocks
+  ipv6_cidr_blocks  = var.allowed_ipv6_cidr_blocks
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "egress_ipv6" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["::/0"]
+  ipv6_cidr_blocks  = ["::/0"]
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
