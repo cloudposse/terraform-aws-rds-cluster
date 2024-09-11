@@ -60,6 +60,23 @@ variable "db_port" {
   description = "Database port"
 }
 
+variable "manage_admin_user_password" {
+  type        = bool
+  default     = false
+  nullable    = false
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if master_password is provided"
+}
+
+variable "admin_user_secret_kms_key_id" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
+    To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.
+    If not specified, the default KMS key for your Amazon Web Services account is used.
+    EOT
+}
+
 variable "admin_user" {
   type        = string
   default     = "admin"
@@ -198,17 +215,35 @@ variable "timeouts_configuration" {
 variable "restore_to_point_in_time" {
   type = list(object({
     source_cluster_identifier  = string
-    restore_type               = string
-    use_latest_restorable_time = bool
+    restore_type               = optional(string, "copy-on-write")
+    use_latest_restorable_time = optional(bool, true)
+    restore_to_time            = optional(string, null)
   }))
   default     = []
-  description = "List point-in-time recovery options. Only valid actions are `source_cluster_identifier`, `restore_type` and `use_latest_restorable_time`"
+  description = <<-EOT
+    List of point-in-time recovery options. Valid parameters are:
+
+    `source_cluster_identifier`
+      Identifier of the source database cluster from which to restore.
+    `restore_type`:
+      Type of restore to be performed. Valid options are "full-copy" and "copy-on-write".
+    `use_latest_restorable_time`:
+      Set to true to restore the database cluster to the latest restorable backup time. Conflicts with `restore_to_time`.
+    `restore_to_time`:
+      Date and time in UTC format to restore the database cluster to. Conflicts with `use_latest_restorable_time`.
+EOT
 }
 
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
   description = "List of CIDR blocks allowed to access the cluster"
+}
+
+variable "allowed_ipv6_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = "List of IPv6 CIDR blocks allowed to access the cluster"
 }
 
 variable "publicly_accessible" {
@@ -501,4 +536,10 @@ variable "enable_global_write_forwarding" {
   type        = bool
   default     = false
   description = "Set to `true`, to forward writes to an associated global cluster."
+}
+
+variable "network_type" {
+  type        = string
+  default     = "IPV4"
+  description = "The network type of the cluster. Valid values: IPV4, DUAL."
 }

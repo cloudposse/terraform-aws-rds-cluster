@@ -55,6 +55,17 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
+resource "aws_security_group_rule" "ingress_ipv6_cidr_blocks" {
+  count             = local.enabled && length(var.allowed_ipv6_cidr_blocks) > 0 ? 1 : 0
+  description       = "Allow inbound traffic from existing CIDR blocks"
+  type              = "ingress"
+  from_port         = var.db_port
+  to_port           = var.db_port
+  protocol          = "tcp"
+  ipv6_cidr_blocks  = var.allowed_ipv6_cidr_blocks
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
 resource "aws_security_group_rule" "egress" {
   count             = local.enabled && var.egress_enabled ? 1 : 0
   description       = "Allow outbound traffic"
@@ -66,14 +77,28 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
+resource "aws_security_group_rule" "egress_ipv6" {
+  count             = local.enabled && var.egress_enabled ? 1 : 0
+  description       = "Allow outbound ipv6 traffic"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
 # The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count                               = local.enabled && local.is_regional_cluster ? 1 : 0
-  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name                       = var.db_name
+  count              = local.enabled && local.is_regional_cluster ? 1 : 0
+  cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  database_name      = var.db_name
+  # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
+  manage_master_user_password         = var.manage_admin_user_password ? var.manage_admin_user_password : null
+  master_user_secret_kms_key_id       = var.admin_user_secret_kms_key_id
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
-  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
+  master_password                     = local.ignore_admin_credentials || var.manage_admin_user_password ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -90,6 +115,7 @@ resource "aws_rds_cluster" "primary" {
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
+  network_type                        = var.network_type
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
@@ -102,6 +128,7 @@ resource "aws_rds_cluster" "primary" {
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
+  port                                = var.db_port
   enable_global_write_forwarding      = var.enable_global_write_forwarding
 
   depends_on = [
@@ -152,9 +179,12 @@ resource "aws_rds_cluster" "primary" {
   dynamic "restore_to_point_in_time" {
     for_each = var.restore_to_point_in_time
     content {
-      source_cluster_identifier  = lookup(restore_to_point_in_time.value, "source_cluster_identifier", "120m")
-      restore_type               = lookup(restore_to_point_in_time.value, "restore_type", "copy-on-write")
-      use_latest_restorable_time = lookup(restore_to_point_in_time.value, "use_latest_restorable_time", true)
+      source_cluster_identifier = restore_to_point_in_time.value.source_cluster_identifier
+      restore_type              = restore_to_point_in_time.value.restore_type
+      # use_latest_restorable_time and restore_to_time are mutually exclusive.
+      # If restore_to_time is given, then we ignore use_latest_restorable_time
+      use_latest_restorable_time = restore_to_point_in_time.value.restore_to_time != null ? null : restore_to_point_in_time.value.use_latest_restorable_time
+      restore_to_time            = restore_to_point_in_time.value.restore_to_time
     }
   }
 
@@ -165,11 +195,14 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count                               = local.enabled && !local.is_regional_cluster ? 1 : 0
-  cluster_identifier                  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name                       = var.db_name
+  count              = local.enabled && !local.is_regional_cluster ? 1 : 0
+  cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  database_name      = var.db_name
+  # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
+  manage_master_user_password         = var.manage_admin_user_password ? var.manage_admin_user_password : null
+  master_user_secret_kms_key_id       = var.admin_user_secret_kms_key_id
   master_username                     = local.ignore_admin_credentials ? null : var.admin_user
-  master_password                     = local.ignore_admin_credentials ? null : var.admin_password
+  master_password                     = local.ignore_admin_credentials || var.manage_admin_user_password ? null : var.admin_password
   backup_retention_period             = var.retention_period
   preferred_backup_window             = var.backup_window
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
@@ -183,6 +216,7 @@ resource "aws_rds_cluster" "secondary" {
   snapshot_identifier                 = var.snapshot_identifier
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
+  network_type                        = var.network_type
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
   db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default[*].name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
@@ -194,6 +228,7 @@ resource "aws_rds_cluster" "secondary" {
   iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = local.is_serverless && var.enable_http_endpoint
+  port                                = var.db_port
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -248,11 +283,35 @@ resource "aws_rds_cluster" "secondary" {
   }
 }
 
+resource "random_pet" "instance" {
+  count  = local.enabled ? 1 : 0
+  prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  keepers = {
+    cluster_family = var.cluster_family
+    instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  }
+}
+
+module "rds_identifier" {
+  count = local.enabled ? 1 : 0
+
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  name = random_pet.instance[0].id
+  # Max length of RDS identifier is 63 characters, but in `aws_rds_cluster_instance`
+  # we append the instance index to the identifier
+  # Setting the limit to 60 allow to use up to 99 instances, when only 16 is allowed
+  # (1 writer + 15 readers)
+  # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html
+  id_length_limit = 60
+}
+
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
-  identifier                            = var.cluster_identifier == "" ? "${module.this.id}-${count.index + 1}" : "${var.cluster_identifier}-${count.index + 1}"
+  identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
-  instance_class                        = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  instance_class                        = random_pet.instance[0].keepers.instance_class
   db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
   db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
@@ -290,7 +349,8 @@ resource "aws_rds_cluster_instance" "default" {
   ]
 
   lifecycle {
-    ignore_changes = [engine_version]
+    ignore_changes        = [engine_version]
+    create_before_destroy = true
   }
 }
 
