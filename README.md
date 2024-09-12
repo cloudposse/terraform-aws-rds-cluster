@@ -491,6 +491,7 @@ Available targets:
 | <a name="output_master_username"></a> [master\_username](#output\_master\_username) | Username for the master DB user |
 | <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | <a name="output_replicas_host"></a> [replicas\_host](#output\_replicas\_host) | Replicas hostname |
+| <a name="output_reserved_instance"></a> [reserved\_instance](#output\_reserved\_instance) | All information about the reserved instance(s) if created. |
 | <a name="output_security_group_arn"></a> [security\_group\_arn](#output\_security\_group\_arn) | Security Group ARN |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Security Group ID |
 | <a name="output_security_group_name"></a> [security\_group\_name](#output\_security\_group\_name) | Security Group name |
