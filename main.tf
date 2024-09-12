@@ -91,7 +91,7 @@ resource "aws_security_group_rule" "egress_ipv6" {
 }
 
 data "aws_rds_reserved_instance_offering" "default" {
-  count               = local.use_reserved_instances
+  count               = local.use_reserved_instances ? 1 : 0
   db_instance_class   = var.db_cluster_instance_class
   duration            = var.rds_ri_duration
   multi_az            = local.is_regional_cluster
@@ -102,7 +102,7 @@ data "aws_rds_reserved_instance_offering" "default" {
 # Note: I'm not sure what will happen when the db reservation expires, and this is not easy to test.
 # It will either be recreated or will require manual intervention to recreate.
 resource "aws_rds_reserved_instance" "default" {
-  count = local.use_reserved_instances
+  count = local.use_reserved_instances ? 1 : 0
 
   offering_id    = data.aws_rds_reserved_instance_offering.default[0].id
   instance_count = local.cluster_instance_count
