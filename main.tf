@@ -104,7 +104,7 @@ data "aws_rds_reserved_instance_offering" "default" {
 resource "aws_rds_reserved_instance" "default" {
   count = local.use_reserved_instances
 
-  offering_id = data.aws_rds_reserved_instance_offering.default[0].id
+  offering_id    = data.aws_rds_reserved_instance_offering.default[0].id
   instance_count = local.cluster_instance_count
   lifecycle {
     # Once created, we want to avoid any case of accidentally re-creating.
