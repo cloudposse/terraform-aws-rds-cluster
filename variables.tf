@@ -543,3 +543,26 @@ variable "network_type" {
   default     = "IPV4"
   description = "The network type of the cluster. Valid values: IPV4, DUAL."
 }
+
+variable "use_reserved_instances" {
+  description = <<-EOT
+    WARNING: Observe your plans and applies carefully when using this feature.
+    It has potential to be very expensive if not used correctly.
+
+    Whether to use reserved instances.
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "rds_ri_offering_type" {
+  description = "Offering type of reserved DB instances. Valid values are 'No Upfront', 'Partial Upfront', 'All Upfront'."
+  type        = string
+  default     = ""
+}
+
+variable "rds_ri_duration" {
+  description = "The number of years to reserve the instance. Values can be 1 or 3 (or in seconds, 31536000 or 94608000)"
+  type        = number
+  default     = 1
+}
