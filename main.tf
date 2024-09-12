@@ -7,6 +7,8 @@ locals {
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+  reserved_instance_engine = split("-", var.engine)[1]
+  use_reserved_instances   = var.use_reserved_instances && !local.is_serverless && contains(["mysql", "postgresql"], local.reserved_instance_engine)
 }
 
 data "aws_partition" "current" {
@@ -86,6 +88,28 @@ resource "aws_security_group_rule" "egress_ipv6" {
   protocol          = "-1"
   ipv6_cidr_blocks  = ["::/0"]
   security_group_id = join("", aws_security_group.default[*].id)
+}
+
+data "aws_rds_reserved_instance_offering" "default" {
+  count               = local.use_reserved_instances ? 1 : 0
+  db_instance_class   = var.db_cluster_instance_class
+  duration            = var.rds_ri_duration
+  multi_az            = local.is_regional_cluster
+  offering_type       = var.rds_ri_offering_type
+  product_description = local.reserved_instance_engine
+}
+
+# Note: I'm not sure what will happen when the db reservation expires, and this is not easy to test.
+# It will either be recreated or will require manual intervention to recreate.
+resource "aws_rds_reserved_instance" "default" {
+  count = local.use_reserved_instances ? 1 : 0
+
+  offering_id    = data.aws_rds_reserved_instance_offering.default[0].id
+  instance_count = local.cluster_instance_count
+  lifecycle {
+    # Once created, we want to avoid any case of accidentally re-creating.
+    prevent_destroy = true
+  }
 }
 
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
