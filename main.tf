@@ -6,8 +6,8 @@ locals {
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
-  is_serverless_v2         = (contains(["aurora-postgresql", "aurora-mysql"], var.engine)) && var.instance_type == "db.serverless"
-  enable_http_endpoint     = var.enable_http_endpoint && (local.is_serverless || (local.is_serverless_v2 && var.engine_mode == "provisioned"))
+  is_serverless_v2         = var.instance_type == "db.serverless" && (contains(["aurora-postgresql", "aurora-mysql"], var.engine)) && var.engine_mode == "provisioned"
+  enable_http_endpoint     = var.enable_http_endpoint && (local.is_serverless || local.is_serverless_v2)
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
   reserved_instance_engine = split("-", var.engine)[1]
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless && contains(["mysql", "postgresql"], local.reserved_instance_engine)
