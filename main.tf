@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "egress_ipv6" {
 
 data "aws_rds_reserved_instance_offering" "default" {
   count               = local.use_reserved_instances ? 1 : 0
-  db_instance_class   = var.db_cluster_instance_class
+  db_instance_class   = var.instance_type
   duration            = var.rds_ri_duration
   multi_az            = local.is_regional_cluster
   offering_type       = var.rds_ri_offering_type
