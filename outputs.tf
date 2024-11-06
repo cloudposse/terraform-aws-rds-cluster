@@ -78,3 +78,8 @@ output "activity_stream_name" {
   value       = join("", aws_rds_cluster_activity_stream.primary[*].kinesis_stream_name)
   description = "Activity Stream Name"
 }
+
+output "reserved_instance" {
+  value       = join("", aws_rds_reserved_instance.default[*])
+  description = "All information about the reserved instance(s) if created."
+}

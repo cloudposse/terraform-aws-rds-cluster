@@ -60,6 +60,23 @@ variable "db_port" {
   description = "Database port"
 }
 
+variable "manage_admin_user_password" {
+  type        = bool
+  default     = false
+  nullable    = false
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if master_password is provided"
+}
+
+variable "admin_user_secret_kms_key_id" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
+    To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.
+    If not specified, the default KMS key for your Amazon Web Services account is used.
+    EOT
+}
+
 variable "admin_user" {
   type        = string
   default     = "admin"
@@ -221,6 +238,12 @@ variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
   description = "List of CIDR blocks allowed to access the cluster"
+}
+
+variable "allowed_ipv6_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = "List of IPv6 CIDR blocks allowed to access the cluster"
 }
 
 variable "publicly_accessible" {
@@ -513,4 +536,33 @@ variable "enable_global_write_forwarding" {
   type        = bool
   default     = false
   description = "Set to `true`, to forward writes to an associated global cluster."
+}
+
+variable "network_type" {
+  type        = string
+  default     = "IPV4"
+  description = "The network type of the cluster. Valid values: IPV4, DUAL."
+}
+
+variable "use_reserved_instances" {
+  description = <<-EOT
+    WARNING: Observe your plans and applies carefully when using this feature.
+    It has potential to be very expensive if not used correctly.
+
+    Whether to use reserved instances.
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "rds_ri_offering_type" {
+  description = "Offering type of reserved DB instances. Valid values are 'No Upfront', 'Partial Upfront', 'All Upfront'."
+  type        = string
+  default     = ""
+}
+
+variable "rds_ri_duration" {
+  description = "The number of years to reserve the instance. Values can be 1 or 3 (or in seconds, 31536000 or 94608000)"
+  type        = number
+  default     = 1
 }
