@@ -156,6 +156,7 @@ resource "aws_rds_cluster" "primary" {
   enable_http_endpoint                = local.enable_http_endpoint
   port                                = var.db_port
   enable_global_write_forwarding      = var.enable_global_write_forwarding
+  enable_local_write_forwarding       = var.enable_local_write_forwarding
 
   depends_on = [
     aws_db_subnet_group.default,
