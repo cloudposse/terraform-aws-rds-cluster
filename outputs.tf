@@ -44,6 +44,11 @@ output "dbi_resource_ids" {
   description = "List of the region-unique, immutable identifiers for the DB instances in the cluster"
 }
 
+output "instance_endpoints" {
+  value       = aws_rds_cluster_instance.default[*].endpoint
+  description = "List of DNS addresses for the DB instances in the cluster"
+}
+
 output "cluster_resource_id" {
   value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].cluster_resource_id) : join("", aws_rds_cluster.secondary[*].cluster_resource_id)
   description = "The region-unique, immutable identifie of the cluster"

@@ -317,8 +317,11 @@ resource "random_pet" "instance" {
   count  = local.enabled ? 1 : 0
   prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   keepers = {
-    cluster_family = var.cluster_family
-    instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+    cluster_family       = var.cluster_family
+    cluster_identifier   = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
+    db_subnet_group_name = join("", aws_db_subnet_group.default[*].name)
+    engine               = var.engine
+    instance_class       = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
   }
 }
 
@@ -340,13 +343,13 @@ module "rds_identifier" {
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
-  cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
+  cluster_identifier                    = random_pet.instance[0].keepers.cluster_identifier
   instance_class                        = random_pet.instance[0].keepers.instance_class
-  db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
+  db_subnet_group_name                  = random_pet.instance[0].keepers.db_subnet_group_name
   db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
   tags                                  = module.this.tags
-  engine                                = var.engine
+  engine                                = random_pet.instance[0].keepers.engine
   engine_version                        = var.engine_version
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   monitoring_interval                   = var.rds_monitoring_interval
@@ -375,7 +378,6 @@ resource "aws_rds_cluster_instance" "default" {
     aws_iam_role.enhanced_monitoring,
     aws_rds_cluster.secondary,
     aws_rds_cluster_parameter_group.default,
-    aws_rds_cluster_instance.default[0],
   ]
 
   lifecycle {
