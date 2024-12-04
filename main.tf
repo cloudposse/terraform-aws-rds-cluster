@@ -108,6 +108,7 @@ resource "aws_rds_reserved_instance" "default" {
 
   offering_id    = data.aws_rds_reserved_instance_offering.default[0].id
   instance_count = local.cluster_instance_count
+  reservation_id = var.rds_ri_reservation_id
   lifecycle {
     # Once created, we want to avoid any case of accidentally re-creating.
     prevent_destroy = true
