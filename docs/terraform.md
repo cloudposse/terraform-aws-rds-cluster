@@ -173,6 +173,7 @@
 | <a name="output_database_name"></a> [database\_name](#output\_database\_name) | Database name |
 | <a name="output_dbi_resource_ids"></a> [dbi\_resource\_ids](#output\_dbi\_resource\_ids) | List of the region-unique, immutable identifiers for the DB instances in the cluster |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The DNS address of the RDS instance |
+| <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of DNS addresses for the DB instances in the cluster |
 | <a name="output_master_host"></a> [master\_host](#output\_master\_host) | DB Master hostname |
 | <a name="output_master_username"></a> [master\_username](#output\_master\_username) | Username for the master DB user |
 | <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
