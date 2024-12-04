@@ -566,3 +566,9 @@ variable "rds_ri_duration" {
   type        = number
   default     = 1
 }
+
+variable "rds_ri_reservation_id" {
+  description = "(Optional) Customer-specified identifier to track this reservation."
+  type        = string
+  default     = null
+}

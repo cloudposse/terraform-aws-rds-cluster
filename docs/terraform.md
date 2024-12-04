@@ -135,6 +135,7 @@
 | <a name="input_rds_monitoring_role_arn"></a> [rds\_monitoring\_role\_arn](#input\_rds\_monitoring\_role\_arn) | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs | `string` | `null` | no |
 | <a name="input_rds_ri_duration"></a> [rds\_ri\_duration](#input\_rds\_ri\_duration) | The number of years to reserve the instance. Values can be 1 or 3 (or in seconds, 31536000 or 94608000) | `number` | `1` | no |
 | <a name="input_rds_ri_offering_type"></a> [rds\_ri\_offering\_type](#input\_rds\_ri\_offering\_type) | Offering type of reserved DB instances. Valid values are 'No Upfront', 'Partial Upfront', 'All Upfront'. | `string` | `""` | no |
+| <a name="input_rds_ri_reservation_id"></a> [rds\_ri\_reservation\_id](#input\_rds\_ri\_reservation\_id) | (Optional) Customer-specified identifier to track this reservation. | `string` | `null` | no |
 | <a name="input_reader_dns_name"></a> [reader\_dns\_name](#input\_reader\_dns\_name) | Name of the reader endpoint CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `replicas.var.name` | `string` | `""` | no |
 | <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regular expression (regex) string.<br/>Characters matching the regex will be removed from the ID elements.<br/>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | <a name="input_replication_source_identifier"></a> [replication\_source\_identifier](#input\_replication\_source\_identifier) | ARN of a source DB cluster or DB instance if this DB cluster is to be created as a Read Replica | `string` | `""` | no |
@@ -173,6 +174,7 @@
 | <a name="output_database_name"></a> [database\_name](#output\_database\_name) | Database name |
 | <a name="output_dbi_resource_ids"></a> [dbi\_resource\_ids](#output\_dbi\_resource\_ids) | List of the region-unique, immutable identifiers for the DB instances in the cluster |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The DNS address of the RDS instance |
+| <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of DNS addresses for the DB instances in the cluster |
 | <a name="output_master_host"></a> [master\_host](#output\_master\_host) | DB Master hostname |
 | <a name="output_master_username"></a> [master\_username](#output\_master\_username) | Username for the master DB user |
 | <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
