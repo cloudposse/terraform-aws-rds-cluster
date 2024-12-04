@@ -85,6 +85,6 @@ output "activity_stream_name" {
 }
 
 output "reserved_instance" {
-  value       = join("", aws_rds_reserved_instance.default[*])
+  value       = aws_rds_reserved_instance.default
   description = "All information about the reserved instance(s) if created."
 }
