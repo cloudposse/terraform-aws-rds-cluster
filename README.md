@@ -413,6 +413,7 @@ Available targets:
 | <a name="input_egress_enabled"></a> [egress\_enabled](#input\_egress\_enabled) | Whether or not to apply the egress security group rule to default security group, defaults to `true` | `bool` | `true` | no |
 | <a name="input_enable_global_write_forwarding"></a> [enable\_global\_write\_forwarding](#input\_enable\_global\_write\_forwarding) | Set to `true`, to forward writes to an associated global cluster. | `bool` | `false` | no |
 | <a name="input_enable_http_endpoint"></a> [enable\_http\_endpoint](#input\_enable\_http\_endpoint) | Enable HTTP endpoint (data API). Only valid when engine\_mode is set to serverless | `bool` | `false` | no |
+| <a name="input_enable_local_write_forwarding"></a> [enable\_local\_write\_forwarding](#input\_enable\_local\_write\_forwarding) | Set to `true` in order to enable read replicas to forward write operations to writer instance | `bool` | `false` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | <a name="input_enabled_cloudwatch_logs_exports"></a> [enabled\_cloudwatch\_logs\_exports](#input\_enabled\_cloudwatch\_logs\_exports) | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery | `list(string)` | `[]` | no |
 | <a name="input_engine"></a> [engine](#input\_engine) | The name of the database engine to be used for this DB cluster. Valid values: `aurora`, `aurora-mysql`, `aurora-postgresql` | `string` | `"aurora"` | no |

@@ -566,3 +566,9 @@ variable "rds_ri_duration" {
   type        = number
   default     = 1
 }
+
+variable "enable_local_write_forwarding" {
+  type        = bool
+  default     = false
+  description = "Set to `true` in order to enable read replicas to forward write operations to writer instance"
+}
