@@ -1,7 +1,11 @@
 locals {
   enabled = module.this.enabled
 
-  partition = join("", data.aws_partition.current[*].partition)
+  partition = one(data.aws_partition.current[*].partition)
+
+  deployed_cluster_identifier = local.enabled ? coalesce(one(aws_rds_cluster.primary[*].id), one(aws_rds_cluster.secondary[*].id)) : ""
+  db_subnet_group_name        = one(aws_db_subnet_group.default[*].name)
+  instance_class              = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
 
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
@@ -9,7 +13,7 @@ locals {
   is_serverless_v2         = var.instance_type == "db.serverless" && (contains(["aurora-postgresql", "aurora-mysql"], var.engine)) && var.engine_mode == "provisioned"
   enable_http_endpoint     = var.enable_http_endpoint && (local.is_serverless || local.is_serverless_v2)
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
-  reserved_instance_engine = split("-", var.engine)[1]
+  reserved_instance_engine = var.engine
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless && contains(["mysql", "postgresql"], local.reserved_instance_engine)
 }
 
@@ -108,6 +112,8 @@ resource "aws_rds_reserved_instance" "default" {
 
   offering_id    = data.aws_rds_reserved_instance_offering.default[0].id
   instance_count = local.cluster_instance_count
+  reservation_id = var.rds_ri_reservation_id
+
   lifecycle {
     # Once created, we want to avoid any case of accidentally re-creating.
     prevent_destroy = true
@@ -156,6 +162,7 @@ resource "aws_rds_cluster" "primary" {
   enable_http_endpoint                = local.enable_http_endpoint
   port                                = var.db_port
   enable_global_write_forwarding      = var.enable_global_write_forwarding
+  enable_local_write_forwarding       = var.enable_local_write_forwarding
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -235,6 +242,7 @@ resource "aws_rds_cluster" "secondary" {
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
   apply_immediately                   = var.apply_immediately
+  db_cluster_instance_class           = local.is_serverless ? null : var.db_cluster_instance_class
   storage_encrypted                   = var.storage_encrypted
   storage_type                        = var.storage_type
   kms_key_id                          = var.kms_key_arn
@@ -255,6 +263,8 @@ resource "aws_rds_cluster" "secondary" {
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = local.enable_http_endpoint
   port                                = var.db_port
+  enable_global_write_forwarding      = var.enable_global_write_forwarding
+  enable_local_write_forwarding       = var.enable_local_write_forwarding
 
   depends_on = [
     aws_db_subnet_group.default,
@@ -313,11 +323,8 @@ resource "random_pet" "instance" {
   count  = local.enabled ? 1 : 0
   prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   keepers = {
-    cluster_family       = var.cluster_family
-    cluster_identifier   = coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))
-    db_subnet_group_name = join("", aws_db_subnet_group.default[*].name)
-    engine               = var.engine
-    instance_class       = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+    cluster_family = var.cluster_family
+    instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
   }
 }
 
@@ -339,13 +346,13 @@ module "rds_identifier" {
 resource "aws_rds_cluster_instance" "default" {
   count                                 = local.cluster_instance_count
   identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
-  cluster_identifier                    = random_pet.instance[0].keepers.cluster_identifier
-  instance_class                        = random_pet.instance[0].keepers.instance_class
-  db_subnet_group_name                  = random_pet.instance[0].keepers.db_subnet_group_name
+  cluster_identifier                    = local.deployed_cluster_identifier
+  instance_class                        = local.instance_class
+  db_subnet_group_name                  = local.db_subnet_group_name
   db_parameter_group_name               = join("", aws_db_parameter_group.default[*].name)
   publicly_accessible                   = var.publicly_accessible
   tags                                  = module.this.tags
-  engine                                = random_pet.instance[0].keepers.engine
+  engine                                = var.engine
   engine_version                        = var.engine_version
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   monitoring_interval                   = var.rds_monitoring_interval
@@ -393,8 +400,8 @@ resource "aws_db_subnet_group" "default" {
 resource "aws_rds_cluster_parameter_group" "default" {
   count = local.enabled ? 1 : 0
 
-  name_prefix = var.parameter_group_name_prefix_enabled ? "${module.this.id}${module.this.delimiter}" : null
-  name        = !var.parameter_group_name_prefix_enabled ? module.this.id : null
+  name_prefix = var.parameter_group_name_prefix_enabled ? "${coalesce(var.rds_cluster_parameter_group_name, module.this.id)}${module.this.delimiter}" : null
+  name        = !var.parameter_group_name_prefix_enabled ? coalesce(var.rds_cluster_parameter_group_name, module.this.id) : null
 
   description = "DB cluster parameter group"
   family      = var.cluster_family
@@ -418,8 +425,8 @@ resource "aws_rds_cluster_parameter_group" "default" {
 resource "aws_db_parameter_group" "default" {
   count = local.enabled ? 1 : 0
 
-  name_prefix = var.parameter_group_name_prefix_enabled ? "${module.this.id}${module.this.delimiter}" : null
-  name        = !var.parameter_group_name_prefix_enabled ? module.this.id : null
+  name_prefix = var.parameter_group_name_prefix_enabled ? "${coalesce(var.db_parameter_group_name, module.this.id)}${module.this.delimiter}" : null
+  name        = !var.parameter_group_name_prefix_enabled ? coalesce(var.db_parameter_group_name, module.this.id) : null
 
   description = "DB instance parameter group"
   family      = var.cluster_family
@@ -449,7 +456,7 @@ locals {
 
 module "dns_master" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.2"
+  version = "0.13.0"
 
   enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = local.cluster_dns_name
@@ -461,7 +468,7 @@ module "dns_master" {
 
 module "dns_replicas" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.2"
+  version = "0.13.0"
 
   enabled  = local.enabled && length(var.zone_id) > 0 && !local.is_serverless && local.cluster_instance_count > 0
   dns_name = local.reader_dns_name
@@ -475,7 +482,7 @@ resource "aws_appautoscaling_target" "replicas" {
   count              = local.enabled && var.autoscaling_enabled ? 1 : 0
   service_namespace  = "rds"
   scalable_dimension = "rds:cluster:ReadReplicaCount"
-  resource_id        = "cluster:${coalesce(join("", aws_rds_cluster.primary[*].id), join("", aws_rds_cluster.secondary[*].id))}"
+  resource_id        = "cluster:${local.deployed_cluster_identifier}"
   min_capacity       = var.autoscaling_min_capacity
   max_capacity       = var.autoscaling_max_capacity
 }

@@ -117,6 +117,15 @@ variable "cluster_parameters" {
   description = "List of DB cluster parameters to apply"
 }
 
+variable "rds_cluster_parameter_group_name" {
+  type        = string
+  default     = ""
+  description = <<-EOT
+    The name to give to the created `aws_rds_cluster_parameter_group` resource.
+    If omitted, the module will generate a name.
+    EOT
+}
+
 variable "instance_parameters" {
   type = list(object({
     apply_method = string
@@ -125,6 +134,15 @@ variable "instance_parameters" {
   }))
   default     = []
   description = "List of DB instance parameters to apply"
+}
+
+variable "db_parameter_group_name" {
+  type        = string
+  default     = ""
+  description = <<-EOT
+    The name to give to the created `aws_db_parameter_group` resource.
+    If omitted, the module will generate a name.
+    EOT
 }
 
 variable "db_cluster_instance_class" {
@@ -534,8 +552,14 @@ variable "parameter_group_name_prefix_enabled" {
 
 variable "enable_global_write_forwarding" {
   type        = bool
-  default     = false
+  default     = null
   description = "Set to `true`, to forward writes to an associated global cluster."
+}
+
+variable "enable_local_write_forwarding" {
+  type        = bool
+  default     = null
+  description = "Set to `true`, to forward writes sent to a reader to the writer instance."
 }
 
 variable "network_type" {
@@ -545,24 +569,31 @@ variable "network_type" {
 }
 
 variable "use_reserved_instances" {
+  type        = bool
+  default     = false
   description = <<-EOT
     WARNING: Observe your plans and applies carefully when using this feature.
     It has potential to be very expensive if not used correctly.
+    Also, it is not clear what happens when the reservation expires.
 
     Whether to use reserved instances.
   EOT
-  type        = bool
-  default     = false
 }
 
 variable "rds_ri_offering_type" {
-  description = "Offering type of reserved DB instances. Valid values are 'No Upfront', 'Partial Upfront', 'All Upfront'."
   type        = string
   default     = ""
+  description = "Offering type of reserved DB instances. Valid values are 'No Upfront', 'Partial Upfront', 'All Upfront'."
 }
 
 variable "rds_ri_duration" {
-  description = "The number of years to reserve the instance. Values can be 1 or 3 (or in seconds, 31536000 or 94608000)"
   type        = number
   default     = 1
+  description = "The number of years to reserve the instance. Values can be 1 or 3 (or in seconds, 31536000 or 94608000)"
+}
+
+variable "rds_ri_reservation_id" {
+  type        = string
+  default     = null
+  description = "Customer-specified identifier to track the reservation of the reserved DB instance."
 }
