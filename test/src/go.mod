@@ -2,8 +2,6 @@ module github.com/cloudposse/terraform-aws-rds-cluster
 
 go 1.21
 
-toolchain go1.22.3
-
 require (
 	github.com/gruntwork-io/terratest v0.46.15
 	github.com/stretchr/testify v1.8.4
