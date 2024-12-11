@@ -5,7 +5,7 @@ locals {
 
   deployed_cluster_identifier = local.enabled ? coalesce(one(aws_rds_cluster.primary[*].id), one(aws_rds_cluster.secondary[*].id)) : ""
   db_subnet_group_name        = one(aws_db_subnet_group.default[*].name)
-  instance_class              = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  instance_class              = var.instance_type
 
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
