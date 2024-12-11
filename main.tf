@@ -14,7 +14,7 @@ locals {
   enable_http_endpoint     = var.enable_http_endpoint && (local.is_serverless || local.is_serverless_v2)
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
   reserved_instance_engine = var.engine
-  use_reserved_instances   = var.use_reserved_instances && !local.is_serverless && contains(["mysql", "postgresql"], local.reserved_instance_engine)
+  use_reserved_instances   = var.use_reserved_instances && !local.is_serverless
 }
 
 data "aws_partition" "current" {
