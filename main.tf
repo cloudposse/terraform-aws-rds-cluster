@@ -324,7 +324,7 @@ resource "random_pet" "instance" {
   prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
   keepers = {
     cluster_family = var.cluster_family
-    instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+    instance_class = local.instance_class
   }
 }
 
