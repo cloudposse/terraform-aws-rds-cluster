@@ -100,7 +100,7 @@ data "aws_rds_reserved_instance_offering" "default" {
   count               = local.use_reserved_instances ? 1 : 0
   db_instance_class   = var.instance_type
   duration            = var.rds_ri_duration
-  multi_az           = startswith(local.reserved_instance_engine, "aurora") ? false : local.cluster_instance_count > 1 # Aurora options never available for multi AZ for Reserved Instances. Single Reserved Instances rates still apply. https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithReservedDBInstances.html
+  multi_az            = startswith(local.reserved_instance_engine, "aurora") ? false : local.cluster_instance_count > 1 # Aurora options never available for multi AZ for Reserved Instances. Single Reserved Instances rates still apply. https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithReservedDBInstances.html
   offering_type       = var.rds_ri_offering_type
   product_description = local.reserved_instance_engine
 }
