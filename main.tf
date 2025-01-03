@@ -163,6 +163,9 @@ resource "aws_rds_cluster" "primary" {
   port                                = var.db_port
   enable_global_write_forwarding      = var.enable_global_write_forwarding
   enable_local_write_forwarding       = var.enable_local_write_forwarding
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_kms_key_id       = var.performance_insights_kms_key_id
+  performance_insights_retention_period = var.performance_insights_retention_period
 
   depends_on = [
     aws_db_subnet_group.default,
