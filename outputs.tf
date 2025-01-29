@@ -9,6 +9,11 @@ output "master_username" {
   sensitive   = true
 }
 
+output "secret_arn" {
+  value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].secret_arn) : join("", aws_rds_cluster.secondary[*].secret_arn)
+  description = "The Amazon Resource Name (ARN) for the secret"
+}
+
 output "cluster_identifier" {
   value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].cluster_identifier) : join("", aws_rds_cluster.secondary[*].cluster_identifier)
   description = "Cluster Identifier"
