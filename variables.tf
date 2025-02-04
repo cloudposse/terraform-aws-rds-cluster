@@ -378,6 +378,11 @@ variable "performance_insights_retention_period" {
   default     = null
 }
 
+variable "reader_independent_scaling" {
+  type        = bool
+  default     = false
+  description = "Whether to scale the readers independentl from the writer"
+}
 variable "autoscaling_enabled" {
   type        = bool
   default     = false
