@@ -368,6 +368,7 @@ resource "aws_rds_cluster_instance" "default" {
   preferred_maintenance_window          = var.maintenance_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   ca_cert_identifier                    = var.ca_cert_identifier
+  promotion_tier                        = var.reader_independent_scaling ? 2 : 0
 
   dynamic "timeouts" {
     for_each = var.timeouts_configuration
