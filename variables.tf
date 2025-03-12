@@ -378,10 +378,10 @@ variable "performance_insights_retention_period" {
   default     = null
 }
 
-variable "reader_independent_scaling" {
-  type        = bool
-  default     = false
-  description = "Whether to scale the readers independently from the writer"
+variable "promotion_tier" {
+  type        = number
+  default     = 0
+  description = "Failover priority. 2 or more allow independent scaling"
 }
 variable "autoscaling_enabled" {
   type        = bool
