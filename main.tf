@@ -126,7 +126,7 @@ resource "aws_rds_cluster" "primary" {
   count = local.enabled && local.is_regional_cluster ? 1 : 0
 
   cluster_identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}${module.this.delimiter}" : var.cluster_identifier) : null
-  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}" : var.cluster_identifier) : null
+  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? module.this.id : var.cluster_identifier) : null
 
   database_name = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
@@ -237,7 +237,7 @@ resource "aws_rds_cluster" "secondary" {
   count = local.enabled && !local.is_regional_cluster ? 1 : 0
 
   cluster_identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}${module.this.delimiter}" : var.cluster_identifier) : null
-  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}" : var.cluster_identifier) : null
+  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? module.this.id : var.cluster_identifier) : null
 
   database_name = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
