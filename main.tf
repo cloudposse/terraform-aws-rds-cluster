@@ -355,8 +355,8 @@ module "rds_identifier" {
 resource "aws_rds_cluster_instance" "default" {
   count = local.cluster_instance_count
 
-  identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}-${count.index + 1}${module.this.delimiter}" : null
-  identifier        = !var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}-${count.index + 1}" : null
+  identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}${module.this.delimiter}${count.index + 1}${module.this.delimiter}" : null
+  identifier        = !var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}${module.this.delimiter}${count.index + 1}" : null
 
   cluster_identifier                    = local.deployed_cluster_identifier
   instance_class                        = local.instance_class
