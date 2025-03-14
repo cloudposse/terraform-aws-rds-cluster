@@ -46,6 +46,11 @@ module "rds_cluster" {
   allocated_storage                    = var.allocated_storage
   intra_security_group_traffic_enabled = var.intra_security_group_traffic_enabled
 
+  parameter_group_name_prefix_enabled   = var.parameter_group_name_prefix_enabled
+  rds_cluster_identifier_prefix_enabled = var.rds_cluster_identifier_prefix_enabled
+  security_group_name_prefix_enabled    = var.security_group_name_prefix_enabled
+  db_subnet_group_name_prefix_enabled   = var.db_subnet_group_name_prefix_enabled
+
   cluster_parameters = [
     {
       name         = "character_set_client"
