@@ -571,6 +571,12 @@ variable "security_group_name_prefix_enabled" {
   description = "Set to `true` to use `name_prefix` to name of the security group. Set to `false` to use `name` instead"
 }
 
+variable "db_subnet_group_name_prefix_enabled" {
+  type        = bool
+  default     = false
+  description = "Set to `true` to use `name_prefix` to name of the DB subnet group name. Set to `false` to use `name` instead"
+}
+
 variable "enable_global_write_forwarding" {
   type        = bool
   default     = null
