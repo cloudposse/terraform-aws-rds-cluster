@@ -38,3 +38,5 @@ intra_security_group_traffic_enabled = true
 parameter_group_name_prefix_enabled = true
 
 rds_cluster_identifier_prefix_enabled = true
+
+security_group_name_prefix_enabled = true

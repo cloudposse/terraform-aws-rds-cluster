@@ -24,7 +24,8 @@ data "aws_partition" "current" {
 # TODO: Use cloudposse/security-group module
 resource "aws_security_group" "default" {
   count       = local.enabled ? 1 : 0
-  name        = module.this.id
+  name_prefix = var.security_group_name_prefix_enabled ? "${module.this.id}${module.this.delimiter}" : null
+  name        = !var.security_group_name_prefix_enabled ? module.this.id : null
   description = "Allow inbound traffic from Security Groups and CIDRs"
   vpc_id      = var.vpc_id
   tags        = module.this.tags

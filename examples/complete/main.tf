@@ -48,6 +48,7 @@ module "rds_cluster" {
 
   parameter_group_name_prefix_enabled   = var.parameter_group_name_prefix_enabled
   rds_cluster_identifier_prefix_enabled = var.rds_cluster_identifier_prefix_enabled
+  security_group_name_prefix_enabled    = var.security_group_name_prefix_enabled
 
   cluster_parameters = [
     {
