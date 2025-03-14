@@ -91,3 +91,15 @@ variable "intra_security_group_traffic_enabled" {
   default     = false
   description = "Whether to allow traffic between resources inside the database's security group."
 }
+
+variable "parameter_group_name_prefix_enabled" {
+  type        = bool
+  default     = true
+  description = "Set to `true` to use `name_prefix` to name the cluster and database parameter groups. Set to `false` to use `name` instead"
+}
+
+variable "rds_cluster_identifier_prefix_enabled" {
+  type        = bool
+  default     = false
+  description = "Set to `true` to use `identifier_prefix` to name the cluster. Set to `false` to use `identifier` instead"
+}

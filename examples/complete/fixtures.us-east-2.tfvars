@@ -34,3 +34,7 @@ enhanced_monitoring_role_enabled = true
 rds_monitoring_interval = 30
 
 intra_security_group_traffic_enabled = true
+
+parameter_group_name_prefix_enabled = true
+
+rds_cluster_identifier_prefix_enabled = true
