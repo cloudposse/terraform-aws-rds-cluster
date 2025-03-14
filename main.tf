@@ -123,9 +123,12 @@ resource "aws_rds_reserved_instance" "default" {
 # The name "primary" is poorly chosen. We actually mean standalone or regional.
 # The primary cluster of a global database is actually created with the "secondary" cluster resource below.
 resource "aws_rds_cluster" "primary" {
-  count              = local.enabled && local.is_regional_cluster ? 1 : 0
-  cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name      = var.db_name
+  count = local.enabled && local.is_regional_cluster ? 1 : 0
+
+  cluster_identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}${module.this.delimiter}" : var.cluster_identifier) : null
+  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}" : var.cluster_identifier) : null
+
+  database_name = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
   manage_master_user_password           = var.manage_admin_user_password ? var.manage_admin_user_password : null
   master_user_secret_kms_key_id         = var.admin_user_secret_kms_key_id
@@ -231,9 +234,12 @@ resource "aws_rds_cluster" "primary" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
 resource "aws_rds_cluster" "secondary" {
-  count              = local.enabled && !local.is_regional_cluster ? 1 : 0
-  cluster_identifier = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
-  database_name      = var.db_name
+  count = local.enabled && !local.is_regional_cluster ? 1 : 0
+
+  cluster_identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}${module.this.delimiter}" : var.cluster_identifier) : null
+  cluster_identifier        = !var.rds_cluster_identifier_prefix_enabled ? (var.cluster_identifier == "" ? "${module.this.id}" : var.cluster_identifier) : null
+
+  database_name = var.db_name
   # manage_master_user_password must be `null` or `true`. If it is `false`, and `master_password` is not `null`, a conflict occurs.
   manage_master_user_password         = var.manage_admin_user_password ? var.manage_admin_user_password : null
   master_user_secret_kms_key_id       = var.admin_user_secret_kms_key_id
@@ -347,8 +353,11 @@ module "rds_identifier" {
 }
 
 resource "aws_rds_cluster_instance" "default" {
-  count                                 = local.cluster_instance_count
-  identifier                            = "${module.rds_identifier[0].id}-${count.index + 1}"
+  count = local.cluster_instance_count
+
+  identifier_prefix = var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}-${count.index + 1}${module.this.delimiter}" : null
+  identifier        = !var.rds_cluster_identifier_prefix_enabled ? "${module.rds_identifier[0].id}-${count.index + 1}" : null
+
   cluster_identifier                    = local.deployed_cluster_identifier
   instance_class                        = local.instance_class
   db_subnet_group_name                  = local.db_subnet_group_name

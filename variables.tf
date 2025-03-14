@@ -559,6 +559,12 @@ variable "parameter_group_name_prefix_enabled" {
   description = "Set to `true` to use `name_prefix` to name the cluster and database parameter groups. Set to `false` to use `name` instead"
 }
 
+variable "rds_cluster_identifier_prefix_enabled" {
+  type        = bool
+  default     = false
+  description = "Set to `true` to use `identifier_prefix` to name the cluster. Set to `false` to use `identifier` instead"
+}
+
 variable "enable_global_write_forwarding" {
   type        = bool
   default     = null
