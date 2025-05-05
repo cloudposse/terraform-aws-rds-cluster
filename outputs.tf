@@ -34,9 +34,10 @@ output "port" {
   description = "DB port"
 }
 
+# See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster.html#master_user_secret
 output "admin_user_secret" {
-  value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].master_user_secret) : join("", aws_rds_cluster.secondary[*].master_user_secret)
-  description = "The secret manager attributes (only when `manage_admin_user_password` is `true` ) See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster.html#master_user_secret"
+  value       = var.manage_admin_user_password ? join("", aws_rds_cluster.primary[*].master_user_secret) : []
+  description = "The secret manager attributes for the managed admin user password (`master_user_secret`)."
 }
 
 output "master_host" {
