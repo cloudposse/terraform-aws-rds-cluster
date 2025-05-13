@@ -495,6 +495,7 @@ Available targets:
 | <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of DNS addresses for the DB instances in the cluster |
 | <a name="output_master_host"></a> [master\_host](#output\_master\_host) | DB Master hostname |
 | <a name="output_master_username"></a> [master\_username](#output\_master\_username) | Username for the master DB user |
+| <a name="output_port"></a> [port](#output\_port) | DB port |
 | <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | <a name="output_replicas_host"></a> [replicas\_host](#output\_replicas\_host) | Replicas hostname |
 | <a name="output_reserved_instance"></a> [reserved\_instance](#output\_reserved\_instance) | All information about the reserved instance(s) if created. |
