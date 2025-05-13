@@ -29,6 +29,11 @@ output "reader_endpoint" {
   description = "A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas"
 }
 
+output "port" {
+  value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].port) : join("", aws_rds_cluster.secondary[*].port)
+  description = "DB port"
+}
+
 output "master_host" {
   value       = module.dns_master.hostname
   description = "DB Master hostname"
