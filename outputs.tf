@@ -93,3 +93,8 @@ output "reserved_instance" {
   value       = aws_rds_reserved_instance.default
   description = "All information about the reserved instance(s) if created."
 }
+
+output "aws_rds_cluster" {
+  value       = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*]) : join("", aws_rds_cluster.secondary[*])
+  description = "Escape hatch for all aws_rds_cluster outputs" 
+}
