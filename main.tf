@@ -15,85 +15,73 @@ locals {
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
   reserved_instance_engine = var.engine
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless
+
+  create_security_group = local.enabled && var.create_security_group
+  cidr_ingress_rule = (
+    length(var.allowed_cidr_blocks) + length(var.allowed_ipv6_cidr_blocks) + length(var.allowed_ipv6_prefix_list_ids)) == 0 ? null : {
+    key         = "cidr-ingress"
+    type        = "ingress"
+    from_port   = var.db_port
+    to_port     = var.db_port
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_cidr_blocks
+
+    allowed_ipv6_cidr_blocks     = var.allowed_ipv6_cidr_blocks
+    allowed_ipv6_prefix_list_ids = var.allowed_ipv6_prefix_list_ids
+
+    description = "Allow inbound traffic from CIDR blocks"
+  }
+
+  intra_security_group_traffic_enabled = (!var.intra_security_group_traffic_enabled) ? null : {
+    description = "Allow traffic between members of the database security group"
+    type        = "ingress"
+    from_port   = var.db_port
+    to_port     = var.db_port
+    protocol    = "tcp"
+    self        = true
+  }
+
+  sg_rules = {
+    legacy = merge(local.cidr_ingress_rule, local.intra_security_group_traffic_enabled, {})
+  }
 }
 
 data "aws_partition" "current" {
   count = local.enabled ? 1 : 0
 }
 
-# TODO: Use cloudposse/security-group module
-resource "aws_security_group" "default" {
-  count       = local.enabled ? 1 : 0
-  name        = module.this.id
-  description = "Allow inbound traffic from Security Groups and CIDRs"
-  vpc_id      = var.vpc_id
-  tags        = module.this.tags
-}
+module "security_group" {
+  source  = "cloudposse/security-group/aws"
+  version = "2.2.0"
 
-resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = local.enabled ? length(var.security_groups) : 0
-  description              = "Allow inbound traffic from existing security groups"
-  type                     = "ingress"
-  from_port                = var.db_port
-  to_port                  = var.db_port
-  protocol                 = "tcp"
-  source_security_group_id = var.security_groups[count.index]
-  security_group_id        = join("", aws_security_group.default[*].id)
-}
+  enabled = local.create_security_group
 
-resource "aws_security_group_rule" "traffic_inside_security_group" {
-  count             = local.enabled && var.intra_security_group_traffic_enabled ? 1 : 0
-  description       = "Allow traffic between members of the database security group"
-  type              = "ingress"
-  from_port         = var.db_port
-  to_port           = var.db_port
-  protocol          = "tcp"
-  self              = true
-  security_group_id = join("", aws_security_group.default[*].id)
-}
+  allow_all_egress    = var.egress_enabled
+  security_group_name = var.security_group_name
+  rules_map           = local.sg_rules
+  rule_matrix = [{
+    key                       = "in"
+    source_security_group_ids = var.security_groups
+    rules = [{
+      key         = "in"
+      type        = "ingress"
+      from_port   = var.db_port
+      to_port     = var.db_port
+      protocol    = "tcp"
+      description = "Selectively allow inbound traffic"
+    }]
+  }]
 
-resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
-  description       = "Allow inbound traffic from existing CIDR blocks"
-  type              = "ingress"
-  from_port         = var.db_port
-  to_port           = var.db_port
-  protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.default[*].id)
-}
+  vpc_id = var.vpc_id
 
-resource "aws_security_group_rule" "ingress_ipv6_cidr_blocks" {
-  count             = local.enabled && length(var.allowed_ipv6_cidr_blocks) > 0 ? 1 : 0
-  description       = "Allow inbound traffic from existing CIDR blocks"
-  type              = "ingress"
-  from_port         = var.db_port
-  to_port           = var.db_port
-  protocol          = "tcp"
-  ipv6_cidr_blocks  = var.allowed_ipv6_cidr_blocks
-  security_group_id = join("", aws_security_group.default[*].id)
-}
+  security_group_description = "Allow inbound traffic from Security Groups and CIDRs"
 
-resource "aws_security_group_rule" "egress" {
-  count             = local.enabled && var.egress_enabled ? 1 : 0
-  description       = "Allow outbound traffic"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.default[*].id)
-}
+  create_before_destroy = var.security_group_create_before_destroy
 
-resource "aws_security_group_rule" "egress_ipv6" {
-  count             = local.enabled && var.egress_enabled ? 1 : 0
-  description       = "Allow outbound ipv6 traffic"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = join("", aws_security_group.default[*].id)
+  security_group_create_timeout = var.security_group_create_timeout
+  security_group_delete_timeout = var.security_group_delete_timeout
+
+  context = module.this.context
 }
 
 data "aws_rds_reserved_instance_offering" "default" {
@@ -145,7 +133,7 @@ resource "aws_rds_cluster" "primary" {
   kms_key_id                            = var.kms_key_arn
   source_region                         = var.source_region
   snapshot_identifier                   = var.snapshot_identifier
-  vpc_security_group_ids                = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
+  vpc_security_group_ids                = compact(concat([module.security_group.id], var.vpc_security_group_ids))
   preferred_maintenance_window          = var.maintenance_window
   network_type                          = var.network_type
   db_subnet_group_name                  = join("", aws_db_subnet_group.default[*].name)
@@ -170,7 +158,7 @@ resource "aws_rds_cluster" "primary" {
   depends_on = [
     aws_db_subnet_group.default,
     aws_rds_cluster_parameter_group.default,
-    aws_security_group.default,
+    # aws_security_group.default,
   ]
 
   dynamic "s3_import" {
@@ -251,7 +239,7 @@ resource "aws_rds_cluster" "secondary" {
   kms_key_id                          = var.kms_key_arn
   source_region                       = var.source_region
   snapshot_identifier                 = var.snapshot_identifier
-  vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default[*].id), var.vpc_security_group_ids]))
+  vpc_security_group_ids              = compact(concat([module.security_group.id], var.vpc_security_group_ids))
   preferred_maintenance_window        = var.maintenance_window
   network_type                        = var.network_type
   db_subnet_group_name                = join("", aws_db_subnet_group.default[*].name)
@@ -273,7 +261,7 @@ resource "aws_rds_cluster" "secondary" {
     aws_db_subnet_group.default,
     aws_db_parameter_group.default,
     aws_rds_cluster_parameter_group.default,
-    aws_security_group.default,
+    # aws_security_group.default,
   ]
 
   dynamic "scaling_configuration" {
