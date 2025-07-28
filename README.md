@@ -2,8 +2,11 @@
 
 <!-- markdownlint-disable -->
 <a href="https://cpco.io/homepage"><img src="https://github.com/cloudposse/terraform-aws-rds-cluster/blob/main/.github/banner.png?raw=true" alt="Project Banner"/></a><br/>
-    <p align="right">
-<a href="https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest"><img src="https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge" alt="Latest Release"/></a><a href="https://github.com/cloudposse/terraform-aws-rds-cluster/commits"><img src="https://img.shields.io/github/last-commit/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge" alt="Last Updated"/></a><a href="https://slack.cloudposse.com"><img src="https://slack.cloudposse.com/for-the-badge.svg" alt="Slack Community"/></a></p>
+
+
+<p align="right"><a href="https://github.com/cloudposse/terraform-aws-rds-cluster/releases/latest"><img src="https://img.shields.io/github/release/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge" alt="Latest Release"/></a><a href="https://github.com/cloudposse/terraform-aws-rds-cluster/commits"><img src="https://img.shields.io/github/last-commit/cloudposse/terraform-aws-rds-cluster.svg?style=for-the-badge" alt="Last Updated"/></a><a href="https://cloudposse.com/slack"><img src="https://slack.cloudposse.com/for-the-badge.svg" alt="Slack Community"/></a><a href="https://cloudposse.com/support/"><img src="https://img.shields.io/badge/Get_Support-success.svg?style=for-the-badge" alt="Get Support"/></a>
+
+</p>
 <!-- markdownlint-restore -->
 
 <!--
@@ -48,7 +51,6 @@ Supports [Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless
 
 
 ## Usage
-
 
 For a complete example, see [examples/complete](examples/complete).
 
@@ -301,24 +303,12 @@ Review the [complete example](examples/complete) to see how to use this module.
 
 
 <!-- markdownlint-disable -->
-## Makefile Targets
-```text
-Available targets:
-
-  help                                Help screen
-  help/all                            Display help for all targets
-  help/short                          This help short screen
-  lint                                Lint terraform code
-
-```
-<!-- markdownlint-restore -->
-<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.23.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.61.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.0 |
 
@@ -326,7 +316,7 @@ Available targets:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.23.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.61.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 2.0 |
 
 ## Modules
@@ -446,6 +436,7 @@ Available targets:
 | <a name="input_performance_insights_enabled"></a> [performance\_insights\_enabled](#input\_performance\_insights\_enabled) | Whether to enable Performance Insights | `bool` | `false` | no |
 | <a name="input_performance_insights_kms_key_id"></a> [performance\_insights\_kms\_key\_id](#input\_performance\_insights\_kms\_key\_id) | The ARN for the KMS key to encrypt Performance Insights data. When specifying `performance_insights_kms_key_id`, `performance_insights_enabled` needs to be set to true | `string` | `""` | no |
 | <a name="input_performance_insights_retention_period"></a> [performance\_insights\_retention\_period](#input\_performance\_insights\_retention\_period) | Amount of time in days to retain Performance Insights data. Either 7 (7 days) or 731 (2 years) | `number` | `null` | no |
+| <a name="input_promotion_tier"></a> [promotion\_tier](#input\_promotion\_tier) | Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoted to writer.<br/><br/>Readers in promotion tiers 0 and 1 scale at the same time as the writer. Readers in promotion tiers 2–15 scale independently from the writer. For more information, see: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.how-it-works.html#aurora-serverless-v2.how-it-works.scaling | `number` | `0` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Set to true if you want your cluster to be publicly accessible (such as via QuickSight) | `bool` | `false` | no |
 | <a name="input_rds_cluster_parameter_group_name"></a> [rds\_cluster\_parameter\_group\_name](#input\_rds\_cluster\_parameter\_group\_name) | The name to give to the created `aws_rds_cluster_parameter_group` resource.<br/>If omitted, the module will generate a name. | `string` | `""` | no |
 | <a name="input_rds_monitoring_interval"></a> [rds\_monitoring\_interval](#input\_rds\_monitoring\_interval) | The interval, in seconds, between points when enhanced monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60 | `number` | `0` | no |
@@ -484,6 +475,7 @@ Available targets:
 |------|-------------|
 | <a name="output_activity_stream_arn"></a> [activity\_stream\_arn](#output\_activity\_stream\_arn) | Activity Stream ARN |
 | <a name="output_activity_stream_name"></a> [activity\_stream\_name](#output\_activity\_stream\_name) | Activity Stream Name |
+| <a name="output_admin_user_secret"></a> [admin\_user\_secret](#output\_admin\_user\_secret) | The secret manager attributes for the managed admin user password (`master_user_secret`). |
 | <a name="output_arn"></a> [arn](#output\_arn) | Amazon Resource Name (ARN) of the cluster |
 | <a name="output_cluster_identifier"></a> [cluster\_identifier](#output\_cluster\_identifier) | Cluster Identifier |
 | <a name="output_cluster_resource_id"></a> [cluster\_resource\_id](#output\_cluster\_resource\_id) | The region-unique, immutable identifie of the cluster |
@@ -494,6 +486,7 @@ Available targets:
 | <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of DNS addresses for the DB instances in the cluster |
 | <a name="output_master_host"></a> [master\_host](#output\_master\_host) | DB Master hostname |
 | <a name="output_master_username"></a> [master\_username](#output\_master\_username) | Username for the master DB user |
+| <a name="output_port"></a> [port](#output\_port) | DB port |
 | <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | A read-only endpoint for the Aurora cluster, automatically load-balanced across replicas |
 | <a name="output_replicas_host"></a> [replicas\_host](#output\_replicas\_host) | Replicas hostname |
 | <a name="output_reserved_instance"></a> [reserved\_instance](#output\_reserved\_instance) | All information about the reserved instance(s) if created. |
@@ -501,6 +494,11 @@ Available targets:
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Security Group ID |
 | <a name="output_security_group_name"></a> [security\_group\_name](#output\_security\_group\_name) | Security Group name |
 <!-- markdownlint-restore -->
+
+
+
+
+
 
 
 ## Related Projects
@@ -574,6 +572,38 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
  6. Submit a **Pull Request** so that we can review your changes
 
 **NOTE:** Be sure to merge the latest changes from "upstream" before making a pull request!
+
+
+## Running Terraform Tests
+
+We use [Atmos](https://atmos.tools) to streamline how Terraform tests are run. It centralizes configuration and wraps common test workflows with easy-to-use commands.
+
+All tests are located in the [`test/`](test) folder.
+
+Under the hood, tests are powered by Terratest together with our internal [Test Helpers](https://github.com/cloudposse/test-helpers) library, providing robust infrastructure validation.
+
+Setup dependencies:
+- Install Atmos ([installation guide](https://atmos.tools/install/))
+- Install Go [1.24+ or newer](https://go.dev/doc/install)
+- Install Terraform or OpenTofu
+
+To run tests:
+
+- Run all tests:  
+  ```sh
+  atmos test run
+  ```
+- Clean up test artifacts:  
+  ```sh
+  atmos test clean
+  ```
+- Explore additional test options:  
+  ```sh
+  atmos test --help
+  ```
+The configuration for test commands is centrally managed. To review what's being imported, see the [`atmos.yaml`](https://raw.githubusercontent.com/cloudposse/.github/refs/heads/main/.github/atmos/terraform-module.yaml) file.
+
+Learn more about our [automated testing in our documentation](https://docs.cloudposse.com/community/contribute/automated-testing/) or implementing [custom commands](https://atmos.tools/core-concepts/custom-commands/) with atmos.
 
 ### 🌎 Slack Community
 
