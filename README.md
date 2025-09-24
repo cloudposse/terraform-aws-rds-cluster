@@ -308,7 +308,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.61.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.81.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.0 |
 
@@ -316,7 +316,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.61.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.81.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 2.0 |
 
 ## Modules
@@ -452,7 +452,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 | <a name="input_s3_import"></a> [s3\_import](#input\_s3\_import) | Restore from a Percona Xtrabackup in S3. The `bucket_name` is required to be in the same region as the resource. | <pre>object({<br/>    bucket_name           = string<br/>    bucket_prefix         = string<br/>    ingestion_role        = string<br/>    source_engine         = string<br/>    source_engine_version = string<br/>  })</pre> | `null` | no |
 | <a name="input_scaling_configuration"></a> [scaling\_configuration](#input\_scaling\_configuration) | List of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless` | <pre>list(object({<br/>    auto_pause               = bool<br/>    max_capacity             = number<br/>    min_capacity             = number<br/>    seconds_until_auto_pause = number<br/>    timeout_action           = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | List of security groups to be allowed to connect to the DB instance | `list(string)` | `[]` | no |
-| <a name="input_serverlessv2_scaling_configuration"></a> [serverlessv2\_scaling\_configuration](#input\_serverlessv2\_scaling\_configuration) | serverlessv2 scaling properties | <pre>object({<br/>    min_capacity = number<br/>    max_capacity = number<br/>  })</pre> | `null` | no |
+| <a name="input_serverlessv2_scaling_configuration"></a> [serverlessv2\_scaling\_configuration](#input\_serverlessv2\_scaling\_configuration) | serverlessv2 scaling properties | <pre>object({<br/>    min_capacity             = number<br/>    max_capacity             = number<br/>    seconds_until_auto_pause = optional(number, null)<br/>  })</pre> | `null` | no |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Determines whether a final DB snapshot is created before the DB cluster is deleted | `bool` | `true` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Specifies whether or not to create this cluster from a snapshot | `string` | `null` | no |
 | <a name="input_source_region"></a> [source\_region](#input\_source\_region) | Source Region of primary cluster, needed when using encrypted storage and region replicas | `string` | `""` | no |
