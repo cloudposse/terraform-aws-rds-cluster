@@ -14,7 +14,7 @@ instance_type = "db.t3.large"
 
 cluster_family = "aurora-postgresql15"
 
-engine_version = "15.3"
+engine_version = "15.13"
 
 engine = "aurora-postgresql"
 

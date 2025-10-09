@@ -12,7 +12,7 @@ engine = "aurora-postgresql"
 
 cluster_family = "aurora-postgresql15"
 
-engine_version = "15.3"
+engine_version = "15.13"
 
 instance_type = "db.serverless"
 
