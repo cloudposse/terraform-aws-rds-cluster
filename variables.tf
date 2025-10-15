@@ -379,12 +379,18 @@ variable "performance_insights_retention_period" {
   default     = null
 }
 
+variable "database_insights_mode" {
+  description = "The database insights mode for the RDS cluster. See https://registry.terraform.io/providers/hashicorp/aws/6.16.0/docs/resources/rds_cluster#database_insights_mode-1"
+  type        = string
+  default     = null
+}
+
 variable "promotion_tier" {
   type        = number
   default     = 0
   description = <<-EOT
 Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoted to writer.
-  
+
 Readers in promotion tiers 0 and 1 scale at the same time as the writer. Readers in promotion tiers 2–15 scale independently from the writer. For more information, see: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.how-it-works.html#aurora-serverless-v2.how-it-works.scaling
 EOT
 }
