@@ -186,8 +186,9 @@ resource "aws_rds_cluster" "primary" {
   dynamic "serverlessv2_scaling_configuration" {
     for_each = var.serverlessv2_scaling_configuration[*]
     content {
-      max_capacity = serverlessv2_scaling_configuration.value.max_capacity
-      min_capacity = serverlessv2_scaling_configuration.value.min_capacity
+      max_capacity             = serverlessv2_scaling_configuration.value.max_capacity
+      min_capacity             = serverlessv2_scaling_configuration.value.min_capacity
+      seconds_until_auto_pause = serverlessv2_scaling_configuration.value.seconds_until_auto_pause
     }
   }
 

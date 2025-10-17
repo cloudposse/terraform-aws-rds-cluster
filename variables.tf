@@ -213,8 +213,9 @@ variable "scaling_configuration" {
 
 variable "serverlessv2_scaling_configuration" {
   type = object({
-    min_capacity = number
-    max_capacity = number
+    min_capacity             = number
+    max_capacity             = number
+    seconds_until_auto_pause = optional(number, null)
   })
   default     = null
   description = "serverlessv2 scaling properties"
