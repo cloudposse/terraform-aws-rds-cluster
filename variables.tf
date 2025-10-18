@@ -380,7 +380,7 @@ variable "performance_insights_retention_period" {
 }
 
 variable "database_insights_mode" {
-  description = "The database insights mode for the RDS cluster. See https://registry.terraform.io/providers/hashicorp/aws/6.16.0/docs/resources/rds_cluster#database_insights_mode-1"
+  description = "The database insights mode for the RDS cluster. Valid values are `standard`, `advanced`. See https://registry.terraform.io/providers/hashicorp/aws/6.16.0/docs/resources/rds_cluster#database_insights_mode-1"
   type        = string
   default     = null
 }
