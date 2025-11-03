@@ -15,6 +15,11 @@ locals {
   ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
   reserved_instance_engine = var.engine
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless
+
+  use_predefined_metric = contains([
+    "RDSReaderAverageCPUUtilization",
+    "RDSReaderAverageDatabaseConnections",
+  ], var.autoscaling_target_metrics)
 }
 
 data "aws_partition" "current" {
@@ -494,8 +499,9 @@ resource "aws_appautoscaling_target" "replicas" {
   max_capacity       = var.autoscaling_max_capacity
 }
 
-resource "aws_appautoscaling_policy" "replicas" {
-  count              = local.enabled && var.autoscaling_enabled ? 1 : 0
+# --- Predefined metric policy (only when using the two reader metrics) ---
+resource "aws_appautoscaling_policy" "replicas_predefined" {
+  count              = (local.enabled && var.autoscaling_enabled && local.use_predefined_metric) ? 1 : 0
   name               = module.this.id
   service_namespace  = join("", aws_appautoscaling_target.replicas[*].service_namespace)
   scalable_dimension = join("", aws_appautoscaling_target.replicas[*].scalable_dimension)
@@ -503,14 +509,46 @@ resource "aws_appautoscaling_policy" "replicas" {
   policy_type        = var.autoscaling_policy_type
 
   target_tracking_scaling_policy_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = var.autoscaling_target_metrics
-    }
-
     disable_scale_in   = false
     target_value       = var.autoscaling_target_value
     scale_in_cooldown  = var.autoscaling_scale_in_cooldown
     scale_out_cooldown = var.autoscaling_scale_out_cooldown
+
+    predefined_metric_specification {
+      predefined_metric_type = var.autoscaling_target_metrics
+    }
+  }
+}
+
+# --- Customized metric policy (everything else) ---
+resource "aws_appautoscaling_policy" "replicas_custom" {
+  count              = (local.enabled && var.autoscaling_enabled && !local.use_predefined_metric) ? 1 : 0
+  name               = module.this.id
+  service_namespace  = join("", aws_appautoscaling_target.replicas[*].service_namespace)
+  scalable_dimension = join("", aws_appautoscaling_target.replicas[*].scalable_dimension)
+  resource_id        = join("", aws_appautoscaling_target.replicas[*].resource_id)
+  policy_type        = var.autoscaling_policy_type
+
+  target_tracking_scaling_policy_configuration {
+    disable_scale_in   = false
+    target_value       = var.autoscaling_target_value
+    scale_in_cooldown  = var.autoscaling_scale_in_cooldown
+    scale_out_cooldown = var.autoscaling_scale_out_cooldown
+
+    customized_metric_specification {
+      metric_name = var.autoscaling_custom_metric.metric_name
+      namespace   = var.autoscaling_custom_metric.namespace
+      statistic   = var.autoscaling_custom_metric.statistic
+      unit        = try(var.autoscaling_custom_metric.unit, null)
+
+      dynamic "dimensions" {
+        for_each = try(var.autoscaling_custom_metric.dimensions, [])
+        content {
+          name  = dimensions.value.name
+          value = dimensions.value.value
+        }
+      }
+    }
   }
 }
 
