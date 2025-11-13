@@ -8,7 +8,7 @@ variable "zone_id" {
     EOT
 }
 
-variable "security_groups" {
+variable "allowed_security_groups" {
   type        = list(string)
   default     = []
   description = "List of security groups to be allowed to connect to the DB instance"

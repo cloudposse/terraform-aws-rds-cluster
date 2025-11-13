@@ -17,33 +17,51 @@ locals {
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless
 
   create_security_group = local.enabled && var.create_security_group
-  cidr_ingress_rule = (
-    length(var.allowed_cidr_blocks) + length(var.allowed_ipv6_cidr_blocks) + length(var.allowed_ipv6_prefix_list_ids)) == 0 ? null : {
-    key         = "cidr-ingress"
-    type        = "ingress"
-    from_port   = var.db_port
-    to_port     = var.db_port
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
 
-    allowed_ipv6_cidr_blocks     = var.allowed_ipv6_cidr_blocks
-    allowed_ipv6_prefix_list_ids = var.allowed_ipv6_prefix_list_ids
+  # Allow from CIDR blocks on the DB port
+  cidr_rules = length(var.allowed_cidr_blocks) == 0 ? [] : [
+    {
+      key                      = "db-cidrs"
+      type                     = "ingress"
+      from_port                = var.db_port
+      to_port                  = var.db_port
+      protocol                 = "tcp"
+      self                     = false
+      source_security_group_id = null
+      cidr_blocks              = var.allowed_cidr_blocks
+      description              = "Allow DB access from CIDR blocks"
+    }
+  ]
+  # Allow from security groups on the DB port
+  sg_rules = [
+    for sg in var.allowed_security_groups : {
+      key                      = "db-sg-${sg}"
+      type                     = "ingress"
+      from_port                = var.db_port
+      to_port                  = var.db_port
+      protocol                 = "tcp"
+      self                     = false
+      source_security_group_id = sg
+      cidr_blocks              = []
+      description              = "Allow DB access from SG ${sg}"
+    }
+  ]
+  # Allow intra-cluster traffic on DB port (self-referencing rule)
+  self_rule = var.intra_security_group_traffic_enabled == false ? [] : [
+   {
+     key                      = "db-self"
+     type                     = "ingress"
+     from_port                = var.db_port
+     to_port                  = var.db_port
+     protocol                 = "tcp"
+     self                     = true
+     source_security_group_id = null
+     cidr_blocks              = []
+     description              = "Allow intra-cluster DB traffic"
+   }
+ ]
 
-    description = "Allow inbound traffic from CIDR blocks"
-  }
-
-  intra_security_group_traffic_enabled = (!var.intra_security_group_traffic_enabled) ? null : {
-    description = "Allow traffic between members of the database security group"
-    type        = "ingress"
-    from_port   = var.db_port
-    to_port     = var.db_port
-    protocol    = "tcp"
-    self        = true
-  }
-
-  sg_rules = {
-    legacy = merge(local.cidr_ingress_rule, local.intra_security_group_traffic_enabled, {})
-  }
+ security_group_rules = concat(local.self_rule, local.cidr_rules, local.sg_rules)
 }
 
 data "aws_partition" "current" {
@@ -52,32 +70,18 @@ data "aws_partition" "current" {
 
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "2.2.0"
+  version = "2.3.0"
 
-  enabled = local.create_security_group
+  enabled                    = local.create_security_group
+  name                       = module.this.id
+  security_group_description = "Security group for ${module.this.id} RDS cluster"
+  vpc_id                     = var.vpc_id
 
-  allow_all_egress    = var.egress_enabled
-  security_group_name = var.security_group_name
-  rules_map           = local.sg_rules
-  rule_matrix = [{
-    key                       = "in"
-    source_security_group_ids = var.security_groups
-    rules = [{
-      key         = "in"
-      type        = "ingress"
-      from_port   = var.db_port
-      to_port     = var.db_port
-      protocol    = "tcp"
-      description = "Selectively allow inbound traffic"
-    }]
-  }]
-
-  vpc_id = var.vpc_id
-
-  security_group_description = "Allow inbound traffic from Security Groups and CIDRs"
-
-  create_before_destroy = var.security_group_create_before_destroy
-
+  # Supply rules built from existing inputs
+  rules                         = local.security_group_rules
+  allow_all_egress              = var.egress_enabled
+  preserve_security_group_id    = false
+  create_before_destroy         = var.security_group_create_before_destroy
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
 
