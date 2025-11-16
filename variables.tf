@@ -27,7 +27,7 @@ variable "subnets" {
 variable "instance_type" {
   type        = string
   default     = "db.t2.small"
-  description = "Instance type to use"
+  description = "Instance type to use.  Use db.serverless for serverlessv2"
 }
 
 variable "cluster_identifier" {
