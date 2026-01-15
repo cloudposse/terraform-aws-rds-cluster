@@ -72,6 +72,17 @@ resource "aws_security_group_rule" "ingress_ipv6_cidr_blocks" {
   security_group_id = join("", aws_security_group.default[*].id)
 }
 
+resource "aws_security_group_rule" "ingress_prefix_lists" {
+  count             = local.enabled && length(var.allowed_prefix_list_ids) > 0 ? 1 : 0
+  description       = "Allow inbound traffic from prefix lists"
+  type              = "ingress"
+  from_port         = var.db_port
+  to_port           = var.db_port
+  protocol          = "tcp"
+  prefix_list_ids   = var.allowed_prefix_list_ids
+  security_group_id = one(aws_security_group.default[*].id)
+}
+
 resource "aws_security_group_rule" "egress" {
   count             = local.enabled && var.egress_enabled ? 1 : 0
   description       = "Allow outbound traffic"
