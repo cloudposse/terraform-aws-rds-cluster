@@ -409,7 +409,27 @@ variable "autoscaling_policy_type" {
 variable "autoscaling_target_metrics" {
   type        = string
   default     = "RDSReaderAverageCPUUtilization"
-  description = "The metrics type to use. If this value isn't provided the default is CPU utilization"
+  description = "The metrics type to use. If this value isn't provided the default is CPU utilization. IF the value is not `RDSReaderAverageCPUUtilization` nor `RDSReaderAverageDatabaseConnections` a custom metric for autoscaling must be specified"
+}
+
+variable "autoscaling_custom_metric" {
+  type = object({
+    metric_name = string
+    namespace   = string
+    statistic   = string
+    unit        = optional(string)
+    dimensions  = optional(list(object({
+      name  = string,
+      value = string
+    })))
+  })
+  default = {
+    metric_name = ""
+    namespace   = ""
+    statistic   = "Average"
+    dimensions  = []
+  }
+  description = "Specification for a custom Autoscaling metric to use. Will be used if autoscaling_target_metrics os neither `RDSReaderAverageCPUUtilization` nor `RDSReaderAverageDatabaseConnections`"
 }
 
 variable "autoscaling_target_value" {
