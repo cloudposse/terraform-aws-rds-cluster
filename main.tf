@@ -68,7 +68,7 @@ data "aws_partition" "current" {
 
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "2.3.0"
+  version = "2.2.0"
 
   enabled                    = local.create_security_group
   name                       = module.this.id
