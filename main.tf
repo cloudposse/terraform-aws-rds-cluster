@@ -321,6 +321,7 @@ resource "aws_rds_cluster" "secondary" {
 
   lifecycle {
     ignore_changes = [
+      global_cluster_identifier,     # AWS provider does not read this back from the API
       replication_source_identifier, # will be set/managed by Global Cluster
       snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
     ]
