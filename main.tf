@@ -6,6 +6,13 @@ locals {
   deployed_cluster_identifier = local.enabled ? coalesce(one(aws_rds_cluster.primary[*].id), one(aws_rds_cluster.secondary[*].id)) : ""
   db_subnet_group_name        = one(aws_db_subnet_group.default[*].name)
   instance_class              = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
+  instance_identifier_prefix  = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  instance_identifier_suffix_fragment = var.instance_identifier_suffix == null ? null : (
+    var.instance_identifier_suffix == "" ? "" : "${module.this.delimiter}${var.instance_identifier_suffix}"
+  )
+  instance_identifier = !local.enabled ? "" : (
+    var.instance_identifier_suffix == null ? random_pet.instance[0].id : "${local.instance_identifier_prefix}${local.instance_identifier_suffix_fragment}"
+  )
 
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
@@ -324,8 +331,8 @@ resource "aws_rds_cluster" "secondary" {
 }
 
 resource "random_pet" "instance" {
-  count  = local.enabled ? 1 : 0
-  prefix = var.cluster_identifier == "" ? module.this.id : var.cluster_identifier
+  count  = local.enabled && var.instance_identifier_suffix == null ? 1 : 0
+  prefix = local.instance_identifier_prefix
   keepers = {
     cluster_family = var.cluster_family
     instance_class = var.serverlessv2_scaling_configuration != null ? "db.serverless" : var.instance_type
@@ -338,7 +345,7 @@ module "rds_identifier" {
   source  = "cloudposse/label/null"
   version = "0.25.0"
 
-  name = random_pet.instance[0].id
+  name = local.instance_identifier
   # Max length of RDS identifier is 63 characters, but in `aws_rds_cluster_instance`
   # we append the instance index to the identifier
   # Setting the limit to 60 allow to use up to 99 instances, when only 16 is allowed
