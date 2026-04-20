@@ -36,6 +36,16 @@ variable "cluster_identifier" {
   description = "The RDS Cluster Identifier. Will use generated label ID if not supplied"
 }
 
+variable "instance_identifier_suffix" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = <<-EOT
+    The suffix to append to DB instance identifiers.
+    If `null`, the module will generate a random suffix. If empty, no suffix will be appended.
+    EOT
+}
+
 variable "cluster_size" {
   type        = number
   default     = 2
