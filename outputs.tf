@@ -71,17 +71,17 @@ output "cluster_security_groups" {
 }
 
 output "security_group_id" {
-  value       = join("", aws_security_group.default[*].id)
+  value       = module.security_group.id
   description = "Security Group ID"
 }
 
 output "security_group_arn" {
-  value       = join("", aws_security_group.default[*].arn)
+  value       = module.security_group.arn
   description = "Security Group ARN"
 }
 
 output "security_group_name" {
-  value       = join("", aws_security_group.default[*].name)
+  value       = module.security_group.name
   description = "Security Group name"
 }
 
