@@ -307,7 +307,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.81.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
@@ -316,14 +316,14 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.81.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 2.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_dns_master"></a> [dns\_master](#module\_dns\_master) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_dns_replicas"></a> [dns\_replicas](#module\_dns\_replicas) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_enhanced_monitoring_label"></a> [enhanced\_monitoring\_label](#module\_enhanced\_monitoring\_label) | cloudposse/label/null | 0.25.0 |
@@ -333,7 +333,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_appautoscaling_policy.replicas](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy) | resource |
 | [aws_appautoscaling_target.replicas](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target) | resource |
 | [aws_db_parameter_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group) | resource |
@@ -361,7 +361,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_activity_stream_enabled"></a> [activity\_stream\_enabled](#input\_activity\_stream\_enabled) | Whether to enable Activity Streams | `bool` | `false` | no |
 | <a name="input_activity_stream_kms_key_id"></a> [activity\_stream\_kms\_key\_id](#input\_activity\_stream\_kms\_key\_id) | The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true | `string` | `""` | no |
 | <a name="input_activity_stream_mode"></a> [activity\_stream\_mode](#input\_activity\_stream\_mode) | The mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async` | `string` | `"async"` | no |
@@ -400,6 +400,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database name (default is not to create a database) | `string` | `""` | no |
 | <a name="input_db_parameter_group_name"></a> [db\_parameter\_group\_name](#input\_db\_parameter\_group\_name) | The name to give to the created `aws_db_parameter_group` resource.<br/>If omitted, the module will generate a name. | `string` | `""` | no |
 | <a name="input_db_port"></a> [db\_port](#input\_db\_port) | Database port | `number` | `3306` | no |
+| <a name="input_delete_automated_backups"></a> [delete\_automated\_backups](#input\_delete\_automated\_backups) | Specifies whether to remove automated backups immediately after the DB cluster is deleted. If using AWS Backup, this must be set to false or else deletion will fail. | `bool` | `true` | no |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | If the DB instance should have deletion protection enabled | `bool` | `false` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between ID elements.<br/>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | <a name="input_descriptor_formats"></a> [descriptor\_formats](#input\_descriptor\_formats) | Describe additional descriptors to be output in the `descriptors` output map.<br/>Map of maps. Keys are names of descriptors. Values are maps of the form<br/>`{<br/>   format = string<br/>   labels = list(string)<br/>}`<br/>(Type is `any` so the map values can later be enhanced to provide additional options.)<br/>`format` is a Terraform format string to be passed to the `format()` function.<br/>`labels` is a list of labels, in order, to pass to `format()` function.<br/>Label values will be normalized before being passed to `format()` so they will be<br/>identical to how they appear in `id`.<br/>Default is `{}` (`descriptors` output will be empty). | `any` | `{}` | no |
@@ -475,7 +476,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_activity_stream_arn"></a> [activity\_stream\_arn](#output\_activity\_stream\_arn) | Activity Stream ARN |
 | <a name="output_activity_stream_name"></a> [activity\_stream\_name](#output\_activity\_stream\_name) | Activity Stream Name |
 | <a name="output_admin_user_secret"></a> [admin\_user\_secret](#output\_admin\_user\_secret) | The secret manager attributes for the managed admin user password (`master_user_secret`). |
