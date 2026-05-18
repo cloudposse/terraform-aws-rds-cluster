@@ -141,6 +141,7 @@ resource "aws_rds_cluster" "primary" {
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   final_snapshot_identifier             = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                   = var.skip_final_snapshot
+  delete_automated_backups              = var.delete_automated_backups
   apply_immediately                     = var.apply_immediately
   db_cluster_instance_class             = local.is_serverless ? null : var.db_cluster_instance_class
   storage_encrypted                     = local.is_serverless ? null : var.storage_encrypted
@@ -251,6 +252,7 @@ resource "aws_rds_cluster" "secondary" {
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
   final_snapshot_identifier           = var.cluster_identifier == "" ? lower(module.this.id) : lower(var.cluster_identifier)
   skip_final_snapshot                 = var.skip_final_snapshot
+  delete_automated_backups            = var.delete_automated_backups
   apply_immediately                   = var.apply_immediately
   db_cluster_instance_class           = local.is_serverless ? null : var.db_cluster_instance_class
   storage_encrypted                   = var.storage_encrypted

@@ -317,6 +317,12 @@ variable "skip_final_snapshot" {
   default     = true
 }
 
+variable "delete_automated_backups" {
+  type        = bool
+  description = "Specifies whether to remove automated backups immediately after the DB cluster is deleted. If using AWS Backup, this must be set to false or else deletion will fail."
+  default     = true
+}
+
 variable "copy_tags_to_snapshot" {
   type        = bool
   description = "Copy tags to backup snapshots"
