@@ -499,15 +499,7 @@ variable "source_region" {
 
 variable "iam_roles" {
   type        = list(string)
-  description = <<-EOT
-    IAM role ARNs to associate with the Aurora cluster at creation time (without a `feature_name`).
-    Behavior warning: after the initial cluster creation, edits to this variable have NO effect —
-    Terraform ignores post-create drift on this attribute to prevent conflicts with
-    `aws_rds_cluster_role_association`. Adding or removing an ARN here after the cluster exists
-    produces no plan diff, no error, and no AWS API call.
-    To manage roles after creation, or to attach a role with a specific `feature_name`
-    (e.g. `s3Export`, `s3Import`, `Lambda`), use `var.role_associations` instead.
-  EOT
+  description = "Iam roles for the Aurora cluster"
   default     = []
 }
 

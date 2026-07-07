@@ -295,9 +295,6 @@ usage: |2-
   Do NOT place the same `role_arn` in both variables — the AWS `AddRoleToDBCluster` API may
   reject the second call with `DBClusterRoleAlreadyExists`, causing apply to fail.
 
-  See [examples/with_iam_role_associations](examples/with_iam_role_associations) for a full
-  working example.
-
 examples: |-
   Review the [complete example](examples/complete) to see how to use this module.
 
