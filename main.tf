@@ -234,6 +234,12 @@ resource "aws_rds_cluster" "primary" {
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
   replication_source_identifier   = var.replication_source_identifier
+
+  lifecycle {
+    ignore_changes = [
+      iam_roles, # managed via aws_rds_cluster_role_association; ignoring drift prevents DBClusterRoleNotFound conflicts
+    ]
+  }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
@@ -326,8 +332,17 @@ resource "aws_rds_cluster" "secondary" {
     ignore_changes = [
       replication_source_identifier, # will be set/managed by Global Cluster
       snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
+      iam_roles,                     # managed via aws_rds_cluster_role_association; ignoring drift prevents DBClusterRoleNotFound conflicts
     ]
   }
+}
+
+resource "aws_rds_cluster_role_association" "this" {
+  for_each = local.enabled ? var.role_associations : {}
+
+  db_cluster_identifier = local.is_regional_cluster ? join("", aws_rds_cluster.primary[*].id) : join("", aws_rds_cluster.secondary[*].id)
+  feature_name          = try(coalesce(each.value.feature_name, each.key), null)
+  role_arn              = each.value.role_arn
 }
 
 resource "random_pet" "instance" {

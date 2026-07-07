@@ -503,6 +503,26 @@ variable "iam_roles" {
   default     = []
 }
 
+variable "role_associations" {
+  type = map(object({
+    feature_name = optional(string)
+    role_arn     = string
+  }))
+  description = <<-EOT
+    Map of IAM role ARNs and their supported feature names to associate with the cluster via
+    `aws_rds_cluster_role_association`. The map key is used as the `feature_name` when the
+    `feature_name` field is omitted. Supported feature names include `s3Export`, `s3Import`,
+    and `Lambda` (see AWS RDS docs for the full list).
+
+    Do NOT place the same `role_arn` in both `var.iam_roles` and `var.role_associations` —
+    the AWS `AddRoleToDBCluster` API may reject the second call with
+    `DBClusterRoleAlreadyExists`, causing apply to fail. Prefer `role_associations` for new
+    consumers; it supports per-role `feature_name` values that `var.iam_roles` cannot express.
+  EOT
+  default     = {}
+  nullable    = false
+}
+
 variable "backtrack_window" {
   type        = number
   description = "The target backtrack window, in seconds. Only available for aurora engine currently. Must be between 0 and 259200 (72 hours)"
