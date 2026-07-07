@@ -278,6 +278,26 @@ usage: |2-
   }
   ```
 
+  ### Managing IAM roles on the cluster
+
+  The module exposes two variables for attaching IAM roles to the Aurora cluster:
+
+  - `var.iam_roles` — a list of role ARNs attached to the cluster without a `feature_name`.
+    Retained for backwards compatibility. **Post-create drift on this variable is ignored** —
+    after the cluster is created, editing this variable produces no plan diff, no error, and
+    no AWS API call.
+
+  - `var.role_associations` — a map of role ARNs (with optional `feature_name`) that maps to
+    `aws_rds_cluster_role_association` resources inside the module. This is the preferred path
+    for attaching roles that require a `feature_name` such as `s3Export`, `s3Import`, or
+    `Lambda`, and it fully reconciles additions and removals after cluster creation.
+
+  Do NOT place the same `role_arn` in both variables — the AWS `AddRoleToDBCluster` API may
+  reject the second call with `DBClusterRoleAlreadyExists`, causing apply to fail.
+
+  See [examples/with_iam_role_associations](examples/with_iam_role_associations) for a full
+  working example.
+
 examples: |-
   Review the [complete example](examples/complete) to see how to use this module.
 
