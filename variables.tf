@@ -497,6 +497,14 @@ variable "source_region" {
   default     = ""
 }
 
+variable "iam_roles" {
+  type        = list(string)
+  description = "IAM role ARNs to associate with the Aurora cluster."
+  default     = []
+  nullable    = false
+  deprecated  = "Use `cluster_role_associations` instead, which supports associating an IAM role along with a `feature_name` (e.g., `s3Export`, `Lambda`, `Comprehend`). This variable is retained for backward compatibility and will be removed in the next major release."
+}
+
 variable "cluster_role_associations" {
   type = map(object({
     feature_name = optional(string)

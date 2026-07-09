@@ -307,7 +307,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.81.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
@@ -316,14 +316,14 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.81.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 2.0 |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.53.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.9.0 |
 
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_dns_master"></a> [dns\_master](#module\_dns\_master) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_dns_replicas"></a> [dns\_replicas](#module\_dns\_replicas) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_enhanced_monitoring_label"></a> [enhanced\_monitoring\_label](#module\_enhanced\_monitoring\_label) | cloudposse/label/null | 0.25.0 |
@@ -333,7 +333,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [aws_appautoscaling_policy.replicas](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy) | resource |
 | [aws_appautoscaling_target.replicas](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target) | resource |
 | [aws_db_parameter_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group) | resource |
@@ -345,6 +345,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 | [aws_rds_cluster_activity_stream.primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_activity_stream) | resource |
 | [aws_rds_cluster_instance.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance) | resource |
 | [aws_rds_cluster_parameter_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_parameter_group) | resource |
+| [aws_rds_cluster_role_association.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_role_association) | resource |
 | [aws_rds_reserved_instance.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_reserved_instance) | resource |
 | [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -361,7 +362,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_activity_stream_enabled"></a> [activity\_stream\_enabled](#input\_activity\_stream\_enabled) | Whether to enable Activity Streams | `bool` | `false` | no |
 | <a name="input_activity_stream_kms_key_id"></a> [activity\_stream\_kms\_key\_id](#input\_activity\_stream\_kms\_key\_id) | The ARN for the KMS key to encrypt Activity Stream Data data. When specifying `activity_stream_kms_key_id`, `activity_stream_enabled` needs to be set to true | `string` | `""` | no |
 | <a name="input_activity_stream_mode"></a> [activity\_stream\_mode](#input\_activity\_stream\_mode) | The mode for the Activity Streams. `async` and `sync` are supported. Defaults to `async` | `string` | `"async"` | no |
@@ -391,6 +392,7 @@ Review the [complete example](examples/complete) to see how to use this module.
 | <a name="input_cluster_family"></a> [cluster\_family](#input\_cluster\_family) | The family of the DB cluster parameter group | `string` | `"aurora5.6"` | no |
 | <a name="input_cluster_identifier"></a> [cluster\_identifier](#input\_cluster\_identifier) | The RDS Cluster Identifier. Will use generated label ID if not supplied | `string` | `""` | no |
 | <a name="input_cluster_parameters"></a> [cluster\_parameters](#input\_cluster\_parameters) | List of DB cluster parameters to apply | <pre>list(object({<br/>    apply_method = string<br/>    name         = string<br/>    value        = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_cluster_role_associations"></a> [cluster\_role\_associations](#input\_cluster\_role\_associations) | Map of IAM roles and supported feature names to associate with the cluster.<br/>The map key is used as the `feature_name` when `feature_name` is not set on the value (e.g., `s3Export`, `Lambda`, `Comprehend`). | <pre>map(object({<br/>    feature_name = optional(string)<br/>    role_arn     = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_cluster_size"></a> [cluster\_size](#input\_cluster\_size) | Number of DB instances to create in the cluster | `number` | `2` | no |
 | <a name="input_cluster_type"></a> [cluster\_type](#input\_cluster\_type) | Either `regional` or `global`.<br/>If `regional` will be created as a normal, standalone DB.<br/>If `global`, will be made part of a Global cluster (requires `global_cluster_identifier`). | `string` | `"regional"` | no |
 | <a name="input_context"></a> [context](#input\_context) | Single object for setting entire context at once.<br/>See description of individual variables for details.<br/>Leave string and numeric variables as `null` to use default value.<br/>Individual variable settings (non-null) override settings in context object,<br/>except for attributes, tags, and additional\_tag\_map, which are merged. | `any` | <pre>{<br/>  "additional_tag_map": {},<br/>  "attributes": [],<br/>  "delimiter": null,<br/>  "descriptor_formats": {},<br/>  "enabled": true,<br/>  "environment": null,<br/>  "id_length_limit": null,<br/>  "label_key_case": null,<br/>  "label_order": [],<br/>  "label_value_case": null,<br/>  "labels_as_tags": [<br/>    "unset"<br/>  ],<br/>  "name": null,<br/>  "namespace": null,<br/>  "regex_replace_chars": null,<br/>  "stage": null,<br/>  "tags": {},<br/>  "tenant": null<br/>}</pre> | no |
@@ -417,7 +419,6 @@ Review the [complete example](examples/complete) to see how to use this module.
 | <a name="input_environment"></a> [environment](#input\_environment) | ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | <a name="input_global_cluster_identifier"></a> [global\_cluster\_identifier](#input\_global\_cluster\_identifier) | ID of the Aurora global cluster | `string` | `""` | no |
 | <a name="input_iam_database_authentication_enabled"></a> [iam\_database\_authentication\_enabled](#input\_iam\_database\_authentication\_enabled) | Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled | `bool` | `false` | no |
-| <a name="input_iam_roles"></a> [iam\_roles](#input\_iam\_roles) | Iam roles for the Aurora cluster | `list(string)` | `[]` | no |
 | <a name="input_id_length_limit"></a> [id\_length\_limit](#input\_id\_length\_limit) | Limit `id` to this many characters (minimum 6).<br/>Set to `0` for unlimited length.<br/>Set to `null` for keep the existing setting, which defaults to `0`.<br/>Does not affect `id_full`. | `number` | `null` | no |
 | <a name="input_instance_availability_zone"></a> [instance\_availability\_zone](#input\_instance\_availability\_zone) | Optional parameter to place cluster instances in a specific availability zone. If left empty, will place randomly | `string` | `""` | no |
 | <a name="input_instance_identifier_suffix"></a> [instance\_identifier\_suffix](#input\_instance\_identifier\_suffix) | The suffix to append to DB instance identifiers.<br/>If `null`, the module will generate a random suffix. If empty, no suffix will be appended. | `string` | `null` | no |
@@ -475,13 +476,14 @@ Review the [complete example](examples/complete) to see how to use this module.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_activity_stream_arn"></a> [activity\_stream\_arn](#output\_activity\_stream\_arn) | Activity Stream ARN |
 | <a name="output_activity_stream_name"></a> [activity\_stream\_name](#output\_activity\_stream\_name) | Activity Stream Name |
 | <a name="output_admin_user_secret"></a> [admin\_user\_secret](#output\_admin\_user\_secret) | The secret manager attributes for the managed admin user password (`master_user_secret`). |
 | <a name="output_arn"></a> [arn](#output\_arn) | Amazon Resource Name (ARN) of the cluster |
 | <a name="output_cluster_identifier"></a> [cluster\_identifier](#output\_cluster\_identifier) | Cluster Identifier |
 | <a name="output_cluster_resource_id"></a> [cluster\_resource\_id](#output\_cluster\_resource\_id) | The region-unique, immutable identifie of the cluster |
+| <a name="output_cluster_role_associations"></a> [cluster\_role\_associations](#output\_cluster\_role\_associations) | A map of IAM roles associated with the cluster and their attributes, keyed by the `cluster_role_associations` map key |
 | <a name="output_cluster_security_groups"></a> [cluster\_security\_groups](#output\_cluster\_security\_groups) | Default RDS cluster security groups |
 | <a name="output_database_name"></a> [database\_name](#output\_database\_name) | Database name |
 | <a name="output_dbi_resource_ids"></a> [dbi\_resource\_ids](#output\_dbi\_resource\_ids) | List of the region-unique, immutable identifiers for the DB instances in the cluster |
