@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "rds_assume_role" {
   }
 }
 
-resource "aws_iam_role" "s3_import" {
+resource "aws_iam_role" "s3_export" {
   name               = module.this.id
   assume_role_policy = data.aws_iam_policy_document.rds_assume_role.json
   tags               = module.this.tags
@@ -65,7 +65,7 @@ module "rds_cluster" {
 
   cluster_role_associations = {
     s3Export = {
-      role_arn = aws_iam_role.s3_import.arn
+      role_arn = aws_iam_role.s3_export.arn
     }
   }
 
