@@ -25,6 +25,23 @@ module "subnets" {
   context = module.this.context
 }
 
+data "aws_iam_policy_document" "rds_s3_import_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["rds.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "s3_import" {
+  name               = module.this.id
+  assume_role_policy = data.aws_iam_policy_document.rds_s3_import_assume.json
+  tags               = module.this.tags
+}
+
 module "rds_cluster" {
   source = "../../"
 
@@ -46,6 +63,12 @@ module "rds_cluster" {
   storage_type              = var.storage_type
   iops                      = var.iops
   allocated_storage         = var.allocated_storage
+
+  cluster_role_associations = {
+    s3Import = {
+      role_arn = aws_iam_role.s3_import.arn
+    }
+  }
 
   context = module.this.context
 }

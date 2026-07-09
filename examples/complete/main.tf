@@ -64,7 +64,7 @@ module "rds_cluster" {
   intra_security_group_traffic_enabled = var.intra_security_group_traffic_enabled
 
   cluster_role_associations = {
-    s3Import = {
+    s3Export = {
       role_arn = aws_iam_role.s3_import.arn
     }
   }
