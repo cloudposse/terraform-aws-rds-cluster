@@ -499,7 +499,7 @@ variable "source_region" {
 
 variable "iam_roles" {
   type        = list(string)
-  description = "(Deprecated) Use `cluster_role_associations` instead, which supports associating an IAM role along with a `feature_name` (e.g., `s3Export`, `Lambda`, `Comprehend`). Iam roles for the Aurora cluster"
+  description = "(Deprecated) Use `cluster_role_associations` instead, which supports associating an IAM role along with a `feature_name` (e.g., `s3Export`, `Lambda`, `Comprehend`). IAM roles for the Aurora cluster"
   default     = []
 }
 
