@@ -330,6 +330,14 @@ resource "aws_rds_cluster" "secondary" {
   }
 }
 
+resource "aws_rds_cluster_role_association" "default" {
+  for_each = local.enabled ? var.cluster_role_associations : {}
+
+  db_cluster_identifier = local.is_regional_cluster ? aws_rds_cluster.primary[0].id : aws_rds_cluster.secondary[0].id
+  feature_name          = coalesce(each.value.feature_name, each.key)
+  role_arn              = each.value.role_arn
+}
+
 resource "random_pet" "instance" {
   count  = local.enabled && var.instance_identifier_suffix == null ? 1 : 0
   prefix = local.instance_identifier_prefix

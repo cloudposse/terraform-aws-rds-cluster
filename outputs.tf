@@ -104,3 +104,8 @@ output "reserved_instance" {
   value       = aws_rds_reserved_instance.default
   description = "All information about the reserved instance(s) if created."
 }
+
+output "cluster_role_associations" {
+  value       = aws_rds_cluster_role_association.default
+  description = "A map of IAM roles associated with the cluster and their attributes, keyed by the `cluster_role_associations` map key"
+}
