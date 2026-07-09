@@ -497,10 +497,17 @@ variable "source_region" {
   default     = ""
 }
 
-variable "iam_roles" {
-  type        = list(string)
-  description = "Iam roles for the Aurora cluster"
-  default     = []
+variable "cluster_role_associations" {
+  type = map(object({
+    feature_name = optional(string)
+    role_arn     = string
+  }))
+  description = <<-EOT
+    Map of IAM roles and supported feature names to associate with the cluster.
+    The map key is used as the `feature_name` when `feature_name` is not set on the value (e.g., `s3Export`, `Lambda`, `Comprehend`).
+  EOT
+  default     = {}
+  nullable    = false
 }
 
 variable "backtrack_window" {

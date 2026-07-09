@@ -162,7 +162,6 @@ resource "aws_rds_cluster" "primary" {
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   db_instance_parameter_group_name      = var.allow_major_version_upgrade ? join("", aws_db_parameter_group.default[*].name) : null
   engine_mode                           = var.engine_mode
-  iam_roles                             = var.iam_roles
   backtrack_window                      = var.backtrack_window
   enable_http_endpoint                  = var.enable_http_endpoint
   port                                  = var.db_port
@@ -269,7 +268,6 @@ resource "aws_rds_cluster" "secondary" {
   engine_version                      = var.engine_version
   allow_major_version_upgrade         = var.allow_major_version_upgrade
   engine_mode                         = var.engine_mode
-  iam_roles                           = var.iam_roles
   backtrack_window                    = var.backtrack_window
   enable_http_endpoint                = var.enable_http_endpoint
   port                                = var.db_port
@@ -328,6 +326,14 @@ resource "aws_rds_cluster" "secondary" {
       snapshot_identifier,           # if created from a snapshot, will be non-null at creation, but null afterwards
     ]
   }
+}
+
+resource "aws_rds_cluster_role_association" "default" {
+  for_each = local.enabled ? var.cluster_role_associations : {}
+
+  db_cluster_identifier = local.is_regional_cluster ? aws_rds_cluster.primary[0].id : aws_rds_cluster.secondary[0].id
+  feature_name          = coalesce(each.value.feature_name, each.key)
+  role_arn              = each.value.role_arn
 }
 
 resource "random_pet" "instance" {
