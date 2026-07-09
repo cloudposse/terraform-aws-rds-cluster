@@ -65,6 +65,12 @@ func TestExamplesComplete(t *testing.T) {
 	arn := terraform.Output(t, terraformOptions, "arn")
 	// Verify we're getting back the outputs we expect
 	assert.Contains(t, arn, ":cluster:eg-test-rds-cluster")
+
+	// Run `terraform output` to get the IAM role associations created for the cluster
+	clusterRoleAssociations := terraform.OutputMapOfObjects(t, terraformOptions, "cluster_role_associations")
+	// Verify the association is keyed by the map key and resolves the expected feature name
+	assert.Contains(t, clusterRoleAssociations, "s3Import")
+	assert.Equal(t, "s3Import", clusterRoleAssociations["s3Import"].(map[string]interface{})["feature_name"])
 }
 
 func TestExamplesCompleteDisabled(t *testing.T) {

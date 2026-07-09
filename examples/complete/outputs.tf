@@ -43,6 +43,11 @@ output "cluster_resource_id" {
   description = "The region-unique, immutable identifie of the cluster"
 }
 
+output "cluster_role_associations" {
+  value       = module.rds_cluster.cluster_role_associations
+  description = "IAM roles associated with the cluster, keyed by the `cluster_role_associations` map key"
+}
+
 output "public_subnet_cidrs" {
   value       = module.subnets.public_subnet_cidrs
   description = "Public subnet CIDR blocks"
