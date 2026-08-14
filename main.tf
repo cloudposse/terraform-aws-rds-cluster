@@ -17,7 +17,7 @@ locals {
   cluster_instance_count   = local.enabled ? var.cluster_size : 0
   is_regional_cluster      = var.cluster_type == "regional"
   is_serverless            = var.engine_mode == "serverless"
-  ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null
+  ignore_admin_credentials = var.replication_source_identifier != "" || var.snapshot_identifier != null || (!local.is_regional_cluster && var.global_cluster_identifier != null)
   reserved_instance_engine = var.engine
   use_reserved_instances   = var.use_reserved_instances && !local.is_serverless
 }
@@ -234,6 +234,12 @@ resource "aws_rds_cluster" "primary" {
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   deletion_protection             = var.deletion_protection
   replication_source_identifier   = var.replication_source_identifier
+
+  lifecycle {
+    ignore_changes = [
+      global_cluster_identifier
+    ]
+  }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
